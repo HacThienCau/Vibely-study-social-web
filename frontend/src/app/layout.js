@@ -12,7 +12,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Viebly",
+  title: "Vibely",
   description: "Mạng xã hội học tập kết nối các bạn học sinh, sinh viên",
 };
 

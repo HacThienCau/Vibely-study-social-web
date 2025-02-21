@@ -22,15 +22,15 @@
 
 @layer base {
   :root {
-    --background: #F9FDFF;
-    --background-header: #E0F8FE;
-    --foreground: #000000; 
-    --navbar-inactive: rgba(17, 17, 17, 0.53); /* Màu không active của navbar */
-    --navbar-active: #086280; /* Màu active của navbar */
-    --post-border: #FFFFFF; /* Màu khung post */
-    --search-bar: #FFFFFF; /* Thanh tìm kiếm */
-    --bubble: rgba(255, 255, 255, 0.8); /* Bubble với opacity 0.8 */
-    --caption-text: #8B8D91; /* Màu text chú thích */
+    --background: rgb(249, 253, 255);
+    --background-header: rgb(224, 248, 254);
+    --foreground: rgb(0, 0, 0);
+    --navbar-inactive: rgba(17, 17, 17, 0.53);
+    --navbar-active: rgb(8, 98, 128);
+    --post-border: rgb(255, 255, 255);
+    --search-bar: rgb(255, 255, 255);
+    --bubble: rgba(255, 255, 255, 0.8);
+    --caption-text: rgb(139, 141, 145);
     --card: 0 0% 100%;
     --card-foreground: 240 10% 3.9%;
     --popover: 0 0% 100%;
