@@ -3,12 +3,12 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Bell, Menu, MessageCircle, Search } from "lucide-react";
+import { Bell, LogOut, Menu, MessageCircle, Search, Users } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import { DropdownMenu } from "@radix-ui/react-dropdown-menu";
-import { DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 const Header = () => {
   const [isSearchOpen, setIsSearchOpen] = React.useState(false);
@@ -22,7 +22,7 @@ const Header = () => {
   ];
 
   return (
-    <header className="bg-background_header text-foreground shadow-md h-16 fixed top-0 left-0 z-50 w-full">
+    <header className="bg-background_header text-foreground shadow-md h-14 fixed top-0 left-0 z-50 w-full">
       <div className="mx-auto flex justify-between items-center h-full px-4">
         {/* Logo và Tìm kiếm */}
         <div className="flex items-center gap-2">
@@ -110,7 +110,17 @@ const Header = () => {
                 </div>
               </DropdownMenuLabel>
               <div className="bg-gray-200 h-px my-2"></div>
+              <DropdownMenuItem>
+                <Users/> <span className="ml-2">Trang cá nhân</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <MessageCircle/> <span className="ml-2">Tin nhắn</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <LogOut/> <span className="ml-2">Đăng xuất</span>
+              </DropdownMenuItem>
             </DropdownMenuContent>
+
 
           </DropdownMenu>
 

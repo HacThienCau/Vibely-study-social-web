@@ -8,6 +8,10 @@ export default {
   ],
   theme: {
   	extend: {
+		fontFamily: {
+			robotoCondensed: "var(--font-roboto-condensed)"
+		},
+
   		colors: {
   			background: 'var(--background)',
   			foreground: 'var(--foreground)',
