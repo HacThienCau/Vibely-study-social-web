@@ -10,7 +10,7 @@ const StoryCard = ({isAddStory, story}) => {
     }
   return (
     <>
-    <Card className="w-40 h-60 relative overflow-hidden group cursor-pointer rounded-xl bg-white"
+    <Card className="w-40 h-60 relative overflow-hidden group cursor-pointer rounded-xl bg-white border-none"
             onClick={isAddStory ? undefined : handleStoryClick}
     >
         <CardContent className="p-0 h-full">
