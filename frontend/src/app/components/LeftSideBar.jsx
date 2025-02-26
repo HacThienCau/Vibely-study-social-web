@@ -1,9 +1,14 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import useSidebarStore from "@/store/sidebarStore";
+import { useRouter } from "next/navigation";
 
 const LeftSideBar = () => {
   const {isSidebarOpen,toggleSidebar} = useSidebarStore()
+  const router = useRouter();
+  const handleNavigation = (path, item) => {
+    router.push(path);
+  };
   return (
     <aside
       className={`fixed top-12 left-0 h-full w-64 p-4 transform transition-transform duration-200 ease-in-out md:translate-x-0 flex flex-col z-50 md:z-0 ${
@@ -24,53 +29,69 @@ const LeftSideBar = () => {
             </div>
             <Button
               variant="ghost"
-              className="full justify-start">
-              <img src="images/friend_sidebar.png" alt="friend" className="mr-2" /> 
-               Bạn bè
+              className="full justify-start"
+              onClick={() => handleNavigation("/friends-list")}
+            >
+              <img src="images/friend_sidebar.png" alt="friend" className="mr-2"/>
+              Bạn bè
             </Button>
             <Button
               variant="ghost"
-              className="full justify-start">
-                <img src="images/save_sidebar.png" alt="saved" className="mr-4" /> 
-               Đã lưu
+              className="full justify-start"
+              onClick={() => handleNavigation("/saved")}
+            >
+              <img src="images/save_sidebar.png" alt="saved" className="mr-4" /> 
+              Đã lưu
             </Button>
             <Button
               variant="ghost"
-              className="full justify-start">
-                <img src="images/video_sidebar.png" alt="video" className="mr-2" /> 
-               Video
+              className="full justify-start"
+              onClick={() => handleNavigation("/video-feed")}
+            >
+              <img src="images/video_sidebar.png" alt="video" className="mr-2" /> 
+              Video
             </Button>
             <br></br>
             <Button
               variant="ghost"
-              className="full justify-start">
-                <img src="images/calendar_sidebar.png" alt="calendar" className="mr-4" /> 
-               Lịch
+              className="full justify-start"
+              onClick={() => handleNavigation("/calendar")}
+            >
+              <img src="images/calendar_sidebar.png" alt="calendar" className="mr-4" /> 
+              Lịch
             </Button>
             <br></br>
             <Button
               variant="ghost"
-              className="full justify-start">
-                <img src="images/document_sidebar.png" alt="document" className="mr-2" /> 
-               Tài liệu
+              className="full justify-start"
+              onClick={() => handleNavigation("/document")}
+            >
+              <img src="images/document_sidebar.png" alt="document" className="mr-2" /> 
+              Tài liệu
             </Button>
             <Button
               variant="ghost"
-              className="full justify-start">
-                <img src="images/pomodoro_sidebar.png" alt="pomodoro" className="mr-0" /> 
-               Chế độ Pomodoro
+              className="full justify-start"
+              onClick={() => handleNavigation("/pomodoro")}
+            >
+              <img src="images/pomodoro_sidebar.png" alt="pomodoro" className="mr-0" /> 
+              Chế độ Pomodoro
             </Button>
             <Button
               variant="ghost"
-              className="full justify-start">
-                <img src="images/bookshop_sidebar.png" alt="bookshop" className="mr-0" /> 
-               Mua sách
+              className="full justify-start"
+              onClick={() => handleNavigation("/bookshop")}
+            >
+              <img src="images/bookshop_sidebar.png" alt="bookshop" className="mr-0" /> 
+              Mua sách
             </Button>
             <Button
               variant="ghost"
-              className="full justify-start">
-                <img src="images/game_sidebar.png" alt="game" className="mr-0" /> 
-               Củng cố kiến thức
+              className="full justify-start"
+              onClick={() => handleNavigation("/game")}
+            >
+              <img src="images/game_sidebar.png" alt="game" className="mr-0" /> 
+              Củng cố kiến thức
             </Button>
             
         </nav>
