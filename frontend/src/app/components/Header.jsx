@@ -1,14 +1,15 @@
 "use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import useSidebarStore from "@/store/sidebarStore";
+import { DropdownMenu } from "@radix-ui/react-dropdown-menu";
 import { Bell, LogOut, Menu, MessageCircle, Search, Users } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-import { DropdownMenu } from "@radix-ui/react-dropdown-menu";
-import { DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 const Header = () => {
   const [isSearchOpen, setIsSearchOpen] = React.useState(false);
@@ -20,6 +21,8 @@ const Header = () => {
     { icon: "/images/calendar_navbar.svg", path: "/calendar" },
     { icon: "/images/game_navbar.svg", path: "/game" }
   ];
+
+  const { toggleSidebar } = useSidebarStore();
 
   return (
     <header className="bg-background_header text-foreground shadow-md h-14 fixed top-0 left-0 z-50 w-full">
@@ -71,7 +74,7 @@ const Header = () => {
         </nav>
         {/* Profile cá nhân */}
         <div className="flex space-x-2 md:space-x-4 items-center">
-          <Button variant="ghost" size="icon" className="md:hidden text-gray-600 cursor-pointer">
+          <Button variant="ghost" size="icon" className="md:hidden text-gray-600 cursor-pointer" onClick={toggleSidebar}>
             <Menu />
           </Button>
           <Button variant="ghost" size="icon" className="hidden md:block text-gray-600 cursor-pointer pl-1">
