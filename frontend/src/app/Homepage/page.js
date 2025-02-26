@@ -12,7 +12,13 @@ const Homepage = () => {
     _id: 1,
     content: 'Hello World',
     mediaUrl: "https://images.pexels.com/photos/757889/pexels-photo-757889.jpeg?auto=compress&cs=tinysrgb&w=600",
-    mediaType: 'image'
+    mediaType: 'image',
+    comments:[{
+      user:{
+          username:"Võ Nhất Phương",
+          text:"Ảnh đẹp quá"
+      }
+    }]
   }]
   return (
     <div className="flex flex-col min-h-screen text-foreground">
