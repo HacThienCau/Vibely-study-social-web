@@ -9,6 +9,7 @@ import { DropdownMenu } from "@radix-ui/react-dropdown-menu";
 import { Bell, LogOut, Menu, MessageCircle, Search, Users } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React from "react";
 
 const Header = () => {
@@ -16,20 +17,25 @@ const Header = () => {
 
   const navItems = [
     { icon: "/images/home_navbar.svg", path: "/" },
-    { icon: "/images/video_navbar.svg", path: "/video" },
+    { icon: "/images/video_navbar.svg", path: "/video-feed" },
     { icon: "/images/document_navbar.svg", path: "/document" },
     { icon: "/images/calendar_navbar.svg", path: "/calendar" },
     { icon: "/images/game_navbar.svg", path: "/game" }
   ];
 
   const { toggleSidebar } = useSidebarStore();
+  const router = useRouter();
+
+  const handleNavigation = (path, item) => {
+    router.push(path);
+  };
 
   return (
     <header className="bg-background_header text-foreground shadow-md h-14 fixed top-0 left-0 z-50 w-full">
       <div className="mx-auto flex justify-between items-center h-full px-4">
         {/* Logo và Tìm kiếm */}
         <div className="flex items-center gap-2">
-          <Image src="/images/vibely_logo.png" alt="logo" width={60} height={60} className="-ml-2" />
+          <Image src="/images/vibely_logo.png" alt="logo" width={60} height={60} className="-ml-2 cursor-pointer" onClick={() => handleNavigation('/')}/>
           <div className="relative -ml-2">
             <form>
               <div className="relative">
@@ -113,13 +119,13 @@ const Header = () => {
                 </div>
               </DropdownMenuLabel>
               <div className="bg-gray-200 h-px my-2"></div>
-              <DropdownMenuItem>
+              <DropdownMenuItem className="cursor-pointer" onClick={() => handleNavigation('/user-profile')}>
                 <Users/> <span className="ml-2">Trang cá nhân</span>
               </DropdownMenuItem>
-              <DropdownMenuItem>
+              <DropdownMenuItem className="cursor-pointer">
                 <MessageCircle/> <span className="ml-2">Tin nhắn</span>
               </DropdownMenuItem>
-              <DropdownMenuItem>
+              <DropdownMenuItem className="cursor-pointer">
                 <LogOut/> <span className="ml-2">Đăng xuất</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
