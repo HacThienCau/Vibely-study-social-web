@@ -1,8 +1,50 @@
 //import React from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { ChevronDown, ChevronUp } from "lucide-react";
+import { useState } from "react";
 
-const PostComments = () => {
+const PostComments = ({post}) => {
+    const [showAllComments, setShowAllComments] = useState(false);
+
+    const visibleComments = showAllComments ? post?.comments : post?.comments?.slice(0, 2);
     return (
-        <div>PostComments</div>
+        <div className="mt-4">
+            <h3 className="font-semibold mb-2">Bình luận</h3>
+            <div className="max-h-60 overflow-y-auto pr-2">
+                {visibleComments?.map((comment, index) => (
+                    <div key={index} className="flex items-start space-x-2 mb-2">
+                        <Avatar className="h-8 w-8">
+                            <AvatarImage/>
+                            <AvatarFallback className="bg-gray-200">P</AvatarFallback>
+                        </Avatar>
+                        <div className='flex flex-col'>
+                            <div className='bg-gray-100 rounded-lg p-2'>
+                                <p className='font-bold text-sm'>{comment?.user?.username}</p>
+                                <p className='text-sm'>{comment?.user?.text}</p>
+                            </div>
+                            <div className='flex items-center mt-1 text-xs text-gray-400'>
+                                <Button variant="ghost" size="sm">Thích</Button>
+                                <Button variant="ghost" size="sm">Phản hồi</Button>
+                                <span>{comment?.createdAt}</span>
+                            </div>
+                        </div>
+                    </div>
+                ))}
+                {post?.comments?.length > 2 && (
+                    <p
+                        className="w-40 mt-2 text-blue-500 cursor-pointer"
+                        onClick={() => setShowAllComments(!showAllComments)}
+                    >
+                        {showAllComments ? (
+                            <>Rút gọn <ChevronUp className="ml-2 h-4 w-4" /></>
+                        ) : (
+                            <>Tất cả bình luận <ChevronDown className="ml-2 h-4 w-4" /></>
+                        )}
+                    </p>
+                )}
+            </div>
+        </div>
     )
 }
 
