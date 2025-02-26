@@ -1,8 +1,8 @@
 "use client"
-import React, {useState} from 'react'
+import StorySection from '@/app/story/StorySection'
+import { useState } from 'react'
 import LeftSideBar from '../components/LeftSideBar'
 import RightSideBar from '../components/RightSideBar'
-import StorySection from '@/app/story/StorySection'
 import NewPostForm from '../posts/NewPostForm'
 import PostCard from '../posts/PostCard'
 
@@ -11,7 +11,7 @@ const Homepage = () => {
   const posts = [{
     _id: 1,
     content: 'Hello World',
-    mediaUrl: "http://localhost",
+    mediaUrl: "https://images.pexels.com/photos/757889/pexels-photo-757889.jpeg?auto=compress&cs=tinysrgb&w=600",
     mediaType: 'image'
   }]
   return (
