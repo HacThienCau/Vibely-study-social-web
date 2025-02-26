@@ -6,9 +6,9 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import * as Popover from '@radix-ui/react-popover'
 import { motion } from 'framer-motion'
-import { ImageIcon, XIcon, Smile} from 'lucide-react'
+import { ImageIcon, Smile, XIcon } from 'lucide-react'
 import dynamic from 'next/dynamic'
-import React, { useState } from 'react'
+import { useState } from 'react'
 
 const Picker = dynamic(() => import('emoji-picker-react'), { ssr: false })
 
@@ -35,7 +35,7 @@ const NewPostForm = ({ isPostFormOpen, setIsPostFormOpen }) => {
         <div className="flex space-x-4 items-center">
           <Avatar>
             <AvatarImage />
-            <AvatarFallback>P</AvatarFallback>
+            <AvatarFallback className="bg-gray-200">P</AvatarFallback>
           </Avatar>
           <Dialog open={isPostFormOpen} onOpenChange={setIsPostFormOpen}>
             <DialogTrigger className="w-full">
@@ -53,7 +53,7 @@ const NewPostForm = ({ isPostFormOpen, setIsPostFormOpen }) => {
               <div className="flex items-center space-x-3">
                 <Avatar className="h-10 w-10">
                   <AvatarImage />
-                  <AvatarFallback>P</AvatarFallback>
+                  <AvatarFallback className="bg-gray-200">P</AvatarFallback>
                 </Avatar>
                 <p className="font-medium">Võ Nhất Phương</p>
               </div>
