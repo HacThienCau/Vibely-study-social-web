@@ -5,10 +5,10 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { Separator } from '@/components/ui/separator'
 import { AnimatePresence, motion } from 'framer-motion'
-import { MessageCircle, MoreHorizontal, Share2, ThumbsUp } from 'lucide-react'
+import { MessageCircle, MoreHorizontal, ThumbsUp } from 'lucide-react'
 import { useState } from 'react'
+import { PiShareFatBold } from "react-icons/pi"
 import PostComments from './PostComments'
-
 
 
 const PostCard = ({post}) => {
@@ -49,19 +49,19 @@ const PostCard = ({post}) => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <Card>
-        <CardContent className="p-6">
+      <Card className="bg-white shadow-md rounded-lg border border-gray-200">
+        <CardContent className="p-4">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center space-x-3 cursor-pointer">
               <Avatar>
                 <AvatarImage/>
-                  <AvatarFallback className="bg-gray-200">P</AvatarFallback>
+                <AvatarFallback className="bg-gray-200">P</AvatarFallback>
               </Avatar>
               <div>
                 <p className="font-semibold">
                   Võ Nhất Phương
                 </p>
-                <p className="font-sm text-gray-500">
+                <p className="font-sm text-gray-500 text-xs">
                   26-02-2025
                 </p>
               </div>
@@ -75,44 +75,44 @@ const PostCard = ({post}) => {
             <img
               src={post?.mediaUrl}
               alt="post_image"
-              className="w-full h-auto rounded-lg mb-4"
+              className="w-full h-auto rounded-lg mb-2"
             />
           )}
           {post?.mediaUrl && post.mediaType === "video" && (
-            <video controls className="w-full h-[500px] rounded-lg mb-4">
+            <video controls className="w-full h-[500px] rounded-lg mb-3">
               <source src={post?.mediaUrl} type="video/mp4" />
               Trình duyệt của bạn không hỗ trợ thẻ video.
             </video>
           )}
-          <div className="flex justify-between items-center mb-4">
-            <span className="text-sm text-gray-500 hover:border-b-2 border-gray-400 cursor-pointer">
+          <div className="flex justify-between items-center mb-2">
+            <span className="text-[15px] text-gray-500 hover:underline border-gray-400 cursor-pointer">
               2 lượt thích
             </span>
             <div className="flex gap-3">
               <span
-                className="text-sm text-gray-500 hover:border-b-2 border-gray-400 cursor-pointer"
+                className="text-[15px] text-gray-500 hover:underline border-gray-400 cursor-pointer"
                 onClick={() => setShowComments(!showComments)}
               >
                 3 bình luận
               </span>
-              <span className="text-sm text-gray-500 hover:border-b-2 border-gray-400 cursor-pointer">
+              <span className="text-[15px] text-gray-500 hover:underline border-gray-400 cursor-pointer">
                 4 lượt chia sẻ
               </span>
             </div>
           </div>
-          <Separator className="mb-2 bg-gray-400" />
-          <div className="flex justify-between mb-2">
+          <Separator className="mb-1 border-b border-gray-300"/>
+          <div className="flex justify-between mb-1">
             <Button
               variant="ghost"
-              className={`flex-1 hover:bg-gray-100`}
+              className={`flex-1 hover:bg-gray-100 text-gray-500 hover:text-gray-500 text-[15px] h-8`}
             >
-              <ThumbsUp className="mr-2 h-4 w-4" /> Thích
+              <ThumbsUp style={{ width: "20px", height: "20px" }} /> Thích
             </Button>
             <Button
               variant="ghost"
-              className={`flex-1 hover:bg-gray-100 `}
+              className={`flex-1 hover:bg-gray-100 text-gray-500 hover:text-gray-500 text-[15px] h-8`}
             >
-              <MessageCircle className="mr-2 h-4 w-4" /> Bình luận
+              <MessageCircle style={{ width: "20px", height: "20px" }} /> Bình luận
             </Button>
             <Dialog
               open={isShareDialogOpen}
@@ -121,9 +121,9 @@ const PostCard = ({post}) => {
               <DialogTrigger asChild>
                 <Button
                   variant="ghost"
-                  className="flex-1 hover:bg-gray-100"
+                  className="flex-1 hover:bg-gray-100 text-gray-500 hover:text-gray-500 text-[15px] h-8"
                 >
-                  <Share2 className="mr-2 h-4 w-4" /> Chia sẻ
+                  <PiShareFatBold style={{ width: "20px", height: "20px" }} /> Chia sẻ
                 </Button>
               </DialogTrigger>
               <DialogContent>
@@ -162,7 +162,7 @@ const PostCard = ({post}) => {
               </DialogContent>
             </Dialog>
           </div>
-          <Separator className="mb-2 bg-gray-400" />
+          <Separator className="border-b border-gray-300" />
           <AnimatePresence>
             {showComments && (
               <motion.div

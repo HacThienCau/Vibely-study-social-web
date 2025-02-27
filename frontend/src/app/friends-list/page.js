@@ -19,7 +19,7 @@ const Page = () => {
         <div className="min-h-screen">
             <LeftSideBar />
             <main className="ml-0 md:ml-64 mt-16 p-6">
-                <h1 className="text-2xl font-bold mb-6">Lời mời kết bạn</h1>
+                <h1 className="text-xl font-bold mb-6">Lời mời kết bạn</h1>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                     {loading ? (
                         <FriendCardSkeleton/>
@@ -40,7 +40,7 @@ const Page = () => {
                     )}
                 </div>
 
-                <h1 className="text-2xl font-bold mb-6">Những người bạn có thể biết</h1>
+                <h1 className="text-xl font-bold mt-8 mb-6">Những người bạn có thể biết</h1>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6  ">
                     {loading ? (
                         <FriendCardSkeleton />
