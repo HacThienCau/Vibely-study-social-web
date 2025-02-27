@@ -1,7 +1,9 @@
 const { uploadFileToCloudinary } = require("../config/cloudinary");
 const Post = require("../model/Post");
+const Story = require("../model/Story");
 const response = require("../utils/responseHandler");
 
+//Tạo bài viết
 const createPost = async (req, res) => {
     try {
         const userId = req.user.userId;        
@@ -49,6 +51,42 @@ const createPost = async (req, res) => {
     }
 };
 
+//Tạo story
+const createStory = async (req, res) => {
+    try {
+        const userId = req.user.userId;        
+        const file = req.file;
+        if (!file) {
+            return response(res, 400, "Cần tải file lên để tạo story");
+        }
+
+        const isVideo = file.mimetype.startsWith("video");
+        const isImage = file.mimetype.startsWith("image");
+
+        if (!isVideo && !isImage) {
+            return response(res, 400, "Chỉ hỗ trợ ảnh hoặc video");
+        }
+
+        const uploadResult = await uploadFileToCloudinary(file);
+        if (!uploadResult?.secure_url) {
+            return response(res, 500, "Lỗi khi tải file lên");
+        }
+
+        const newStory = new Story({
+            user: userId,
+            mediaUrl: uploadResult.secure_url,
+            mediaType: isVideo ? "video" : "image",
+        });
+
+        await newStory.save();
+        return response(res, 201, "Tạo story thành công", newStory);
+
+    } catch (error) {
+        console.error("Lỗi khi tạo story:", error);
+        return response(res, 500, "Tạo story thất bại", error.message);
+    }
+};
+
 //Lấy tất cả bài viết
 const getAllPosts = async (req, res) => {
     try {
@@ -63,6 +101,19 @@ const getAllPosts = async (req, res) => {
     } catch (error) {
         console.error("Lỗi khi lấy tất cả bài viết:", error);
         return response(res, 500, "Lấy tất cả bài viết thất bại", error.message);
+    }
+};
+
+//Lấy tất cả story
+const getAllStories = async (req, res) => {
+    try {
+        const stories = await Story.find()
+        .sort({ createdAt: -1 })
+        .populate("user", "_id username profilePicture email")
+        return response(res, 200, "Lấy tất cả story thành công", stories);
+    } catch (error) {
+        console.error("Lỗi khi lấy tất cả story:", error);
+        return response(res, 500, "Lấy tất cả story thất bại", error.message);
     }
 };
 
@@ -133,6 +184,39 @@ const reactPost = async (req, res) =>
     }
 }
 
+//Thả tym story
+const reactStory = async (req, res) =>
+{
+    const {storyId} = req.params;
+    const userId = req.user.userId;
+    const {type} = req.body;
+    try{
+        const story = await Story.findById(storyId);
+        if (!story) return response(res, 404, "Không tìm thấy story");
+
+        const existingReactionIndex = story.reactions.findIndex(r => r.user.toString() === userId);
+
+        if (existingReactionIndex !== -1) {
+            // Nếu user đã tym => bỏ tym
+            story.reactions.splice(existingReactionIndex, 1);
+            story.reactionStats.tym = Math.max(0, story.reactionStats.tym - 1);
+            action = "Đã thích story";
+        } else {
+            // Nếu chưa tym => thêm tym
+            story.reactions.push({ user: userId });
+            story.reactionStats.tym += 1;
+            action = "Bỏ thích story";
+        }
+
+        await story.save();
+        return response(res, 200, action, story);
+
+    } catch (error) {
+        console.error("Lỗi khi thả tym story:", error);
+        return response(res, 500, "Thả tym story thất bại", error.message);
+    }
+};
+
 //Bình luận bài viết
 const addCommentToPost = async (req, res) => {
     const { postId } = req.params;
@@ -176,4 +260,4 @@ const sharePost = async (req, res) => {
     }
 }
 
-module.exports = { createPost, getAllPosts, getPostByUserId, reactPost, addCommentToPost, sharePost };
+module.exports = { createPost, getAllPosts, getPostByUserId, reactPost, addCommentToPost, sharePost, createStory, getAllStories, reactStory };
