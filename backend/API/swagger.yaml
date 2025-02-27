@@ -1,0 +1,102 @@
+openapi: 3.0.0
+info:
+  title: Vibely API
+  description: API dành cho mạng xã hội học tập Vibely
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080
+    description: Local server
+
+paths:
+  /auth/login:
+    post:
+      summary: "Đăng nhập"
+      description: "API dùng để đăng nhập"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        "200":
+          description: "Đăng nhập thành công"
+        "400":
+          description: "Lỗi dữ liệu đầu vào"
+
+  /auth/register:
+    post:
+      summary: "Đăng ký tài khoản"
+      description: "API dùng để đăng ký tài khoản"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        "200":
+          description: "Đăng ký thành công"
+        "400":
+          description: "Lỗi dữ liệu đầu vào"
+
+  /posts:
+    get:
+      summary: "Lấy danh sách bài viết"
+      description: "API trả về danh sách bài viết"
+      responses:
+        "200":
+          description: "Danh sách bài viết"
+    post:
+      summary: "Tạo bài viết mới"
+      description: "API dùng để tạo bài viết mới"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                content:
+                  type: string
+      responses:
+        "201":
+          description: "Bài viết đã được tạo"
+
+  /stories:
+    get:
+      summary: "Lấy danh sách stories"
+      description: "API trả về danh sách stories"
+      responses:
+        "200":
+          description: "Danh sách stories"
+    post:
+      summary: "Tạo story mới"
+      description: "API dùng để tạo story mới"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                imageUrl:
+                  type: string
+      responses:
+        "201":
+          description: "Story đã được tạo thành công"
