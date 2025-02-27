@@ -46,7 +46,14 @@ const postSchema = new mongoose.Schema({
         }
     ],
 
-    reactionCount: { type: Number, default: 0 }, 
+    reactionStats: {
+        like: { type: Number, default: 0 },
+        love: { type: Number, default: 0 },
+        haha: { type: Number, default: 0 },
+        wow: { type: Number, default: 0 },
+        sad: { type: Number, default: 0 },
+        angry: { type: Number, default: 0 }
+    },
     commentCount: { type: Number, default: 0 }, 
     share: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     shareCount: { type: Number, default: 0 }

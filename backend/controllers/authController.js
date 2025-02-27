@@ -3,7 +3,7 @@
 // Được sử dụng trong routes/userRoutes.js để bảo vệ API
 const User = require('../model/User');
 const { generateToken } = require('../utils/generateToken');
-const response = require('../utils/responseHandle');
+const response = require('../utils/responseHandler');
 const bcrypt = require('bcrypt');
 const registerUser = async (req, res) => {
     try {
@@ -57,7 +57,7 @@ const loginUser = async (req, res) => {
         if (!matchPassword) {
             return response(res, 400, 'Mật khẩu không chính xác');
         }
-        const accessToken = generateToken(usingser);
+        const accessToken = generateToken(user);
         res.cookie("auth_token", accessToken, {
             httpOnly: true,
         });
