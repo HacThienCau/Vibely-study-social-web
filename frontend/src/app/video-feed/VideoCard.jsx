@@ -5,9 +5,11 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Separator } from '@/components/ui/separator';
 import { AnimatePresence, motion } from "framer-motion";
-import { Clock, MessageCircle, Send, Share2, ThumbsUp } from 'lucide-react';
+import { Clock, MessageCircle, Send, ThumbsUp } from 'lucide-react';
 import { useState } from 'react';
+import { PiShareFatBold } from "react-icons/pi";
 import VideoComments from './VideoComments';
 
 const VideoCard = ({post}) => {
@@ -47,12 +49,12 @@ const VideoCard = ({post}) => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="bg-white rounded-lg shadow-lg overflow-hidden mb-4"
+            className="bg-white rounded-lg shadow-lg overflow-hidden mb-4 border border-gray-200"
         >
             <div>
-                <div className="flex items-center justify-between mb-4 px-4 mt-2 ">
+                <div className="flex items-center justify-between my-3 px-3">
                     <div className="flex items-center">
-                        <Avatar className="h-10 w-10 rounded-full mr-3">
+                        <Avatar className="h-10 w-10 rounded-full mr-3 cursor-pointer">
                             <AvatarImage/>
                             <AvatarFallback className="bg-gray-200">P</AvatarFallback>
                         </Avatar>
@@ -63,11 +65,11 @@ const VideoCard = ({post}) => {
                         </div>
                     </div>
                     <div className="flex items-center text-gray-500">
-                        <Clock className="h-4 w-4 mr-1" />
-                        <span className="text-sm">26-02-2025</span>
+                        <Clock className="h-3 w-3 mr-1" />
+                        <span className="text-xs">26-02-2025</span>
                     </div>
                 </div>
-                <div className="relative aspect-video bg-black mb-4">
+                <div className="relative aspect-video bg-black mb-2">
                     {post?.mediaUrl && (
                         <video controls className="w-full h-[500px] rounded-lg mb-4">
                         <source src={post?.mediaUrl} type="video/mp4" />
@@ -77,19 +79,19 @@ const VideoCard = ({post}) => {
                 </div>
        
                 <div className="md:flex justify-between px-2 mb-2 items-center">
-                    <div className="flex space-x-4">
+                    <div className="flex">
                         <Button
                             variant="ghost"
-                            className={`flex hover:bg-gray-100 items-center`}
+                            className={`flex hover:bg-gray-100 items-center text-gray-500 hover:text-gray-500`}
                         >
-                            <ThumbsUp className="mr-2 h-4 w-4" />
+                            <ThumbsUp style={{ width: "20px", height: "20px" }}/>
                             <span>Thích</span>
                         </Button>
                         <Button
                             variant="ghost"
-                            className={`flex hover:bg-gray-100 items-center`}
+                            className={`flex hover:bg-gray-100 items-center text-gray-500 hover:text-gray-500`}
                         >
-                            <MessageCircle className="mr-2 h-4 w-4" /> 
+                            <MessageCircle style={{ width: "20px", height: "20px" }} /> 
                             <span>Bình luận</span>
                         </Button>
                         <Dialog
@@ -99,9 +101,9 @@ const VideoCard = ({post}) => {
                             <DialogTrigger asChild>
                                 <Button
                                     variant="ghost"
-                                    className="flex hover:bg-gray-100 items-center"
+                                    className="flex hover:bg-gray-100 items-center text-gray-500 hover:text-gray-500"
                                 >
-                                    <Share2 className="mr-2 h-4 w-4" /> 
+                                    <PiShareFatBold style={{ width: "20px", height: "20px" }}/> 
                                     <span>Chia sẻ</span>
                                 </Button>
                             </DialogTrigger>
@@ -141,22 +143,24 @@ const VideoCard = ({post}) => {
                             </DialogContent>
                         </Dialog>
                     </div>
-                    <div className="flex space-x-4 ml-2 text-sm text-gray-500">
-                        <Button variant="ghost" size="sm">
+                    <div className="flex ml-2 text-gray-500">
+                        <Button variant="ghost" size="sm" className="font-normal text-[14px] hover:underline px-2">
                             3 lượt thích
                         </Button>
                         <Button
                             variant="ghost"
                             size="sm"
+                            className="font-normal text-[14px] hover:underline px-2"
                             onClick={() => setShowComments(!showComments)}
                         >
                             3 bình luận
                         </Button>
-                        <Button variant="ghost" size="sm">
+                        <Button variant="ghost" size="sm" className="font-normal text-[14px] hover:underline px-2">
                             3 lượt chia sẻ
                         </Button>
                     </div>
                 </div>
+                
                 <AnimatePresence>
                     {showComments && (
                         <motion.div
@@ -165,23 +169,24 @@ const VideoCard = ({post}) => {
                             exit={{ opacity: 0, height: 0 }}
                             transition={{ duration: 0.3 }}
                         >
-                            <ScrollArea className="h-[300px] w-full rounded-md border p-4">
+                            <Separator className="border-b border-gray-300"/>
+                            <ScrollArea className="h-[300px] w-full rounded-md px-4 py-2">
                                 <VideoComments comments={post?.comments}/>
                             </ScrollArea>
-                            <div className="flex items-center mt-4 p-2">
-                                <Avatar className="h-10 w-10 rounded-full mr-3">
+                            <div className="flex items-center mt-4 p-2 border-t border-gray-300">
+                                <Avatar className="h-10 w-10 rounded-full mr-3 cursor-pointer">
                                     <AvatarImage/>
                                     <AvatarFallback className="bg-gray-200">P</AvatarFallback>
                                 </Avatar>
                                 <Input
-                                    className="flex-1 mr-2 dark:border-gray-400"
+                                    className="flex-1 mr-2 bg-[#F0F2F5] rounded-xl border-none"
                                     // placeholder="Write a comment..."
                                     // value= {commentText}
                                     // ref={commentInputRef}
                                     // onChange={(e) => setCommentText(e.target.value)}
                                     // onKeyDown= {(e) => e.key === 'Enter' && handleCommentSubmit()}
                                 />
-                                <Button>
+                                <Button className="hover:bg-gray-100">
                                     <Send className="h-4 w-4"/>
                                 </Button>
                             </div>

@@ -11,26 +11,24 @@ const FriendRequest = ({friend}) => {
                 initial={{ opacity: 0, x: 50 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.3 }}
-                className="bg-white mb-4 p-4 shadow rounded-lg"
+                className="bg-white mb-4 p-4 shadow rounded-lg border border-gray-200"
             >
-            <Avatar className="h-32 w-32 rounded mx-auto mb-4">
-                <AvatarImage/>
-                <AvatarFallback className="bg-gray-200">
-                   P
-                </AvatarFallback>
-            </Avatar>
-            <h3 className="text-lg font-semibold text-center mb-4 ">
-                Võ Nhất Phương
-            </h3>
-    
-            <div className="flex flex-col justify-between">
-                <Button className="bg-blue-500" size="lg" onClick={() => {}}>
-                    <UserPlus className="mr-2 h-4 w-4" /> Xác nhận
-                </Button>
-                <Button className="bg-gray-200 mt-2" size="lg" onClick={() => {}}>
-                    <UserMinus className="mr-2 h-4 w-4" /> Xóa
-                </Button>
-            </div>
+                <Avatar className="h-32 w-32 rounded mx-auto mb-4">
+                    <AvatarImage/>
+                    <AvatarFallback className="bg-gray-200">P</AvatarFallback>
+                </Avatar>
+                <h3 className="text-lg font-semibold text-center mb-4 ">
+                    Võ Nhất Phương
+                </h3>
+        
+                <div className="flex flex-col justify-between">
+                    <Button className="bg-blue-500 text-white" size="lg" onClick={() => {}}>
+                        <UserPlus className="mr-2 h-4 w-4" /> Xác nhận
+                    </Button>
+                    <Button className="bg-gray-200 mt-2" size="lg" onClick={() => {}}>
+                        <UserMinus className="mr-2 h-4 w-4" /> Xóa
+                    </Button>
+                </div>
             </motion.div>
         </AnimatePresence>
     );
