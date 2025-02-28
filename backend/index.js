@@ -7,6 +7,9 @@ require('dotenv').config();
 const authRoute = require('./routes/authRoute');
 const postRoute = require('./routes/postRoute');
 const swaggerUi = require('swagger-ui-express');
+const conversationRoute = require('./routes/conversationRoute');
+const messageRoute = require('./routes/messageRoute');
+
 const YAML = require('yamljs');
 
 const swaggerDocument = YAML.load('./API/swagger.yaml');
@@ -21,6 +24,9 @@ connectDb();
 app.use('/auth', authRoute);
 app.use('/users', postRoute);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.use('/conversation', conversationRoute);
+app.use('/message', messageRoute);
+
 
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
