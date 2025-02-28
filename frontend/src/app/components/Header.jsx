@@ -83,7 +83,8 @@ const Header = () => {
           <Button variant="ghost" size="icon" className="md:hidden text-gray-600 cursor-pointer" onClick={toggleSidebar}>
             <Menu />
           </Button>
-          <Button variant="ghost" size="icon" className="hidden md:block text-gray-600 cursor-pointer pl-1">
+          <Button variant="ghost" size="icon" className="hidden md:block text-gray-600 cursor-pointer pl-1"
+          onClick={() => handleNavigation('/messenger')}>
             <MessageCircle size={22} className="min-w-[22px] min-h-[22px]" />
           </Button>
           <Button variant="ghost" size="icon" className="hidden md:block text-gray-600 cursor-pointer pl-1">
