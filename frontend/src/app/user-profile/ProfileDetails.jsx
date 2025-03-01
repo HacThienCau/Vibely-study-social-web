@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { PostsContent } from "./profileContent/PostsContent";
 import { Card, CardContent } from "@/components/ui/card";
-import { Briefcase, Home, MapPin, SaveOff } from "lucide-react";
+import { Briefcase, Home, MapPin, Pencil, SaveOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { MutualFriends } from "./profileContent/MutualFriends";
@@ -84,6 +84,46 @@ export const ProfileDetails = ({ activeTab }) => {
       type: "pdf",
     },
   ];
+
+  const userVideos = [
+    {
+      _id: 1,
+      thumbnail:
+        "https://i.ytimg.com/vi/3aNuJnzVjhE/maxresdefault.jpg",
+    },
+    {
+      _id: 2,
+      thumbnail:
+        "https://i.ytimg.com/vi/GEqCju1U0kA/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLCwi90iiJnBNbFKhUdZHQbXwIDpqw",
+    },
+    {
+      _id: 3,
+      thumbnail:
+        "https://i.ytimg.com/vi/UzOlPj-I0bM/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLAEXyhSNC1A8CM0dElDYCRpoTIerg",
+    },
+    {
+      _id: 4,
+      thumbnail:
+        "https://i.ytimg.com/vi/CkPHIVrTwzI/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLB4Pbkea19pib3VfNRycRdg_YqKfw",
+    },
+    {
+      _id: 5,
+      thumbnail:
+        "https://img.vietcetera.com/uploads/images/02-nov-2021/real-time-study-with-me-with-music-3-00-19-14-1613640165.jpg",
+    },
+    {
+      _id: 6,
+      thumbnail:
+        "https://i.ytimg.com/vi/1ex_bNIFR1A/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLCnyWx4Qein0GIzXqaRHNDpUQ8prg",
+    },
+    {
+      _id: 7,
+      thumbnail:
+        "https://static.ybox.vn/2021/4/6/1619279350970-ezgif.com-resize.jpg",
+    },
+  ];
+
+  
 
   const tabContent = {
     posts: (
@@ -182,20 +222,22 @@ export const ProfileDetails = ({ activeTab }) => {
                 Thêm video
               </h3>
             </div>
+            {/* Grid hiển thị video */}
             <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-              {userPosts
-                ?.filter(
-                  (post) => post?.mediaType === "image" && post?.mediaUrl
-                )
-                .map((post) => (
-                  <img
-                    key={post?._id}
-                    src={post?.mediaUrl}
-                    alt="user_all_photos"
-                    className="w-[200px] h-[150px] object-cover rounded-lg"
-                  />
-                ))}
-            </div>
+  {userVideos.map((video) => (
+    <div key={video.id} className="relative w-[200px] h-[150px]">
+      <img
+        src={video.thumbnail}
+        alt="user_video"
+        className="w-full h-full object-cover rounded-lg"
+      />
+      {/* Icon chỉnh sửa */}
+      <div className="absolute top-2 right-2 bg-black bg-opacity-50 p-1 rounded-full cursor-pointer">
+        <Pencil size={16} className="text-white" />
+      </div>
+    </div>
+  ))}
+</div>
           </CardContent>
         </Card>
       </motion.div>
