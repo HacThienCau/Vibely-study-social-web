@@ -93,3 +93,12 @@
   }
 }
 
+/* Ẩn thanh cuộn nhưng vẫn cho phép cuộn */
+.hidden-scrollbar::-webkit-scrollbar {
+  display: none; /* Ẩn trên Chrome, Safari */
+}
+
+.hidden-scrollbar {
+  scrollbar-width: none; /* Ẩn trên Firefox */
+}
+
