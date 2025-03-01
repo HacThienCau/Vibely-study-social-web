@@ -1,9 +1,13 @@
 //import React from "react";
 
+import ProfileHeader from "./ProfileHeader";
+import ProfileTabs from "./ProfileTabs";
+
 const Page = () => {
     return (
         <div>
-        <h1>User Profile</h1>
+        <ProfileHeader />
+        <ProfileTabs />
         </div>
     );
 };

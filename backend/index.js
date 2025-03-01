@@ -10,6 +10,8 @@ const swaggerUi = require('swagger-ui-express');
 const conversationRoute = require('./routes/conversationRoute');
 const messageRoute = require('./routes/messageRoute');
 const Quotation = require('./model/Quotation');
+const userRoute = require('./routes/userRoute');
+
 const YAML = require('yamljs');
 
 const swaggerDocument = YAML.load('./API/swagger.yaml');
@@ -27,6 +29,8 @@ app.use('/users', postRoute);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use('/conversation', conversationRoute);
 app.use('/message', messageRoute);
+app.use('/users', userRoute);
+
 // ✅ API lấy danh ngôn ngẫu nhiên
 app.get('/quotations/random', async (req, res) => {
     try {
@@ -41,6 +45,7 @@ app.get('/quotations/random', async (req, res) => {
         res.status(500).json({ message: "Lỗi lấy danh ngôn", error });
     }
 });
+
 
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
