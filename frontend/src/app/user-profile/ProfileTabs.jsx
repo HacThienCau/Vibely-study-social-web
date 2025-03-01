@@ -1,14 +1,10 @@
 "use client";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import React, { useState } from "react";
-// import ProfileDetails from './ProfileDetails'
+import { ProfileDetails } from "./ProfileDetails";
+
 
 const ProfileTabs = ({
-  id,
-  profileData,
-  isOwner,
-  setProfileData,
-  fetchProfile,
 }) => {
   const [activeTab, setActiveTab] = useState("posts");
   return (
@@ -18,12 +14,19 @@ const ProfileTabs = ({
         className="w-full"
         onValueChange={setActiveTab}
       >
-        <TabsList className="grid w-1/2 grid-cols-4">
-          <TabsTrigger value="posts">Posts</TabsTrigger>
-          <TabsTrigger value="about">About</TabsTrigger>
-          <TabsTrigger value="friends">Friends</TabsTrigger>
-          <TabsTrigger value="photos">Photos</TabsTrigger>
+        <TabsList className="grid w-full md:w-1/2 grid-cols-5">
+          <TabsTrigger value="posts" className="data-[state=active]:text-[#086280]">Bài viết</TabsTrigger>
+          <TabsTrigger value="photos" className="data-[state=active]:text-[#086280]">Ảnh</TabsTrigger>
+          <TabsTrigger value="videos" className="data-[state=active]:text-[#086280]">Video</TabsTrigger>
+          <TabsTrigger value="friends" className="data-[state=active]:text-[#086280]">Bạn bè</TabsTrigger>
+          <TabsTrigger value="files" className="data-[state=active]:text-[#086280]">Tài liệu</TabsTrigger>
         </TabsList>
+
+        <div className='mt-6'>
+           <ProfileDetails
+            activeTab={activeTab}
+           />
+        </div>
       </Tabs>
     </div>
   );
