@@ -9,6 +9,7 @@ const postRoute = require('./routes/postRoute');
 const swaggerUi = require('swagger-ui-express');
 const conversationRoute = require('./routes/conversationRoute');
 const messageRoute = require('./routes/messageRoute');
+const userRoute = require('./routes/userRoute');
 
 const YAML = require('yamljs');
 
@@ -26,6 +27,8 @@ app.use('/users', postRoute);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use('/conversation', conversationRoute);
 app.use('/message', messageRoute);
+app.use('/users', userRoute);
+
 
 
 const PORT = process.env.PORT || 8000;
