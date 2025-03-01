@@ -129,9 +129,142 @@ const deleteUserFromRequest = async (req, res) => {
     }
 }
 
+// Lấy tất cả lời mời kết bạn của người dùng
+const getAllFriendsRequest = async (req, res) => {
+    try {
+        const loggedInUserId = req.user.userId;
+
+        // Tìm người dùng đăng nhập và lấy danh sách người theo dõi và người đang theo dõi của họ
+        const loggedInUser = await User.findById(loggedInUserId).select('followers followings')
+        if(!loggedInUser){
+            return response(res, 404, 'Người dùng không tồn tại')
+        }
+
+        // Tìm người dùng theo dõi người dùng đăng nhập nhưng không được theo dõi lại
+        const userToFollowBack = await User.find({
+            _id:{
+                $in:loggedInUser.followers, // người theo dõi người đăng nhập
+                $nin: loggedInUser.followings // trừ người đã được người đăng nhập theo dõi lại
+            }
+        }).select('username profilePicture email followerCount');
+
+        return response(res,200, 'Lấy tất cả lời mời kết bạn thành công', userToFollowBack)
+
+    } catch (error) {
+        return response(res, 500, 'Lỗi máy chủ nội bộ', error.message)
+    }
+}
+
+// Lấy tất cả đề xuất kết bạn của người dùng
+const getAllUserForRequest = async (req, res) => {
+    try {
+        const loggedInUserId = req.user.userId;
+
+        // Tìm người dùng đăng nhập và lấy danh sách người theo dõi và người đang theo dõi của họ
+        const loggedInUser = await User.findById(loggedInUserId).select('followers followings')
+        if(!loggedInUser){
+            return response(res, 404, 'Người dùng không tồn tại')
+        }
+
+        // Tìm người dùng không phải là người theo dõi hoặc người đang theo dõi của người dùng đăng nhập
+        const userForFriendRequest = await User.find({
+            _id:{
+                $ne:loggedInUser, // không phải là người đăng nhập
+                $nin: [...loggedInUser.followings, ...loggedInUser.followers] // loại trừ cả hai danh sách
+            }
+        }).select('username profilePicture email followerCount');
+
+        return response(res,200, 'Lấy tất cả đề xuất kết bạn thành công', userForFriendRequest)
+
+    } catch (error) {
+        return response(res, 500, 'Lỗi máy chủ nội bộ', error.message)
+    }
+}
+
+// Xây dựng API để lấy danh sách bạn chung
+const getAllMutualFriends = async (req, res) => {
+    try {
+        const loggedInUserId = req.user.userId;
+
+        // Tìm người dùng đăng nhập và lấy danh sách người theo dõi và người đang theo dõi của họ
+        const loggedInUser = await User.findById(loggedInUserId)
+        .select('followers followings')
+        .populate('followings', 'username profilePicture email followerCount followingCount')
+        .populate('followers','username profilePicture email followerCount followingCount')
+
+        if(!loggedInUser){
+           return response(res, 404, 'Người dùng không tồn tại')
+        }
+
+        // Tạo một tập hợp id người dùng mà người đăng nhập đang theo dõi
+        const followingUserId = new Set(loggedInUser.followings.map(user => user._id.toString()))
+
+        // Lọc người theo dõi của người đăng nhập để chỉ lấy những người được theo dõi bởi người đăng nhập
+        const mutualFriends = loggedInUser.followers.filter(follower => 
+            followingUserId.has(follower._id.toString())
+        )
+
+        return response(res,200, 'Lấy danh sách bạn chung thành công', mutualFriends)
+
+   } catch (error) {
+        return response(res, 500, 'Lỗi máy chủ nội bộ', error.message)
+   }
+}
+
+// Lấy tất cả người dùng để tìm kiếm hồ sơ
+const getAllUser = async(req, res) =>{
+    try {
+        const users = await User.find().select('username profilePicture email followerCount')
+        return response(res,200, 'Lấy tất cả người dùng thành công',users)
+    } catch (error) {
+        return response(res, 500, 'Lỗi máy chủ nội bộ', error.message)
+    }
+}
+
+// Kiểm tra xem người dùng đã đăng nhập chưa
+const checkUserAuth = async(req, res) =>{
+    try {
+        const userId = req?.user?.userId;
+        if(!userId) return response(res,404, 'Chưa xác thực! Vui lòng đăng nhập trước khi truy cập vào dữ liệu')
+
+        // Nạp thông tin người dùng và loại bỏ thông tin nhạy cảm
+        const user = await User.findById(userId).select('-password');
+        if(!user) return response(res,403, 'Người dùng không tồn tại')
+
+        return response(res,201, 'Người dùng đã đăng nhập', user)
+    } catch (error) {
+        return response(res, 500, 'Lỗi máy chủ nội bộ', error.message)
+    }
+}
+
+// Lấy thông tin hồ sơ người dùng
+const getUserProfile = async(req, res) =>{
+    try {
+        const {userId} = req.params;
+        const loggedInUserId = req?.user?.userId
+
+        // Nạp thông tin người dùng và loại bỏ thông tin nhạy cảm
+        const userProfile = await User.findById(userId).select('-password');
+
+        if(!userProfile) return response(res,403, 'Người dùng không tồn tại')
+
+        const isOwner = loggedInUserId === userId;
+
+        return response(res,201, 'Lấy hồ sơ người dùng thành công', {profile:userProfile,isOwner})
+    } catch (error) {
+        return response(res, 500, 'Lỗi máy chủ nội bộ', error.message)
+    }
+}
+
 
 module.exports = {
     followUser,
     unfollowUser,
-    deleteUserFromRequest
+    deleteUserFromRequest,
+    getAllFriendsRequest,
+    getAllUserForRequest,
+    getAllMutualFriends,
+    getAllUser,
+    checkUserAuth,
+    getUserProfile
 }
