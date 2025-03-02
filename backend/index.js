@@ -10,6 +10,7 @@ const swaggerUi = require('swagger-ui-express');
 const conversationRoute = require('./routes/conversationRoute');
 const messageRoute = require('./routes/messageRoute');
 const userRoute = require('./routes/userRoute');
+const passport = require('./controllers/googleController');
 
 const YAML = require('yamljs');
 
@@ -19,7 +20,16 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 
+
+const corsOptions = {
+    origin:process.env.FRONTEND_URL,
+    credentials:true,
+}
+app.use(cors(corsOptions));
+
+
 connectDb();
+app.use(passport.initialize())
 
 //API Route
 app.use('/auth', authRoute);

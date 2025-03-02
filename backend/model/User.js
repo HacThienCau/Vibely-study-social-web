@@ -55,9 +55,8 @@ const userSchema = new mongoose.Schema({
     },
 
     bio: {
-        type: String,
-        default: "",
-        maxlength: 500,
+        type:mongoose.Schema.Types.ObjectId, 
+        ref: 'Bio'
     },
 
     // 🔹 Học tập - Lưu lịch sự kiện của người dùng (bài giảng, kiểm tra, deadline, sự kiện)
