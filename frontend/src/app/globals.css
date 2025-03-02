@@ -1,3 +1,12 @@
+@import '@syncfusion/ej2-base/styles/material.css';
+@import '@syncfusion/ej2-buttons/styles/material.css';  
+@import '@syncfusion/ej2-calendars/styles/material.css';  
+@import '@syncfusion/ej2-dropdowns/styles/material.css';  
+@import '@syncfusion/ej2-inputs/styles/material.css';  
+@import '@syncfusion/ej2-navigations/styles/material.css';
+@import '@syncfusion/ej2-popups/styles/material.css';
+@import '@syncfusion/ej2-splitbuttons/styles/material.css';
+@import "@syncfusion/ej2-react-grids/styles/material.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -91,5 +100,14 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Ẩn thanh cuộn nhưng vẫn cho phép cuộn */
+.hidden-scrollbar::-webkit-scrollbar {
+  display: none; /* Ẩn trên Chrome, Safari */
+}
+
+.hidden-scrollbar {
+  scrollbar-width: none; /* Ẩn trên Firefox */
 }
 
