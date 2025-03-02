@@ -11,6 +11,7 @@ const conversationRoute = require('./routes/conversationRoute');
 const messageRoute = require('./routes/messageRoute');
 const Quotation = require('./model/Quotation');
 const userRoute = require('./routes/userRoute');
+const scheduleRoute = require('./routes/scheduleRoute');
 
 const YAML = require('yamljs');
 
@@ -30,6 +31,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use('/conversation', conversationRoute);
 app.use('/message', messageRoute);
 app.use('/users', userRoute);
+app.use('/', scheduleRoute);
 
 // ✅ API lấy danh ngôn ngẫu nhiên
 app.get('/quotations/random', async (req, res) => {

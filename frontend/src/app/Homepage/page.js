@@ -11,7 +11,7 @@ const Homepage = () => {
   const posts = [{
     _id: 1,
     content: 'Hello World',
-    mediaUrl: "https://images.pexels.com/photos/757889/pexels-photo-757889.jpeg?auto=compress&cs=tinysrgb&w=600",
+    mediaUrl: "https://motchilltv.tube/wp-content/uploads/2025/02/ban-ban-be-be-15183-thumb.webp",
     mediaType: 'image',
     comments:[{
       user:{
