@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from 'react';
-import { useRef, useState } from 'react';
 import { 
     Day, Week, WorkWeek, Month, Agenda, ScheduleComponent, Inject, Resize, DragAndDrop, 
     ViewsDirective,
