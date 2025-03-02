@@ -11,6 +11,7 @@ const conversationRoute = require('./routes/conversationRoute');
 const messageRoute = require('./routes/messageRoute');
 const Quotation = require('./model/Quotation');
 const userRoute = require('./routes/userRoute');
+const passport = require('./controllers/googleController');
 const scheduleRoute = require('./routes/scheduleRoute');
 
 const YAML = require('yamljs');
@@ -22,7 +23,16 @@ app.use(cors({ origin: "*" }));
 app.use(express.json());
 app.use(cookieParser());
 
+
+const corsOptions = {
+    origin:process.env.FRONTEND_URL,
+    credentials:true,
+}
+app.use(cors(corsOptions));
+
+
 connectDb();
+app.use(passport.initialize())
 
 //API Route
 app.use('/auth', authRoute);
