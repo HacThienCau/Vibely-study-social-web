@@ -1,8 +1,8 @@
-import { Roboto_Condensed } from "next/font/google";
-import "./globals.css";
 import { ThemeProvider } from "next-themes";
-import Header from "./components/Header";
-import { AuthContextProvider } from "./context/AuthContext"; 
+import { Roboto_Condensed } from "next/font/google";
+import { Toaster } from "react-hot-toast";
+import AuthWrapper from "./auth-wrapper";
+import "./globals.css";
 
 const robotoCondensed = Roboto_Condensed({
   variable: "--font-roboto-condensed",
@@ -19,12 +19,12 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={`${robotoCondensed.variable} antialiased`}>
-        <AuthContextProvider>  {/* Bọc toàn bộ ứng dụng trong AuthContextProvider */}
-          <ThemeProvider attribute="class">
-            <Header />
+        <Toaster />
+        <ThemeProvider attribute="class">
+          <AuthWrapper>
             {children}
-          </ThemeProvider>
-        </AuthContextProvider>
+          </AuthWrapper>
+        </ThemeProvider>
       </body>
     </html>
   );

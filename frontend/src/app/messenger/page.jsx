@@ -1,17 +1,14 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import jwtDecode from "jwt-decode"; 
 import './messenger.css';
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import Conversation from "../components/conversations/Conversation";
 import Message from "../components/message/Message";
-import { useContext } from "react";
-import { AuthContext } from "../context/AuthContext";
 import ChatOnline from "../components/chatOnline/ChatOnline";
 const Messenger = () => {
-    const {user} = useContext(AuthContext);
-    console.log(user);
-    return (
+        return (
         <div className="pt-14 messenger">
             <div className="chatMenu">
                 <div className="chatMenuWrapper">
