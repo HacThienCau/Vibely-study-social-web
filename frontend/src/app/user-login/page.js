@@ -5,7 +5,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -14,12 +13,59 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { LogIn } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useForm } from "react-hook-form";
 const Page = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
+
+  const registerSchema = yup.object().shape({
+    username: yup.string().required("Name is required"),
+    email: yup
+      .string()
+      .email("Invalid email format")
+      .required("Email is required"),
+    password: yup
+      .string()
+      .min(6, "Password must be at least 6 characters")
+      .required("Password is required"),
+    dateOfBirth: yup.date().required("Birth date is required"),
+    gender: yup
+      .string()
+      .oneOf(["male", "female", "other"], "please select a gender")
+      .required("Gender is required"),
+  });
+
+  const loginSchema = yup.object().shape({
+    email: yup
+      .string()
+      .email("Invalid email format")
+      .required("Email is required"),
+    password: yup
+      .string()
+      .min(6, "Password must be at least 6 characters")
+      .required("Password is required"),
+  });
+
+  const {
+    register: registerLogin,
+    handleSubmit: handleSubmitLogin,
+    reset: resetLoginForm,
+    formState: { errors: errorsLogin },
+  } = useForm({
+    resolver: yupResolver(loginSchema),
+  });
+
+  const {
+    register: registerSignUp,
+    handleSubmit: handleSubmitSignUp,
+    reset: resetSignUpForm,
+    formState: { errors: errorsSignUp },
+  } = useForm({
+    resolver: yupResolver(registerSchema),
+  });
 
   return (
     <div className="min-h-screen bg-[#F9FDFF] flex items-center justify-center p-4">
@@ -27,6 +73,7 @@ const Page = () => {
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5 }}
+        className="w-full max-w-md max-h-[80vh] overflow-y-auto hidden-scrollbar"
       >
         <Card className="w-full max-w-md dark:text-white border-[#0E42D2]">
           <CardHeader>
@@ -59,24 +106,40 @@ const Page = () => {
                 <form>
                   <div className="space-y-4">
                     <div className="space-y-2">
-                      <Label htmlFor="loginEmail" className="text-[#086280]">Email</Label>
+                      <Label htmlFor="loginEmail" className="text-[#086280]">
+                        Email
+                      </Label>
                       <Input
                         id="loginEmail"
                         name="email"
                         type="email"
+                        {...registerLogin("email")}
                         placeholder="Nhập email của bạn"
                         className="col-span-3 dark:border-gray-400 border-[#0E42D2] placeholder:text-gray-400"
                       />
+                      {errorsLogin.email && (
+                        <p className="text-red-500">
+                          {errorsLogin.email.message}
+                        </p>
+                      )}
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="loginPassword" className="text-[#086280]">Mật khẩu</Label>
+                      <Label htmlFor="loginPassword" className="text-[#086280]">
+                        Mật khẩu
+                      </Label>
                       <Input
                         id="loginPassword"
                         name="password"
                         type="password"
+                        {...registerLogin("password")}
                         placeholder="Nhập mật khẩu của bạn"
                         className="col-span-3 dark:border-gray-400 border-[#0E42D2] placeholder:text-gray-400"
                       />
+                      {errorsLogin.password && (
+                        <p className="text-red-500">
+                          {errorsLogin.password.message}
+                        </p>
+                      )}
                     </div>
                     <Button
                       className="w-full bg-[#23CAF1] text-white"
@@ -135,38 +198,70 @@ const Page = () => {
                 <form>
                   <div className="space-y-4">
                     <div className="space-y-2">
-                      <Label htmlFor="signupName" className="text-[#086280]">Tên người dùng</Label>
+                      <Label htmlFor="signupName" className="text-[#086280]">
+                        Tên người dùng
+                      </Label>
                       <Input
                         id="signupName"
                         name="username"
                         type="text"
+                        {...registerSignUp("username")}
                         placeholder="Nhập tên người dùng của bạn"
                         className="col-span-3 dark:border-gray-400 border-[#0E42D2] placeholder:text-gray-400"
                       />
+                      {errorsSignUp.username && (
+                        <p className="text-red-500">
+                          {errorsSignUp.username.message}
+                        </p>
+                      )}
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="loginEmail" className="text-[#086280]">Email</Label>
+                      <Label htmlFor="signupEmail" className="text-[#086280]">
+                        Email
+                      </Label>
                       <Input
-                        id="loginEmail"
+                        id="signupEmail"
                         name="email"
                         type="email"
+                        {...registerSignUp("email")}
                         placeholder="Nhập email của bạn"
                         className="col-span-3 dark:border-gray-400 border-[#0E42D2] placeholder:text-gray-400"
                       />
+                      {errorsSignUp.email && (
+                        <p className="text-red-500">
+                          {errorsSignUp.email.message}
+                        </p>
+                      )}
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="loginPassword" className="text-[#086280]">Mật khẩu</Label>
+                      <Label
+                        htmlFor="signupPassword"
+                        className="text-[#086280]"
+                      >
+                        Mật khẩu
+                      </Label>
                       <Input
-                        id="loginPassword"
+                        id="signupPassword"
                         name="password"
                         type="password"
+                        {...registerSignUp("password")}
                         placeholder="Nhập mật khẩu của bạn"
                         className="col-span-3 dark:border-gray-400 border-[#0E42D2] placeholder:text-gray-400"
                       />
+                      {errorsSignUp.password && (
+                        <p className="text-red-500">
+                          {errorsSignUp.password.message}
+                        </p>
+                      )}
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="confirmPassword" className="text-[#086280]">Mật khẩu</Label>
+                      <Label
+                        htmlFor="confirmPassword"
+                        className="text-[#086280]"
+                      >
+                        Mật khẩu
+                      </Label>
                       <Input
                         id="confirmPassword"
                         name="confirmpassword"
@@ -177,19 +272,31 @@ const Page = () => {
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="signupBirthday" className="text-[#086280]">Ngày sinh</Label>
+                      <Label
+                        htmlFor="signupBirthday"
+                        className="text-[#086280]"
+                      >
+                        Ngày sinh
+                      </Label>
                       <Input
                         id="signupBirthday"
                         name="dateOfBirth"
                         type="date"
+                        {...registerSignUp("dateOfBirth")}
                         className="col-span-3 dark:border-gray-400 border-[#0E42D2]"
                       />
+                      {errorsSignUp.dateOfBirth && (
+                        <p className="text-red-500">
+                          {errorsSignUp.dateOfBirth.message}
+                        </p>
+                      )}
                     </div>
                     <div className="space-y-2">
                       <Label className="text-[#086280]">Giới tính</Label>
                       <RadioGroup
-                        className="flex justify-between "
+                        className="flex justify-between"
                         defaultValue="male"
+                        {...registerSignUp("gender")}
                       >
                         <div className="flex items-center space-x-2">
                           <RadioGroupItem value="male" id="male" />
@@ -204,9 +311,17 @@ const Page = () => {
                           <Label htmlFor="other">Khác</Label>
                         </div>
                       </RadioGroup>
+                      {errorsSignUp.gender && (
+                        <p className="text-red-500">
+                          {errorsSignUp.gender.message}
+                        </p>
+                      )}
                     </div>
 
-                    <Button className="w-full bg-[#23CAF1] text-white" type="submit">
+                    <Button
+                      className="w-full bg-[#23CAF1] text-white"
+                      type="submit"
+                    >
                       Đăng ký
                     </Button>
                   </div>
