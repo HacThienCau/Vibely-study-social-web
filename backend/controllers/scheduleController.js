@@ -94,11 +94,24 @@ const getScheduleById = async (req, res) => {
         return response(res, 500, "Lỗi máy chủ nội bộ", error.message);
     }
 };
+// Lấy tất cả lịch trình của một người dùng cụ thể
+const getScheduleByIdUser = async (req, res) => {
+    try {
+      const schedule = await Schedule.findById(req.params.id);
+      if (!schedule) {
+        return res.status(404).json({ message: "Lịch trình không tồn tại" });
+      }
+      res.json(schedule);
+    } catch (error) {
+      res.status(500).json({ message: "Lỗi lấy lịch trình", error: error.message });
+    }
+  };
 
 module.exports = {
     createSchedule,
     getUserSchedules,
     updateSchedule,
     deleteSchedule,
-    getScheduleById
+    getScheduleById,
+    getScheduleByIdUser
 };
