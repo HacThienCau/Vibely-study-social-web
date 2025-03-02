@@ -55,7 +55,7 @@ const LeftSideBar = () => {
             <Button
               variant="ghost"
               className="full justify-start"
-              onClick={() => handleNavigation("/calendar")}
+              onClick={() => handleNavigation("/schedule")}
             >
               <img src="images/calendar_sidebar.png" alt="calendar" className="mr-4" /> 
               Lịch
