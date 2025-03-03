@@ -225,7 +225,7 @@ export const ProfileDetails = ({ activeTab }) => {
             {/* Grid hiển thị video */}
             <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
   {userVideos.map((video) => (
-    <div key={video.id} className="relative w-[200px] h-[150px]">
+    <div key={video._id} className="relative w-[200px] h-[150px]">
       <img
         src={video.thumbnail}
         alt="user_video"
