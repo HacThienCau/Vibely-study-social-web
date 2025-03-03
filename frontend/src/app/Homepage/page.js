@@ -1,25 +1,50 @@
 "use client"
 import StorySection from '@/app/story/StorySection'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import LeftSideBar from '../components/LeftSideBar'
 import RightSideBar from '../components/RightSideBar'
 import NewPostForm from '../posts/NewPostForm'
 import PostCard from '../posts/PostCard'
+import { usePostStore } from '@/store/usePostStore'
+import toast from 'react-hot-toast'
 
 const Homepage = () => {
   const [isPostFormOpen, setIsPostFormOpen] = useState(false)
-  const posts = [{
-    _id: 1,
-    content: 'Hello World',
-    mediaUrl: "https://motchilltv.tube/wp-content/uploads/2025/02/ban-ban-be-be-15183-thumb.webp",
-    mediaType: 'image',
-    comments:[{
-      user:{
-          username:"Võ Nhất Phương",
-          text:"Ảnh đẹp quá"
-      }
-    }]
-  }]
+  //lấy các bài viết, story, phương thức từ usePostStore
+  const {posts,stories, fetchStories, fetchPosts, handleCreatePost, handleCreateStory, handleReactPost, handleCommentPost, handleSharePost } = usePostStore();
+  useEffect(()=>{
+    fetchPosts()  //tải các bài viết
+  },[fetchPosts])
+  const[reactPosts, setReactPosts] = useState(new Set()); // danh sách những bài viết mà người dùng đã react
+  const reactions = ['like', 'love', 'haha', 'wow', 'sad', 'angry'] //các loại cảm xúc
+  useEffect(()=>{
+    const saveReacts = localStorage.getItem('reactPosts')
+    if(saveReacts){
+      setReactPosts(new Set(JSON.parse(saveReacts)))
+    }
+  },[])
+  const handleReact = async(postId, reactType)=>{
+    const updatedReactPosts = { ...reactPosts }; 
+    if(updatedReactPosts[postId]=== reactType){ 
+      delete updatedReactPosts[postId]; // hủy react nếu nhấn lại
+    }
+    else{ //Chưa react thì thêm vào danh sách react
+      updatedReactPosts[postId] = reactType; // cập nhật cảm xúc mới
+    }
+    //lưu danh sách mới
+    setReactPosts(updatedReactPosts)
+    //lưu vào cục bộ
+    localStorage.setItem('reactPosts',JSON.stringify(Array.from(updatedReactPosts)))
+
+    try {
+      await handleReactPost(postId, reactType) //api
+      await fetchPosts()// tải lại danh sách
+    } catch (error) {
+      console.log(error)
+      toast.error("Đã xảy ra lỗi khi bày tỏ cảm xúc với bài viết này. Vui lòng thử lại.")
+    }
+  }
+
   return (
     <div className="flex flex-col min-h-screen text-foreground">
         <main className="pt-16 flex flex-1">
@@ -34,7 +59,19 @@ const Homepage = () => {
 
               <div className='mt-6 space-y-6'>
                 {posts.map(post => (
-                  <PostCard key={post._id} post={post} />
+                  <PostCard key={post._id} 
+                  post={post} 
+                  isReacted = {reactPosts.has(post?._id)} // đã được react chưa
+                  onReact = {()=> handleReact(post?._id)}  // chức năng react
+                  onComment = { async()=>{  //chức năng comment
+                    await handleCommentPost(post?._id, comment.text)
+                    await fetchPosts()
+                  }}
+                  onShare = { async()=>{  //chức năng share
+                    await handleSharePost(post?._id)
+                    await fetchPosts()
+                  }}
+                  />
                 ))}
               </div>
             </div>

@@ -11,9 +11,18 @@ import { PiShareFatBold } from "react-icons/pi"
 import PostComments from './PostComments'
 
 
-const PostCard = ({post}) => {
+const PostCard = ({post, isReacted, onReact, onComment, onShare}) => {
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false)
   const [showComments, setShowComments] = useState(false)
+
+
+
+
+
+  const userPlaceholder = post?.user?.username?.split(" ").map((name) => name[0]).join(""); // tên người đăng bài viết tắt
+
+
+
 
   const generateSharedLink = () => {
     return `http://localhost:3000/${post?.id}`;
@@ -54,12 +63,15 @@ const PostCard = ({post}) => {
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center space-x-3 cursor-pointer">
               <Avatar>
-                <AvatarImage/>
-                <AvatarFallback className="bg-gray-200">P</AvatarFallback>
+              {post?.user?.profilePicture ? (
+                <AvatarImage src={post?.user?.profilePicture} alt={post?.user?.username}/>
+                ):(
+                <AvatarFallback>{userPlaceholder}</AvatarFallback>
+              )}
               </Avatar>
               <div>
                 <p className="font-semibold">
-                  Võ Nhất Phương
+                  {post?.user?.username} {/*tên người đăng bài*/}
                 </p>
                 <p className="font-sm text-gray-500 text-xs">
                   26-02-2025

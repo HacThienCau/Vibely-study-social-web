@@ -4,11 +4,13 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
+import { usePostStore } from '@/store/usePostStore'
+import userStore from '@/store/userStore'
 import * as Popover from '@radix-ui/react-popover'
 import { motion } from 'framer-motion'
 import { ImageIcon, Smile, XIcon } from 'lucide-react'
 import dynamic from 'next/dynamic'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 
 const Picker = dynamic(() => import('emoji-picker-react'), { ssr: false })
 
@@ -16,31 +18,58 @@ const NewPostForm = ({ isPostFormOpen, setIsPostFormOpen }) => {
   const [filePreview, setFilePreview] = useState(null)
   const [showEmojiPicker, setShowEmojiPicker] = useState(false)
   const [postContent, setPostContent] = useState('')
-
+  const {handleCreatePost} = usePostStore()
+  const {user} = userStore()  //lấy thông tin người dùng
+  const userPlaceholder = user?.username?.split(" ").map((name) => name[0]).join(""); //tên người dùng viết tắt
+  //chọn biểu cảm
   const handleEmojiClick = (emojiObject) => {
     setPostContent((prev) => prev + emojiObject.emoji)
   }
-
+  //chọn ảnh từ thiết bị
+  const [selectedFile, setSelectedFile] = useState(null)
+  const [fileType, setFileType] = useState("")
+  const [loading, setLoading] = useState(false)
+  const fileInputRef = useRef(null)
   const handleFileChange = (event) => {
     const file = event.target.files[0]
-    if (file) {
-      const previewURL = URL.createObjectURL(file)
-      setFilePreview({ url: previewURL, type: file.type })
-    }
+    setSelectedFile(file)
+    setFileType(file.type)
+    setFilePreview(URL.createObjectURL(file))
   }
 
+  const handlePost = async()=>{
+    try {
+      setLoading(true)
+      const formData = new FormData()
+      formData.append('content', postContent)
+      if(selectedFile){
+        formData.append('media',selectedFile)
+      }
+      await handleCreatePost(formData)
+      setPostContent('')
+      setSelectedFile(null)
+      setFilePreview(null)
+      setIsPostFormOpen(false)
+    } catch (error) {
+      console.log(error)
+      setLoading(false)
+    }
+  }
   return (
     <Card className="bg-white border-none shadow-md rounded-lg">
       <CardContent className="p-4">
         <div className="flex space-x-4 items-center">
           <Avatar>
-            <AvatarImage />
-            <AvatarFallback className="bg-gray-200">P</AvatarFallback>
+          {user?.profilePicture ? (
+            <AvatarImage src={user?.profilePicture} alt={user?.username}/>
+            ):(
+            <AvatarFallback>{userPlaceholder}</AvatarFallback>
+          )}
           </Avatar>
           <Dialog open={isPostFormOpen} onOpenChange={setIsPostFormOpen}>
             <DialogTrigger className="w-full">
               <Input
-                placeholder="Phương ơi, bạn đang nghĩ gì?"
+                placeholder={`${user?.username} ơi, bạn đang nghĩ gì?`}
                 readOnly
                 className="cursor-pointer rounded-full h-12 bg-gray-100 border-none px-4"
               />
@@ -52,10 +81,13 @@ const NewPostForm = ({ isPostFormOpen, setIsPostFormOpen }) => {
               <div className="border-t border-gray-200"></div>
               <div className="flex items-center space-x-3">
                 <Avatar className="h-10 w-10">
-                  <AvatarImage />
-                  <AvatarFallback className="bg-gray-200">P</AvatarFallback>
+                {user?.profilePicture ? (
+                <AvatarImage src={user?.profilePicture} alt={user?.username}/>
+                ):(
+                <AvatarFallback>{userPlaceholder}</AvatarFallback>
+              )}
                 </Avatar>
-                <p className="font-medium">Võ Nhất Phương</p>
+                <p className="font-medium">{user?.username}</p>
               </div>
               <Textarea
                 placeholder="Bạn muốn chia sẻ điều gì hôm nay?"
@@ -68,28 +100,33 @@ const NewPostForm = ({ isPostFormOpen, setIsPostFormOpen }) => {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="relative mt-4"
+                  className="relative mt-4 w-full bg-gray-100 flex justify-center rounded-md"
                 >
-                  {filePreview.type.startsWith('image') ? (
-                    <img src={filePreview.url} alt="Preview" className="w-full rounded-md" />
+                  {filePreview ? (
+                    fileType.startsWith('image') ? (
+                    <img src={filePreview} alt="Preview" className="max-h-[300px] rounded-md " />
                   ) : (
-                    <video src={filePreview.url} controls className="w-full rounded-md" />
-                  )}
+                    <video src={filePreview} controls className="max-h-[300px] rounded-md " />
+                  )):null}
                   <Button
                     variant="ghost"
                     size="icon"
                     className="absolute top-2 right-2 bg-white rounded-full p-1"
-                    onClick={() => setFilePreview(null)}
+                    onClick={() => {
+                      setFilePreview(null)
+                      setSelectedFile(null)
+                    }}
                   >
                     <XIcon className="h-5 w-5 text-gray-500" />
                   </Button>
+                  
                 </motion.div>
               )}
               <div className="flex justify-between mt-4">
-                <Button variant="ghost" className="flex items-center space-x-2">
+                <Button variant="ghost" className="flex items-center space-x-2" onClick={()=>{fileInputRef.current.click()}}>
                   <ImageIcon className="h-5 w-5 text-green-500" />
                   <span>Ảnh/Video</span>
-                  <input type="file" accept="image/*,video/*" className="hidden" onChange={handleFileChange} />
+                  <input type="file" accept="image/*,video/*" className="hidden" onChange={handleFileChange} ref={fileInputRef}/>
                 </Button>
                 <Popover.Root>
                   <Popover.Trigger asChild>
@@ -118,7 +155,10 @@ const NewPostForm = ({ isPostFormOpen, setIsPostFormOpen }) => {
                 </motion.div>
               )}
               <div className="flex justify-end mt-4">
-                <Button className="bg-blue-500 text-white w-full py-2 rounded-md">Đăng</Button>
+                <Button className="bg-blue-500 text-white w-full py-2 rounded-md"
+                onClick={handlePost}>
+                  {loading?'Đang đăng...':'Đăng'}
+                </Button>
               </div>
             </DialogContent>
           </Dialog>
