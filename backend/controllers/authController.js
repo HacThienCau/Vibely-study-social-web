@@ -25,7 +25,7 @@ const registerUser = async (req, res) => {
             postsCount: 0,          
             followerCount: 0,       
             followingCount: 0,      
-            bio: "",                
+            bio: null,                
             role: "user",           
         });
         await newUser.save();

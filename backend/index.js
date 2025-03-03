@@ -19,16 +19,17 @@ const YAML = require('yamljs');
 const swaggerDocument = YAML.load('./API/swagger.yaml');
 
 const app = express();
-app.use(cors({ origin: "*" }));
 app.use(express.json());
 app.use(cookieParser());
 
 
 const corsOptions = {
-    origin:process.env.FRONTEND_URL,
-    credentials:true,
-}
+    origin: process.env.FRONTEND_URL || "http://localhost:3000", // URL frontend
+    credentials: true,
+};
+
 app.use(cors(corsOptions));
+
 
 
 connectDb();

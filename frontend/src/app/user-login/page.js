@@ -5,6 +5,7 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -13,42 +14,44 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { LogIn } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
+import toast from "react-hot-toast";
+import { loginUser, registerUser } from "@/service/auth.service";
+
 const Page = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
-
+  
   const registerSchema = yup.object().shape({
-    username: yup.string().required("Name is required"),
+    username: yup.string().required("Tên không được để trống"),
     email: yup
       .string()
-      .email("Invalid email format")
-      .required("Email is required"),
+      .email("Email không hợp lệ")
+      .required("Email không được để trống"),
     password: yup
       .string()
-      .min(6, "Password must be at least 6 characters")
-      .required("Password is required"),
-    dateOfBirth: yup.date().required("Birth date is required"),
+      .min(6, "Mật khẩu phải có ít nhất 6 ký tự")
+      .required("Mật khẩu không được để trống"),
+    dateOfBirth: yup.date().required("Ngày sinh không được để trống"),
     gender: yup
       .string()
-      .oneOf(["male", "female", "other"], "please select a gender")
-      .required("Gender is required"),
+      .oneOf(["male", "female", "other"], "Vui lòng chọn giới tính")
+      .required("Giới tính không được để trống"),
   });
-
   const loginSchema = yup.object().shape({
     email: yup
       .string()
-      .email("Invalid email format")
-      .required("Email is required"),
+      .email("Email không hợp lệ")
+      .required("Email không được để trống"),
     password: yup
       .string()
-      .min(6, "Password must be at least 6 characters")
-      .required("Password is required"),
+      .min(6, "Mật khẩu phải có ít nhất 6 ký tự")
+      .required("Mật khẩu không được để trống"),
   });
-
   const {
     register: registerLogin,
     handleSubmit: handleSubmitLogin,
@@ -60,20 +63,62 @@ const Page = () => {
 
   const {
     register: registerSignUp,
+    control,
     handleSubmit: handleSubmitSignUp,
     reset: resetSignUpForm,
     formState: { errors: errorsSignUp },
   } = useForm({
     resolver: yupResolver(registerSchema),
+    defaultValues: { gender: "male" }, 
   });
+  
+  const onSubmitRegister = async(data) =>{
+    try {
+       const result = await registerUser(data)
+        if(result.status === 'success'){
+          router.push('/')
+        }
+        toast.success('User register successfully')
+    } catch (error) {
+      console.error(error);
+      toast.error('email already exist')
+    }finally{
+      setIsLoading(false);
+    }
+  }
 
+
+  useEffect(() =>{
+     resetLoginForm();
+     resetSignUpForm()
+  },[resetLoginForm,resetSignUpForm])
+
+
+  const onSubmitLogin = async(data) =>{
+    try {
+       const result = await loginUser(data)
+        if(result.status === 'success'){
+          router.push('/')
+        }
+        toast.success('Đăng nhập tài khoản thành công')
+    } catch (error) {
+      console.error(error);
+      toast.error('Email hoặc mật khẩu không chính xác')
+    }finally{
+      setIsLoading(false);
+    }
+  }
+
+
+  const handleGoogleLogin = () =>{
+    window.location.href= `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/google`
+  }
   return (
     <div className="min-h-screen bg-[#F9FDFF] flex items-center justify-center p-4">
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5 }}
-        className="w-full max-w-md max-h-[80vh] overflow-y-auto hidden-scrollbar"
       >
         <Card className="w-full max-w-md dark:text-white border-[#0E42D2]">
           <CardHeader>
@@ -103,12 +148,10 @@ const Page = () => {
               </TabsList>
               {/* Tab đăng nhập */}
               <TabsContent value="login">
-                <form>
+                <form onSubmit={handleSubmitLogin(onSubmitLogin)}>
                   <div className="space-y-4">
                     <div className="space-y-2">
-                      <Label htmlFor="loginEmail" className="text-[#086280]">
-                        Email
-                      </Label>
+                      <Label htmlFor="loginEmail" className="text-[#086280]">Email</Label>
                       <Input
                         id="loginEmail"
                         name="email"
@@ -124,9 +167,7 @@ const Page = () => {
                       )}
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="loginPassword" className="text-[#086280]">
-                        Mật khẩu
-                      </Label>
+                      <Label htmlFor="loginPassword" className="text-[#086280]">Mật khẩu</Label>
                       <Input
                         id="loginPassword"
                         name="password"
@@ -145,7 +186,7 @@ const Page = () => {
                       className="w-full bg-[#23CAF1] text-white"
                       type="submit"
                     >
-                      Đăng nhập
+                      <LogIn className="mr-2 w-4 h-4" />Đăng nhập
                     </Button>
                   </div>
                 </form>
@@ -168,7 +209,7 @@ const Page = () => {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                   >
-                    <Button variant="outline" className="w-full bg-slate-200">
+                    <Button variant="outline" className="w-full bg-slate-200" onClick={handleGoogleLogin}>
                       <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
                         <path
                           d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -195,12 +236,10 @@ const Page = () => {
               </TabsContent>
               {/* Tab đăng ký */}
               <TabsContent value="signup">
-                <form>
+                <form onSubmit={handleSubmitSignUp(onSubmitRegister)}>
                   <div className="space-y-4">
                     <div className="space-y-2">
-                      <Label htmlFor="signupName" className="text-[#086280]">
-                        Tên người dùng
-                      </Label>
+                      <Label htmlFor="signupName" className="text-[#086280]">Tên người dùng</Label>
                       <Input
                         id="signupName"
                         name="username"
@@ -216,11 +255,9 @@ const Page = () => {
                       )}
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="signupEmail" className="text-[#086280]">
-                        Email
-                      </Label>
+                      <Label htmlFor="loginEmail" className="text-[#086280]">Email</Label>
                       <Input
-                        id="signupEmail"
+                        id="loginEmail"
                         name="email"
                         type="email"
                         {...registerSignUp("email")}
@@ -234,14 +271,9 @@ const Page = () => {
                       )}
                     </div>
                     <div className="space-y-2">
-                      <Label
-                        htmlFor="signupPassword"
-                        className="text-[#086280]"
-                      >
-                        Mật khẩu
-                      </Label>
+                      <Label htmlFor="loginPassword" className="text-[#086280]">Mật khẩu</Label>
                       <Input
-                        id="signupPassword"
+                        id="loginPassword"
                         name="password"
                         type="password"
                         {...registerSignUp("password")}
@@ -256,12 +288,7 @@ const Page = () => {
                     </div>
 
                     <div className="space-y-2">
-                      <Label
-                        htmlFor="confirmPassword"
-                        className="text-[#086280]"
-                      >
-                        Mật khẩu
-                      </Label>
+                      <Label htmlFor="confirmPassword" className="text-[#086280]">Mật khẩu</Label>
                       <Input
                         id="confirmPassword"
                         name="confirmpassword"
@@ -272,12 +299,7 @@ const Page = () => {
                     </div>
 
                     <div className="space-y-2">
-                      <Label
-                        htmlFor="signupBirthday"
-                        className="text-[#086280]"
-                      >
-                        Ngày sinh
-                      </Label>
+                      <Label htmlFor="signupBirthday" className="text-[#086280]">Ngày sinh</Label>
                       <Input
                         id="signupBirthday"
                         name="dateOfBirth"
@@ -293,36 +315,37 @@ const Page = () => {
                     </div>
                     <div className="space-y-2">
                       <Label className="text-[#086280]">Giới tính</Label>
-                      <RadioGroup
-                        className="flex justify-between"
-                        defaultValue="male"
-                        {...registerSignUp("gender")}
-                      >
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="male" id="male" />
-                          <Label htmlFor="male">Nam</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="female" id="female" />
-                          <Label htmlFor="female">Nữ</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="other" id="other" />
-                          <Label htmlFor="other">Khác</Label>
-                        </div>
-                      </RadioGroup>
+                      <Controller
+                        name="gender"
+                        control={control}
+                        render={({ field }) => (
+                          <RadioGroup
+                            className="flex justify-between"
+                            value={field.value}
+                            onValueChange={field.onChange}  // Bắt sự kiện thay đổi giá trị
+                          >
+                            <div className="flex items-center space-x-2">
+                              <RadioGroupItem value="male" id="male" />
+                              <Label htmlFor="male">Nam</Label>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <RadioGroupItem value="female" id="female" />
+                              <Label htmlFor="female">Nữ</Label>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <RadioGroupItem value="other" id="other" />
+                              <Label htmlFor="other">Khác</Label>
+                            </div>
+                          </RadioGroup>
+                        )}
+                      />
                       {errorsSignUp.gender && (
-                        <p className="text-red-500">
-                          {errorsSignUp.gender.message}
-                        </p>
+                        <p className="text-red-500">{errorsSignUp.gender.message}</p>
                       )}
                     </div>
 
-                    <Button
-                      className="w-full bg-[#23CAF1] text-white"
-                      type="submit"
-                    >
-                      Đăng ký
+                    <Button className="w-full bg-[#23CAF1] text-white" type="submit">
+                      <LogIn className="mr-2 w-4 h-4" /> Đăng ký
                     </Button>
                   </div>
                 </form>
