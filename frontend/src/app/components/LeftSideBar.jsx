@@ -1,13 +1,23 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import useSidebarStore from "@/store/sidebarStore";
+import userStore from "@/store/userStore";
 import { useRouter } from "next/navigation";
 
 const LeftSideBar = () => {
   const {isSidebarOpen,toggleSidebar} = useSidebarStore()
   const router = useRouter();
+  const {user} = userStore();
+  const userPlaceholder = user?.username
+    ?.split(" ")
+    .map((name) => name[0])
+    .join("");
+
   const handleNavigation = (path, item) => {
     router.push(path);
+    if(isSidebarOpen){
+      toggleSidebar()
+    }
   };
   return (
     <aside
@@ -22,10 +32,18 @@ const LeftSideBar = () => {
         <nav className="space-y-3 flex-grow">
           <div className="flex items-center space-x-2 cursor-pointer ">
             <Avatar className="h-10 w-10 ml-2">
-              <AvatarImage />
-              <AvatarFallback>V</AvatarFallback>
+              {user?.profilePicture ? (
+                <AvatarImage 
+                  src={user?.profilePicture}
+                  alt={user?.username}
+                />
+              ):(
+                <AvatarFallback>
+                  {userPlaceholder}
+                </AvatarFallback>
+              )}
             </Avatar>
-            <p className="text-sm font-medium leading-none">Võ Nhất Phương</p>
+            <p className="text-sm font-medium leading-none">{user?.username}</p>
             </div>
             <Button
               variant="ghost"

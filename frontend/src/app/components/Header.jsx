@@ -4,13 +4,16 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
+import { logout } from "@/service/auth.service";
 import useSidebarStore from "@/store/sidebarStore";
+import userStore from "@/store/userStore";
 import { DropdownMenu } from "@radix-ui/react-dropdown-menu";
 import { Bell, LogOut, Menu, MessageCircle, Search, Users } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React from "react";
+import toast from "react-hot-toast";
 
 const Header = () => {
   const [isSearchOpen, setIsSearchOpen] = React.useState(false);
@@ -25,9 +28,29 @@ const Header = () => {
 
   const { toggleSidebar } = useSidebarStore();
   const router = useRouter();
+  const {user, clearUser} = userStore();
+
+  const userPlaceholder = user?.username
+    ?.split(" ")
+    .map((name) => name[0])
+    .join("");
 
   const handleNavigation = (path, item) => {
     router.push(path);
+  };
+
+  const handleLogout = async () => {
+    try {
+      const result = await logout();
+      if (result?.status == "success") {
+        router.push("/user-login");
+        clearUser();
+      }
+      toast.success("Đăng xuất thành công");
+    } catch (error) {
+      console.log(error);
+      toast.error("Đăng xuất thất bại");
+    }
   };
 
   return (
@@ -52,9 +75,12 @@ const Header = () => {
                     <div className="flex items-center space-x-8 p-2 hover:bg-gray-100 rounded-lg cursor-pointer">
                       <Search className="absolute text-sm text-gray-400" />
                       <div className="flex items-center gap-2">
-                        <Avatar>
-                          <AvatarImage />
-                          <AvatarFallback>V</AvatarFallback>
+                        <Avatar className="h-8 w-8">
+                          {user?.profilePicture ? (
+                            <AvatarImage src={user?.profilePicture} alt={user?.username}/>
+                          ):(
+                            <AvatarFallback>{userPlaceholder}</AvatarFallback>
+                          )}
                         </Avatar>
                         <span>Võ Nhất Phương</span>
                       </div>
@@ -97,8 +123,16 @@ const Header = () => {
                 className="relative h-8 w-8 rounded-full shadow-lg"
               >
                 <Avatar>
-                  <AvatarImage />
-                  <AvatarFallback>V</AvatarFallback>
+                  {user?.profilePicture ? (
+                    <AvatarImage 
+                      src={user?.profilePicture}
+                      alt={user?.username}
+                    />
+                  ):(
+                    <AvatarFallback>
+                      {userPlaceholder}
+                    </AvatarFallback>
+                  )}
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>
@@ -110,23 +144,33 @@ const Header = () => {
                 <div className="flex flex-col space-y-1">
                   <div className="flex items-center">
                     <Avatar className="h-8 w-8 mr-2">
-                      <AvatarImage />
-                      <AvatarFallback>V</AvatarFallback>
+                      {user?.profilePicture ? (
+                        <AvatarImage 
+                          src={user?.profilePicture}
+                          alt={user?.username}
+                        />
+                      ):(
+                        <AvatarFallback>
+                          {userPlaceholder}
+                        </AvatarFallback>
+                      )}
                     </Avatar>
                     <div className="ml-2">
-                      <p className="text-sm font-medium leading-none">Võ Nhất Phương</p>
+                      <p className="text-sm font-medium leading-none">
+                        {user?.username}
+                      </p>
                     </div>
                   </div>
                 </div>
               </DropdownMenuLabel>
               <div className="bg-gray-200 h-px my-2"></div>
-              <DropdownMenuItem className="cursor-pointer" onClick={() => handleNavigation('/user-profile')}>
+              <DropdownMenuItem className="cursor-pointer" onClick={() => handleNavigation(`/user-profile/${user?._id}`)}>
                 <Users/> <span className="ml-2">Trang cá nhân</span>
               </DropdownMenuItem>
               <DropdownMenuItem className="cursor-pointer">
                 <MessageCircle/> <span className="ml-2">Tin nhắn</span>
               </DropdownMenuItem>
-              <DropdownMenuItem className="cursor-pointer">
+              <DropdownMenuItem className="cursor-pointer" onClick={handleLogout}>
                 <LogOut/> <span className="ml-2">Đăng xuất</span>
               </DropdownMenuItem>
             </DropdownMenuContent>

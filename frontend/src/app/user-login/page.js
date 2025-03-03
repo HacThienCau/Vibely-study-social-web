@@ -1,26 +1,25 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
-  CardTitle,
+  CardTitle
 } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { LogIn } from "lucide-react";
+import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import * as yup from "yup";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { loginUser, registerUser } from "@/service/auth.service";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { motion } from "framer-motion";
+import { LogIn } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import { loginUser, registerUser } from "@/service/auth.service";
+import * as yup from "yup";
 
 const Page = () => {
   const router = useRouter();
@@ -74,14 +73,14 @@ const Page = () => {
   
   const onSubmitRegister = async(data) =>{
     try {
-       const result = await registerUser(data)
-        if(result.status === 'success'){
-          router.push('/')
-        }
-        toast.success('User register successfully')
+      const result = await registerUser(data)
+      if(result.status === 'success'){
+        router.push('/')
+      }
+      toast.success('Đăng ký tài khoản thành công')
     } catch (error) {
       console.error(error);
-      toast.error('email already exist')
+      toast.error('Email đã tồn tại')
     }finally{
       setIsLoading(false);
     }
