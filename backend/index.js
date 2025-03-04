@@ -24,9 +24,10 @@ app.use(cookieParser());
 
 
 const corsOptions = {
-    origin: process.env.FRONTEND_URL || "http://localhost:3000", // URL frontend
+    origin: ["http://localhost:3000", "http://localhost:3001"],
     credentials: true,
 };
+
 
 app.use(cors(corsOptions));
 
@@ -60,7 +61,7 @@ app.get('/quotations/random', async (req, res) => {
 });
 
 
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
     console.log(`📜 API Docs available at http://localhost:${PORT}/api-docs`);

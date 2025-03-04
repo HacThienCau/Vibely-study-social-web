@@ -4,9 +4,7 @@ import axiosInstance from "./url.service";
 export const registerUser = async(userData)=>{
     try {
         const response = await axiosInstance.post('/auth/register',userData);
-        if(response?.data?.status === 'success'){
             return response.data
-        }
     } catch (error) {
         console.log(error)
     }
@@ -16,9 +14,7 @@ export const registerUser = async(userData)=>{
 export const loginUser = async(userData)=>{
     try {
         const response = await axiosInstance.post('/auth/login',userData);
-        if(response?.data?.status === 'success'){
             return response.data
-        }
     } catch (error) {
         console.log(error)
     }

@@ -1,6 +1,6 @@
 const express = require('express');
 const authMiddleware = require('../middleware/authMiddleware');
-const { followUser, unfollowUser, deleteUserFromRequest, getAllFriendsRequest, getAllUserForRequest, getAllMutualFriends, getAllUser, getUserProfile, checkUserAuth} = require('../controllers/userController');
+const { followUser, unfollowUser, deleteUserFromRequest, getAllFriendsRequest, getAllUserForRequest, getAllMutualFriends, getAllUser, getUserProfile, checkUserAuth, getUsersByIds, getUserMutualFriends} = require('../controllers/userController');
 const { createOrUpdateUserBio, updateCoverPicture, updateUserProfile } = require('../controllers/createOrUpdateController');
 const { multerMiddleware } = require('../config/cloudinary');
 const router = express.Router();
@@ -40,5 +40,12 @@ router.put('/profile/:userId',authMiddleware, multerMiddleware.single('profilePi
 
 // Route cập nhật ảnh bìa cho người dùng
 router.put('/profile/cover-picture/:userId',authMiddleware,multerMiddleware.single('coverPicture') ,updateCoverPicture)
+
+// Route lấy thông tin người dùng theo id
+router.post("/get-users", authMiddleware, getUsersByIds);
+
+
+// Route lấy tất cả bạn chung của một người dùng cụ thể
+router.get('/mutual-friends/:userId', authMiddleware, getUserMutualFriends);
 
 module.exports = router;

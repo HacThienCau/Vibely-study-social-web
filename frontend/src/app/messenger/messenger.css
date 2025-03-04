@@ -45,6 +45,8 @@
 .chatBoxWrapper{
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
+    position: relative;
     
 }
 .chatBoxTop{
@@ -52,3 +54,19 @@
     overflow-y: scroll;
     padding-right: 10px;
 }
+.noConversationText{
+    position: absolute;
+    top: 70%;
+    text-align: center;
+    font-size: 25px;
+    font-style: italic;
+    cursor: default;
+}
+.chatImage
+{
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
