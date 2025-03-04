@@ -256,7 +256,52 @@ const getUserProfile = async(req, res) =>{
     }
 }
 
+// Lấy thông tin người dùng theo id
+const getUsersByIds = async (req, res) => {
+    try {
+      const { userIds } = req.body; // Lấy danh sách userId từ request
+      if (!userIds || userIds.length === 0) {
+        return res.status(400).json({ message: "Danh sách userId trống!" });
+      }
+      
+      const users = await User.find({ _id: { $in: userIds } }).select("-password -updatedAt");
+      res.status(200).json({ data: users });
+    } catch (error) {
+      res.status(500).json({ message: "Lỗi khi lấy danh sách người dùng!", error });
+    }
+  };
 
+  // Lấy danh sách bạn bè (followers + followings)
+  const getUserMutualFriends = async (req, res) => {
+    try {
+        const { userId } = req.params; // Lấy ID người dùng từ params
+
+        // Tìm người dùng theo ID
+        const user = await User.findById(userId)
+            .select('followers followings')
+            .populate('followings', 'username profilePicture email followerCount followingCount')
+            .populate('followers', 'username profilePicture email followerCount followingCount');
+
+        if (!user) {
+            return response(res, 404, 'Người dùng không tồn tại');
+        }
+
+        // Tạo một tập hợp ID những người mà user đang theo dõi
+        const followingUserId = new Set(user.followings.map(user => user._id.toString()));
+
+        // Lọc danh sách followers để tìm mutual friends
+        const mutualFriends = user.followers.filter(follower => 
+            followingUserId.has(follower._id.toString())
+        );
+
+        return response(res, 200, 'Lấy danh sách bạn chung thành công', mutualFriends);
+    } catch (error) {
+        return response(res, 500, 'Lỗi máy chủ nội bộ', error.message);
+    }
+};
+
+
+  
 module.exports = {
     followUser,
     unfollowUser,
@@ -266,5 +311,7 @@ module.exports = {
     getAllMutualFriends,
     getAllUser,
     checkUserAuth,
-    getUserProfile
+    getUserProfile,
+    getUsersByIds,
+    getUserMutualFriends
 }
