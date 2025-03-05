@@ -49,7 +49,7 @@ export const getAllStories = async() => {
 export const reactPost = async (postId, reactType) => {
     try {
         const result = await axiosInstance.post(`/posts/reacts/${postId}`, { type: reactType });
-        return result?.data;
+        return result?.data?.data;
     } catch (error) {
         console.error("Lỗi khi react bài viết:", error);
         throw error;

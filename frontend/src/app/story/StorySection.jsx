@@ -4,23 +4,18 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import StoryCard from "./StoryCard";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { usePostStore } from "@/store/usePostStore";
 
 
 const StorySection = () => {
   const [scrollPosition, setScrollPosition] = useState(0);
   const [maxScroll, setMaxScroll] = useState(0);
   const containerRef = useRef();
-  const storyPosts = [
-    {
-      _id: 1,
-      mediaUrl: "https:www.google.com",
-      mediaType: "video",
-      user:
-      {
-        username: "Võ Nhất Phương"
-      }
-    }
-  ]
+  const {stories, fetchStories} = usePostStore()
+  useEffect(()=>{
+    fetchStories()
+  },[fetchStories])
+
   useEffect(() => {
     const container = containerRef.current;
     if (container) {
@@ -32,7 +27,7 @@ const StorySection = () => {
       window.addEventListener("resize", updateMaxScroll);
       return () => window.removeEventListener("resize", updateMaxScroll);
     }
-  }, [storyPosts]);
+  }, [stories]);
   const scroll = (direction) => {
     const container = containerRef.current;
     if (container) {
@@ -61,12 +56,12 @@ const StorySection = () => {
           dragConstraints={{
             right: 0,
             left:
-              -((storyPosts.length + 1) * 200) +
+              -((stories.length + 1) * 200) +
               containerRef.current?.offsetWidth,
           }}
         >
           <StoryCard isAddStory={true}/>
-          {storyPosts?.map((story) => (
+          {stories?.map((story) => (
             <StoryCard story={story} key={story._id} />
           ))}
         </motion.div>
