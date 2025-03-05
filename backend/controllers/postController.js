@@ -174,9 +174,12 @@ const reactPost = async (req, res) =>
                 post.reactionStats[type] += 1;
                 action = "Thêm reaction thành công";
             }
-    
+    /*
             const updatedPost = await post.save();
             return response(res, 200, action, updatedPost);
+            */
+            await post.save();
+            return response(res, 200, action, { reactionStats: post.reactionStats });
     }
     catch(error) {
         console.error("Lỗi khi thích bài viết:", error);
