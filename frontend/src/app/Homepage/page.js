@@ -16,7 +16,6 @@ const Homepage = () => {
     fetchPosts()  //tải các bài viết
   },[fetchPosts])
   const[reactPosts, setReactPosts] = useState(new Set()); // danh sách những bài viết mà người dùng đã react
-  const reactions = ['like', 'love', 'haha', 'wow', 'sad', 'angry'] //các loại cảm xúc
   useEffect(()=>{
     const saveReacts = localStorage.getItem('reactPosts')
     if(saveReacts){
@@ -24,20 +23,21 @@ const Homepage = () => {
     }
   },[])
   const handleReact = async(postId, reactType)=>{
+    console.log("reactType: ", reactType)
     const updatedReactPosts = { ...reactPosts }; 
-    if(updatedReactPosts[postId]=== reactType){ 
+    if(updatedReactPosts && updatedReactPosts[postId]=== reactType){ 
       delete updatedReactPosts[postId]; // hủy react nếu nhấn lại
     }
-    else{ //Chưa react thì thêm vào danh sách react
+    else{ 
       updatedReactPosts[postId] = reactType; // cập nhật cảm xúc mới
     }
-    //lưu danh sách mới
+    //lưu danh sách mới vào biến
     setReactPosts(updatedReactPosts)
     //lưu vào cục bộ
-    localStorage.setItem('reactPosts',JSON.stringify(Array.from(updatedReactPosts)))
+    localStorage.setItem('reactPosts', JSON.stringify(updatedReactPosts));
 
     try {
-      await handleReactPost(postId, reactType) //api
+      await handleReactPost(postId, updatedReactPosts[postId] || null) //api
       await fetchPosts()// tải lại danh sách
     } catch (error) {
       console.log(error)
@@ -61,8 +61,8 @@ const Homepage = () => {
                 {posts.map(post => (
                   <PostCard key={post._id} 
                   post={post} 
-                  isReacted = {reactPosts.has(post?._id)} // đã được react chưa
-                  onReact = {()=> handleReact(post?._id)}  // chức năng react
+                  reaction = {reactPosts[post?._id]||null} //loại react
+                  onReact={(reactType) => handleReact(post?._id, reactType)}  // chức năng react
                   onComment = { async()=>{  //chức năng comment
                     await handleCommentPost(post?._id, comment.text)
                     await fetchPosts()

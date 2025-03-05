@@ -71,15 +71,21 @@ export const usePostStore = create((set)=>({
         }
     },
 
-    handleReactPost: async(postId, reactType) =>{
-        set({loading:true})
+    handleReactPost : async (postId, reactType) => {
+        set({ loading: true });
         try {
-            await reactPost(postId, reactType)
-            set({loading:false})
+            const updatedStats = await reactPost(postId, reactType);
+            set((state) => ({
+                posts: state.posts.map(post =>
+                    post._id === postId ? { ...post, reactionStats: updatedStats.reactionStats } : post
+                ),
+                loading: false
+            }));
         } catch (error) {
-            set({error, loading:false})
+            set({ error, loading: false });
+            toast.error("Lỗi khi react bài viết. Vui lòng thử lại.");
         }
-    },    
+    },
 
     handleCommentPost: async(postId) =>{
         set({loading:true})

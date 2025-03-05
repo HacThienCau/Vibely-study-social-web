@@ -9,13 +9,17 @@ import { MessageCircle, MoreHorizontal, ThumbsUp } from 'lucide-react'
 import { useState } from 'react'
 import { PiShareFatBold } from "react-icons/pi"
 import PostComments from './PostComments'
+import { formatedDate } from '@/lib/utils'
+import Image from 'next/image'
+import toast from 'react-hot-toast'
 
 
-const PostCard = ({post, isReacted, onReact, onComment, onShare}) => {
+const PostCard = ({post, reaction, onReact, onComment, onShare}) => {
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false)
   const [showComments, setShowComments] = useState(false)
-
-
+  const [showReactionChooser, setShowReactionChooser] = useState(false)
+  const [isChoosing, setIsChoosing] = useState(false)
+  const totalReact = post?.reactionStats?.like+post?.reactionStats?.love+post?.reactionStats?.haha+post?.reactionStats?.wow+post?.reactionStats?.sad+post?.reactionStats?.angry
 
 
 
@@ -50,7 +54,18 @@ const PostCard = ({post, isReacted, onReact, onComment, onShare}) => {
     window.open(shareUrl, "_blank");
     setIsShareDialogOpen(false);
   };
+  const handleReaction = (reaction) => {
+    console.log("(PostCard.jsx/handleReaction) Reaction in post that has id", post?._id,":", reaction)
+    setIsChoosing(false)  //đã chọn được 'cảm xúc'
+   // onReact(post?._id,reaction);
 
+
+
+
+
+
+    setShowReactionChooser(false); // Ẩn thanh reaction sau khi chọn
+  };
   return (
     <motion.div
       key={post?._id}
@@ -74,7 +89,7 @@ const PostCard = ({post, isReacted, onReact, onComment, onShare}) => {
                   {post?.user?.username} {/*tên người đăng bài*/}
                 </p>
                 <p className="font-sm text-gray-500 text-xs">
-                  26-02-2025
+                  {formatedDate(post?.createdAt)} {/*thời gian đăng bài*/}
                 </p>
               </div>
             </div>
@@ -98,7 +113,10 @@ const PostCard = ({post, isReacted, onReact, onComment, onShare}) => {
           )}
           <div className="flex justify-between items-center mb-2">
             <span className="text-[15px] text-gray-500 hover:underline border-gray-400 cursor-pointer">
-              2 lượt thích
+              {
+              totalReact>1000000?totalReact/1000000+" triệu":  //Nếu tổng lượt react >1tr thì hiển thị kiểu 1 triệu, 2 triệu,...
+              totalReact>1000?totalReact/1000+" ngàn":totalReact  //Nếu tổng lượt react >1000 thì hiển thị kiểu 1 ngàn, 2 ngàn,...
+              }
             </span>
             <div className="flex gap-3">
               <span
@@ -106,26 +124,93 @@ const PostCard = ({post, isReacted, onReact, onComment, onShare}) => {
                 onClick={() => setShowComments(!showComments)}
               >
                 3 bình luận
+
+
+
+
+
+
+
+
               </span>
               <span className="text-[15px] text-gray-500 hover:underline border-gray-400 cursor-pointer">
                 4 lượt chia sẻ
+
+
+
+
+
+
               </span>
             </div>
           </div>
           <Separator className="mb-1 border-b border-gray-300"/>
-          <div className="flex justify-between mb-1">
+          <div className="flex justify-between mb-1 relative" >
             <Button
+              onMouseEnter={()=>setShowReactionChooser(true)} //mở bảng để mukbang cảm xúc :))
+              onMouseLeave={() =>setTimeout(() => setShowReactionChooser(false), 500)}
               variant="ghost"
               className={`flex-1 hover:bg-gray-100 text-gray-500 hover:text-gray-500 text-[15px] h-8`}
             >
-              <ThumbsUp style={{ width: "20px", height: "20px" }} /> Thích
+              <ThumbsUp style={{ width: "20px", height: "20px" }} /> {reaction?reaction:'Thích'}
             </Button>
+            {(showReactionChooser||isChoosing) && ( //nếu đang để chuột ở nút mở bảng chọn hoặc trong bảng chọn thì bảng chọn sẽ luôn hiện
+            <div
+            className={"absolute bottom-10 bg-white flex shadow gap-1 transition-all opacity-100 scale-100 translate-y-0 rounded-2xl"}
+            onMouseEnter={()=>setIsChoosing(true)}  //đang chọn
+            onMouseLeave={() =>setTimeout(() => setIsChoosing(false), 500)}
+            >
+            <motion.button whileHover={{ scale: 2 }}  //phóng to biểu tượng lên
+            className="px-2 py-2" onClick={()=>{
+              handleReaction('Like')
+            }}>
+              <Image src={"/like.gif"} alt="like" width={30} height={30}/>
+            </motion.button>
+            <motion.button whileHover={{ scale: 2 }}
+            className="px-2 py-2" onClick={()=>{
+              handleReaction('Love')
+            }}>
+            <Image src={"/love.gif"} alt="love"  width={30} height={30}/>
+            </motion.button>
+            <motion.button whileHover={{ scale: 2 }}
+            className="px-2 py-2" onClick={()=>{
+              handleReaction('Haha')
+            }}>
+            <Image src={"/haha.gif"} alt="haha"  width={30} height={30}/>
+            </motion.button>
+            <motion.button whileHover={{ scale: 2 }}
+            className="px-2 py-2" onClick={()=>{
+              handleReaction('Wow')
+            }}>
+              <Image src={"/wow.gif"} alt="wow"  width={30} height={30}/>
+            </motion.button>
+            <motion.button whileHover={{ scale: 2 }}
+            className="px-2 py-2" onClick={()=>{
+              handleReaction('Sad')
+            }}>
+            <Image src={"/sad.gif"} alt="sad"  width={30} height={30}/>
+            </motion.button>
+            <motion.button whileHover={{ scale: 2 }}
+            className="px-2 py-2" onClick={()=>{
+              handleReaction('Angry')
+            }}>
+            <Image src={"/angry.gif"} alt="angry"  width={30} height={30}/>
+            </motion.button>
+            </div>
+          )}
             <Button
               variant="ghost"
               className={`flex-1 hover:bg-gray-100 text-gray-500 hover:text-gray-500 text-[15px] h-8`}
             >
               <MessageCircle style={{ width: "20px", height: "20px" }} /> Bình luận
             </Button>
+
+
+
+
+
+
+
             <Dialog
               open={isShareDialogOpen}
               onOpenChange={setIsShareDialogOpen}
