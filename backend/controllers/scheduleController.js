@@ -1,5 +1,6 @@
 const Schedule = require("../model/Schedule");
 const response = require("../utils/responseHandler");
+const mongoose = require('mongoose'); 
 
 // Tạo lịch trình mới
 const createSchedule = async (req, res) => {
@@ -8,7 +9,7 @@ const createSchedule = async (req, res) => {
         const { subject, startTime, endTime, categoryColor } = req.body;
 
         if (!subject || !startTime || !endTime) {
-            return response(res, 400, "Vui lòng cung cấp đầy đủ thông tin lịch trình");
+            return response(res, 400, "❌ Thiếu thông tin lịch trình");
         }
 
         const newSchedule = new Schedule({
@@ -20,9 +21,10 @@ const createSchedule = async (req, res) => {
         });
 
         await newSchedule.save();
-        return response(res, 201, "Lịch trình đã được tạo thành công", newSchedule);
+        return response(res, 201, "✅ Lịch trình đã được tạo", newSchedule);
     } catch (error) {
-        return response(res, 500, "Lỗi máy chủ nội bộ", error.message);
+        console.error("❌ Lỗi khi tạo lịch:", error);
+        return response(res, 500, "Lỗi máy chủ", error.message);
     }
 };
 
@@ -42,20 +44,38 @@ const getUserSchedules = async (req, res) => {
 const updateSchedule = async (req, res) => {
     try {
         const userId = req.user.userId;
-        const { scheduleId, subject, startTime, endTime, categoryColor } = req.body;
+        const { subject, startTime, endTime, categoryColor } = req.body;
+        const { scheduleId } = req.params; 
 
-        const schedule = await Schedule.findOne({ _id: scheduleId, user: userId });
-        if (!schedule) {
+        if (!mongoose.Types.ObjectId.isValid(scheduleId)) {
+            return response(res, 400, "ID lịch trình không hợp lệ");
+        }
+
+        if (startTime && isNaN(Date.parse(startTime))) {
+            return response(res, 400, "startTime không hợp lệ");
+        }
+        if (endTime && isNaN(Date.parse(endTime))) {
+            return response(res, 400, "endTime không hợp lệ");
+        }
+
+        const updatedSchedule = await Schedule.findOneAndUpdate(
+            { _id: scheduleId, user: userId },
+            {
+                $set: {
+                    subject: subject ?? undefined,
+                    startTime: startTime ?? undefined,
+                    endTime: endTime ?? undefined,
+                    categoryColor: categoryColor ?? undefined,
+                },
+            },
+            { new: true, runValidators: true }
+        );
+
+        if (!updatedSchedule) {
             return response(res, 404, "Lịch trình không tồn tại hoặc bạn không có quyền chỉnh sửa");
         }
 
-        schedule.subject = subject || schedule.subject;
-        schedule.startTime = startTime || schedule.startTime;
-        schedule.endTime = endTime || schedule.endTime;
-        schedule.categoryColor = categoryColor || schedule.categoryColor;
-
-        await schedule.save();
-        return response(res, 200, "Cập nhật lịch trình thành công", schedule);
+        return response(res, 200, "Cập nhật lịch trình thành công", updatedSchedule);
     } catch (error) {
         return response(res, 500, "Lỗi máy chủ nội bộ", error.message);
     }
@@ -65,7 +85,7 @@ const updateSchedule = async (req, res) => {
 const deleteSchedule = async (req, res) => {
     try {
         const userId = req.user.userId;
-        const { scheduleId } = req.body;
+        const { scheduleId } = req.params;
 
         const schedule = await Schedule.findOneAndDelete({ _id: scheduleId, user: userId });
         if (!schedule) {

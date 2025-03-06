@@ -12,21 +12,21 @@ const {
 const router = express.Router();
 
 // Tạo lịch trình mới
-router.post('/schedules', authMiddleware, createSchedule);
+router.post('/', authMiddleware, createSchedule);
 
 // Lấy tất cả lịch trình của người dùng
-router.get('/schedules', authMiddleware, getUserSchedules);
+router.get('/', authMiddleware, getUserSchedules);
 
 // Lấy chi tiết một lịch trình theo ID
-router.get('/schedules/:id', authMiddleware, getScheduleById);
+router.get('/:scheduleId', authMiddleware, getScheduleById);
 
 // Lấy chi tiết một lịch trình theo ID người dùng
-router.get('/schedules/user/:userId', authMiddleware, getScheduleByIdUser);
+router.get('/user/:userId', authMiddleware, getScheduleByIdUser);
 
 // Cập nhật lịch trình
-router.put('/schedules/:id', authMiddleware, updateSchedule);
+router.put('/:scheduleId', authMiddleware, updateSchedule);
 
 // Xóa lịch trình
-router.delete('/schedules/:id', authMiddleware, deleteSchedule);
+router.delete('/:scheduleId', authMiddleware, deleteSchedule);
 
 module.exports = router;
