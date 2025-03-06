@@ -6,7 +6,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Separator } from '@/components/ui/separator'
 import { AnimatePresence, motion } from 'framer-motion'
 import { MessageCircle, MoreHorizontal, ThumbsUp} from 'lucide-react'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { PiShareFatBold } from "react-icons/pi"
 import PostComments from './PostComments'
 import { formatedDate } from '@/lib/utils'
@@ -27,10 +27,22 @@ const PostCard = ({post, reaction, onReact, onComment, onShare}) => {
       commentInputRef?.current?.focus();
     },0)
   }
-  const userPlaceholder = post?.user?.username?.split(" ").map((name) => name[0]).join(""); // tên người dùng viết tắt
   const userPostPlaceholder = post?.user?.username?.split(" ").map((name) => name[0]).join(""); // tên người đăng bài viết tắt
-
-
+  const [topReactions, setTopReactions] = useState([]);
+  useEffect(() => {
+    //đảm bảo object hợp lệ
+      if (!post?.reactionStats || typeof post?.reactionStats !== "object") {
+      setTopReactions([]);
+      return;
+  }
+    // cập nhật danh sách top reactions
+    const filteredReactions = Object.entries(post?.reactionStats)
+        .filter(([key, value]) => value > 0) // loại bỏ reaction có số lượng = 0
+        .sort((a, b) => b[1] - a[1]) // sắp xếp giảm dần theo số lượng
+        .slice(0, 3); // lấy 3 reaction nhiều nhất
+    
+    setTopReactions(filteredReactions);
+}, [post?.reactionStats]); // Chạy lại khi reactionStats thay đổi
 
   const generateSharedLink = () => {
     return `http://localhost:3000/${post?.id}`;
@@ -110,12 +122,18 @@ const PostCard = ({post, reaction, onReact, onComment, onShare}) => {
             </video>
           )}
           <div className="flex justify-between items-center mb-2">
-            <span className="text-[15px] text-gray-500 hover:underline border-gray-400 cursor-pointer">
+            <span className="text-[15px] text-gray-500 hover:underline border-gray-400 cursor-pointer flex">
               {
-              totalReact > 0 && (  
-              totalReact>1000000?totalReact/1000000+" triệu":  //Nếu tổng lượt react >1tr thì hiển thị kiểu 1 triệu, 2 triệu,...
-              totalReact>1000?totalReact/1000+" ngàn":totalReact  //Nếu tổng lượt react >1000 thì hiển thị kiểu 1 ngàn, 2 ngàn,...
-              +" lượt thích")}
+               topReactions.map((reaction)=>(
+                <Image src={`/${reaction[0]}.png`} alt={`${reaction[0]}`}  width={18} height={18} key={reaction[0]}/>
+                ))
+              }
+              &nbsp;
+              {
+              totalReact > 0 && (
+              totalReact>1000000?totalReact/1000000+"M":  //Nếu tổng lượt react >1tr thì hiển thị kiểu 1M, 2M,...
+              totalReact>1000?totalReact/1000+"k":totalReact  //Nếu tổng lượt react >1000 thì hiển thị kiểu 1k, 2k,...
+              )}
             </span>
             <div className="flex gap-3">
               <span
@@ -150,12 +168,12 @@ const PostCard = ({post, reaction, onReact, onComment, onShare}) => {
                   :reaction=="angry"?"text-orange-500":""}
               `}
             >
-              {reaction=="like"? <Image src={"/like.png"} alt="haha"  width={20} height={20}/> 
-              :reaction=="love"? <Image src={"/love.png"} alt="haha"  width={20} height={20}/> 
-              :reaction=="haha"? <Image src={"/haha.png"} alt="haha"  width={20} height={20}/> 
-              :reaction=="wow"? <Image src={"/wow.png"} alt="haha"  width={20} height={20}/> 
-              :reaction=="sad"? <Image src={"/sad.png"} alt="haha"  width={20} height={20}/> 
-              :reaction=="angry"? <Image src={"/angry.png"} alt="haha"  width={20} height={20}/> 
+              {reaction=="like"? <Image src={"/like.png"} alt="haha"  width={24} height={24}/> 
+              :reaction=="love"? <Image src={"/love.png"} alt="haha"  width={24} height={24}/> 
+              :reaction=="haha"? <Image src={"/haha.png"} alt="haha"  width={24} height={24}/> 
+              :reaction=="wow"? <Image src={"/wow.png"} alt="haha"  width={24} height={24}/> 
+              :reaction=="sad"? <Image src={"/sad.png"} alt="haha"  width={24} height={24}/> 
+              :reaction=="angry"? <Image src={"/angry.png"} alt="haha"  width={24} height={24}/> 
               : <ThumbsUp style={{ width: "20px", height: "20px" }} /> }
               {reaction=="love"?"Yêu thích"
               :reaction=="haha"?"Haha"
@@ -215,20 +233,6 @@ const PostCard = ({post, reaction, onReact, onComment, onShare}) => {
             >
               <MessageCircle style={{ width: "20px", height: "20px" }} /> Bình luận
             </Button>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
             <Dialog
               open={isShareDialogOpen}
