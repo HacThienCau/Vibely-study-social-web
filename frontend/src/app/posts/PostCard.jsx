@@ -22,12 +22,12 @@ const PostCard = ({post, reaction, onReact, onComment, onShare}) => {
   const totalReact = post?.reactionStats?.like+post?.reactionStats?.love+post?.reactionStats?.haha+post?.reactionStats?.wow+post?.reactionStats?.sad+post?.reactionStats?.angry
   const commentInputRef = useRef(null)
   const handleCommentClick = () =>{
-    showComments(true)
+    setShowComments(!showComments)
     setTimeout(()=>{
       commentInputRef?.current?.focus();
     },0)
   }
-  const userPlaceholder = post?.user?.username?.split(" ").map((name) => name[0]).join(""); // tên người đăng bài viết tắt
+  const userPlaceholder = post?.user?.username?.split(" ").map((name) => name[0]).join(""); // tên người dùng viết tắt
   const userPostPlaceholder = post?.user?.username?.split(" ").map((name) => name[0]).join(""); // tên người đăng bài viết tắt
 
 
@@ -164,7 +164,7 @@ const PostCard = ({post, reaction, onReact, onComment, onShare}) => {
               :reaction=="angry"?"Phẫn nộ"
               :"Thích"}
             </Button>
-            {(showReactionChooser||isChoosing) && ( //nếu đang để chuột ở nút mở bảng chọn hoặc trong bảng chọn thì bảng chọn sẽ luôn hiện
+            {(showReactionChooser||isChoosing) && ( //nếu đang để chuột ở nút mở bảng chọn hoặc trong bảng chọn thì bảng chọn sẽ luôn hiện tránh tình trạng chưa chọn xong đã bị ẩn
             <div
             className={"absolute bottom-10 bg-white flex shadow gap-1 transition-all opacity-100 scale-100 translate-y-0 rounded-2xl"}
             onMouseEnter={()=>setIsChoosing(true)}  //đang chọn
@@ -174,37 +174,37 @@ const PostCard = ({post, reaction, onReact, onComment, onShare}) => {
             className="px-2 py-2" onClick={()=>{
               handleReaction('like')
             }}>
-              <Image src={"/like.gif"} alt="like" width={30} height={30}/>
+              <Image src={"/like.gif"} alt="like" width={30} height={30} unoptimized/>
             </motion.button>
             <motion.button whileHover={{ scale: 2 }}
             className="px-2 py-2" onClick={()=>{
               handleReaction('love')
             }}>
-            <Image src={"/love.gif"} alt="love"  width={30} height={30}/>
+            <Image src={"/love.gif"} alt="love"  width={30} height={30} unoptimized/>
             </motion.button>
             <motion.button whileHover={{ scale: 2 }}
             className="px-2 py-2" onClick={()=>{
               handleReaction('haha')
             }}>
-            <Image src={"/haha.gif"} alt="haha"  width={30} height={30}/>
+            <Image src={"/haha.gif"} alt="haha"  width={30} height={30} unoptimized/>
             </motion.button>
             <motion.button whileHover={{ scale: 2 }}
             className="px-2 py-2" onClick={()=>{
               handleReaction('wow')
             }}>
-              <Image src={"/wow.gif"} alt="wow"  width={30} height={30}/>
+              <Image src={"/wow.gif"} alt="wow"  width={30} height={30} unoptimized/>
             </motion.button>
             <motion.button whileHover={{ scale: 2 }}
             className="px-2 py-2" onClick={()=>{
               handleReaction('sad')
             }}>
-            <Image src={"/sad.gif"} alt="sad"  width={30} height={30}/>
+            <Image src={"/sad.gif"} alt="sad"  width={30} height={30} unoptimized/>
             </motion.button>
             <motion.button whileHover={{ scale: 2 }}
             className="px-2 py-2" onClick={()=>{
               handleReaction('angry')
             }}>
-            <Image src={"/angry.gif"} alt="angry"  width={30} height={30}/>
+            <Image src={"/angry.gif"} alt="angry"  width={30} height={30} unoptimized/>
             </motion.button>
             </div>
           )}
@@ -222,6 +222,14 @@ const PostCard = ({post, reaction, onReact, onComment, onShare}) => {
 
 
 
+
+
+
+
+
+
+
+
             <Dialog
               open={isShareDialogOpen}
               onOpenChange={setIsShareDialogOpen}
@@ -230,6 +238,7 @@ const PostCard = ({post, reaction, onReact, onComment, onShare}) => {
                 <Button
                   variant="ghost"
                   className="flex-1 hover:bg-gray-100 text-gray-500 hover:text-gray-500 text-[15px] h-8"
+                  onClick={onShare} //bấm vô là tăng lượt share :))
                 >
                   <PiShareFatBold style={{ width: "20px", height: "20px" }} /> Chia sẻ
                 </Button>
@@ -281,6 +290,8 @@ const PostCard = ({post, reaction, onReact, onComment, onShare}) => {
               >
                 <PostComments
                   post={post}
+                  onComment={onComment}
+                  commentInputRef={commentInputRef}
                 />
               </motion.div>
             )}

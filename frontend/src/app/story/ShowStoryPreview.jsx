@@ -6,7 +6,7 @@ import React from 'react'
 const ShowStoryPreview = ({file,fileType,onClose,onPost,isNewStory,username,avatar,isLoading}) => {
     const userPlaceholder = username?.split(" ").map((name) => name[0]).join(""); //tên người dùng viết tắt
   return (
-    <div className='fixed inset-8 bg-black bg-opacity-70 flex items-center justify-center z-50'>
+    <div className='fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50'>
         <div className='relative w-full max-w-md h-[70vh] flex flex-col bg-white rounded-lg overflow-hidden'>
         {/*Nút đóng*/}
         <Button className='absolute top-4 right-4 z-10 text-gray-600 hover:bg-gray-200'
