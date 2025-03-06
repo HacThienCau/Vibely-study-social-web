@@ -48,8 +48,8 @@ export const getAllStories = async() => {
 // phương thức để react cho một bài viết
 export const reactPost = async (postId, reactType) => {
     try {
-        const result = await axiosInstance.post(`/posts/reacts/${postId}`, { type: reactType });
-        return result?.data?.data;
+        const result = await axiosInstance.post(`users/posts/reacts/${postId}`, { type: reactType });
+        return result?.data;
     } catch (error) {
         console.error("Lỗi khi react bài viết:", error);
         throw error;

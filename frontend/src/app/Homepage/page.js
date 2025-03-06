@@ -19,7 +19,7 @@ const Homepage = () => {
   useEffect(()=>{
     const saveReacts = localStorage.getItem('reactPosts')
     if(saveReacts){
-      setReactPosts(new Set(JSON.parse(saveReacts)))
+      setReactPosts(JSON.parse(saveReacts))
     }
   },[])
   const handleReact = async(postId, reactType)=>{
