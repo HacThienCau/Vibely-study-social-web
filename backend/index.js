@@ -43,7 +43,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use('/conversation', conversationRoute);
 app.use('/message', messageRoute);
 app.use('/users', userRoute);
-app.use('/', scheduleRoute);
+app.use('/schedules', scheduleRoute);
 
 // ✅ API lấy danh ngôn ngẫu nhiên
 app.get('/quotations/random', async (req, res) => {
