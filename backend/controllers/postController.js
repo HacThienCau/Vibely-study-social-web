@@ -148,6 +148,10 @@ const reactPost = async (req, res) =>
     try{
         const post = await Post.findById(postId);
         if(!post) return response(res, 404, "Không tìm thấy bài viết");
+        if (!post.reactionStats) {
+            post.reactionStats = { like: 0, love: 0, haha: 0, wow: 0, sad: 0, angry: 0 };
+        }
+
             // Tìm reaction của user nếu có
             const existingReactionIndex = post.reactions.findIndex(r => r.user.toString() === userId);
             let action = "";
@@ -165,13 +169,13 @@ const reactPost = async (req, res) =>
                     // Nếu khác => đổi sang loại mới
                     post.reactionStats[existingReaction.type] = Math.max(0, post.reactionStats[existingReaction.type] - 1);
                     post.reactions[existingReactionIndex].type = type;
-                    post.reactionStats[type] += 1;
+                    post.reactionStats[type] = (post.reactionStats[type] || 0) + 1;
                     action = "Cập nhật reaction thành công";
                 }
             } else {
                 // Nếu chưa react => thêm mới
                 post.reactions.push({ user: userId, type });
-                post.reactionStats[type] += 1;
+                post.reactionStats[type] = (post.reactionStats[type] || 0) + 1;
                 action = "Thêm reaction thành công";
             }
     /*
@@ -179,7 +183,7 @@ const reactPost = async (req, res) =>
             return response(res, 200, action, updatedPost);
             */
             await post.save();
-            return response(res, 200, action, { reactionStats: post.reactionStats });
+            return response(res, 200, action, { reactionStats: post.reactionStats, reactions: post.reactions });
     }
     catch(error) {
         console.error("Lỗi khi thích bài viết:", error);

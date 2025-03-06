@@ -100,3 +100,33 @@ paths:
       responses:
         "201":
           description: "Story đã được tạo thành công"
+          
+  /posts/reacts/{postId}:
+    post:
+      summary: "Bày tỏ cảm xúc với bài viết"
+      description: "API cho phép người dùng thích, yêu thích, hoặc phản ứng với bài viết"
+      parameters:
+        - name: postId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: "ID của bài viết"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                type:
+                  type: string
+                  enum: ["like", "love", "haha", "wow", "sad", "angry"]
+                  description: "Loại cảm xúc"
+      responses:
+        "200":
+          description: "Cảm xúc đã được cập nhật"
+        "400":
+          description: "Dữ liệu không hợp lệ"
+        "404":
+          description: "Không tìm thấy bài viết"

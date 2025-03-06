@@ -5,8 +5,8 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { Separator } from '@/components/ui/separator'
 import { AnimatePresence, motion } from 'framer-motion'
-import { MessageCircle, MoreHorizontal, ThumbsUp } from 'lucide-react'
-import { useState } from 'react'
+import { MessageCircle, MoreHorizontal, ThumbsUp} from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
 import { PiShareFatBold } from "react-icons/pi"
 import PostComments from './PostComments'
 import { formatedDate } from '@/lib/utils'
@@ -20,13 +20,29 @@ const PostCard = ({post, reaction, onReact, onComment, onShare}) => {
   const [showReactionChooser, setShowReactionChooser] = useState(false)
   const [isChoosing, setIsChoosing] = useState(false)
   const totalReact = post?.reactionStats?.like+post?.reactionStats?.love+post?.reactionStats?.haha+post?.reactionStats?.wow+post?.reactionStats?.sad+post?.reactionStats?.angry
-
-
-
-  const userPlaceholder = post?.user?.username?.split(" ").map((name) => name[0]).join(""); // tên người đăng bài viết tắt
-
-
-
+  const commentInputRef = useRef(null)
+  const handleCommentClick = () =>{
+    setShowComments(!showComments)
+    setTimeout(()=>{
+      commentInputRef?.current?.focus();
+    },0)
+  }
+  const userPostPlaceholder = post?.user?.username?.split(" ").map((name) => name[0]).join(""); // tên người đăng bài viết tắt
+  const [topReactions, setTopReactions] = useState([]);
+  useEffect(() => {
+    //đảm bảo object hợp lệ
+      if (!post?.reactionStats || typeof post?.reactionStats !== "object") {
+      setTopReactions([]);
+      return;
+  }
+    // cập nhật danh sách top reactions
+    const filteredReactions = Object.entries(post?.reactionStats)
+        .filter(([key, value]) => value > 0) // loại bỏ reaction có số lượng = 0
+        .sort((a, b) => b[1] - a[1]) // sắp xếp giảm dần theo số lượng
+        .slice(0, 3); // lấy 3 reaction nhiều nhất
+    
+    setTopReactions(filteredReactions);
+}, [post?.reactionStats]); // Chạy lại khi reactionStats thay đổi
 
   const generateSharedLink = () => {
     return `http://localhost:3000/${post?.id}`;
@@ -57,13 +73,7 @@ const PostCard = ({post, reaction, onReact, onComment, onShare}) => {
   const handleReaction = (reaction) => {
     console.log("(PostCard.jsx/handleReaction) Reaction in post that has id", post?._id,":", reaction)
     setIsChoosing(false)  //đã chọn được 'cảm xúc'
-   // onReact(post?._id,reaction);
-
-
-
-
-
-
+    onReact(reaction);
     setShowReactionChooser(false); // Ẩn thanh reaction sau khi chọn
   };
   return (
@@ -81,7 +91,7 @@ const PostCard = ({post, reaction, onReact, onComment, onShare}) => {
               {post?.user?.profilePicture ? (
                 <AvatarImage src={post?.user?.profilePicture} alt={post?.user?.username}/>
                 ):(
-                <AvatarFallback>{userPlaceholder}</AvatarFallback>
+                <AvatarFallback>{userPostPlaceholder}</AvatarFallback>
               )}
               </Avatar>
               <div>
@@ -112,35 +122,36 @@ const PostCard = ({post, reaction, onReact, onComment, onShare}) => {
             </video>
           )}
           <div className="flex justify-between items-center mb-2">
-            <span className="text-[15px] text-gray-500 hover:underline border-gray-400 cursor-pointer">
+            <span className="text-[15px] text-gray-500 hover:underline border-gray-400 cursor-pointer flex">
               {
-              totalReact>1000000?totalReact/1000000+" triệu":  //Nếu tổng lượt react >1tr thì hiển thị kiểu 1 triệu, 2 triệu,...
-              totalReact>1000?totalReact/1000+" ngàn":totalReact  //Nếu tổng lượt react >1000 thì hiển thị kiểu 1 ngàn, 2 ngàn,...
+               topReactions.map((reaction)=>(
+                <Image src={`/${reaction[0]}.png`} alt={`${reaction[0]}`}  width={18} height={18} key={reaction[0]}/>
+                ))
               }
+              &nbsp;
+              {
+              totalReact > 0 && (
+              totalReact>1000000?totalReact/1000000+"M":  //Nếu tổng lượt react >1tr thì hiển thị kiểu 1M, 2M,...
+              totalReact>1000?totalReact/1000+"k":totalReact  //Nếu tổng lượt react >1000 thì hiển thị kiểu 1k, 2k,...
+              )}
             </span>
             <div className="flex gap-3">
               <span
                 className="text-[15px] text-gray-500 hover:underline border-gray-400 cursor-pointer"
                 onClick={() => setShowComments(!showComments)}
               >
-                3 bình luận
-
-
-
-
-
-
-
-
+              {
+              post?.commentCount > 0 && (  
+              post?.commentCount>1000000?post?.commentCount/1000000+" triệu":  //Nếu tổng lượt react >1tr thì hiển thị kiểu 1 triệu, 2 triệu,...
+              post?.commentCount>1000?post?.commentCount/1000+" ngàn":post?.commentCount  //Nếu tổng lượt react >1000 thì hiển thị kiểu 1 ngàn, 2 ngàn,...
+              +" bình luận")}
               </span>
               <span className="text-[15px] text-gray-500 hover:underline border-gray-400 cursor-pointer">
-                4 lượt chia sẻ
-
-
-
-
-
-
+              {
+              post?.shareCount > 0 && (  
+                post?.shareCount>1000000?post?.shareCount/1000000+" triệu":  //Nếu tổng lượt react >1tr thì hiển thị kiểu 1 triệu, 2 triệu,...
+                post?.shareCount>1000?post?.shareCount/1000+" ngàn":post?.shareCount  //Nếu tổng lượt react >1000 thì hiển thị kiểu 1 ngàn, 2 ngàn,...
+              +" lượt chia sẻ")}
               </span>
             </div>
           </div>
@@ -150,11 +161,28 @@ const PostCard = ({post, reaction, onReact, onComment, onShare}) => {
               onMouseEnter={()=>setShowReactionChooser(true)} //mở bảng để mukbang cảm xúc :))
               onMouseLeave={() =>setTimeout(() => setShowReactionChooser(false), 500)}
               variant="ghost"
-              className={`flex-1 hover:bg-gray-100 text-gray-500 hover:text-gray-500 text-[15px] h-8`}
+              className={`flex-1 hover:bg-gray-100 text-gray-500 hover:text-gray-500 text-[15px] h-8 
+                ${reaction=="like"?'text-blue-600'
+                  :reaction=="love"?"text-red-600"
+                  :reaction=="haha"||reaction=="sad"||reaction=="wow"?"text-yellow-400"
+                  :reaction=="angry"?"text-orange-500":""}
+              `}
             >
-              <ThumbsUp style={{ width: "20px", height: "20px" }} /> {reaction?reaction:'Thích'}
+              {reaction=="like"? <Image src={"/like.png"} alt="haha"  width={24} height={24}/> 
+              :reaction=="love"? <Image src={"/love.png"} alt="haha"  width={24} height={24}/> 
+              :reaction=="haha"? <Image src={"/haha.png"} alt="haha"  width={24} height={24}/> 
+              :reaction=="wow"? <Image src={"/wow.png"} alt="haha"  width={24} height={24}/> 
+              :reaction=="sad"? <Image src={"/sad.png"} alt="haha"  width={24} height={24}/> 
+              :reaction=="angry"? <Image src={"/angry.png"} alt="haha"  width={24} height={24}/> 
+              : <ThumbsUp style={{ width: "20px", height: "20px" }} /> }
+              {reaction=="love"?"Yêu thích"
+              :reaction=="haha"?"Haha"
+              :reaction=="wow"?"Wow"
+              :reaction=="sad"?"Buồn"
+              :reaction=="angry"?"Phẫn nộ"
+              :"Thích"}
             </Button>
-            {(showReactionChooser||isChoosing) && ( //nếu đang để chuột ở nút mở bảng chọn hoặc trong bảng chọn thì bảng chọn sẽ luôn hiện
+            {(showReactionChooser||isChoosing) && ( //nếu đang để chuột ở nút mở bảng chọn hoặc trong bảng chọn thì bảng chọn sẽ luôn hiện tránh tình trạng chưa chọn xong đã bị ẩn
             <div
             className={"absolute bottom-10 bg-white flex shadow gap-1 transition-all opacity-100 scale-100 translate-y-0 rounded-2xl"}
             onMouseEnter={()=>setIsChoosing(true)}  //đang chọn
@@ -162,54 +190,49 @@ const PostCard = ({post, reaction, onReact, onComment, onShare}) => {
             >
             <motion.button whileHover={{ scale: 2 }}  //phóng to biểu tượng lên
             className="px-2 py-2" onClick={()=>{
-              handleReaction('Like')
+              handleReaction('like')
             }}>
-              <Image src={"/like.gif"} alt="like" width={30} height={30}/>
+              <Image src={"/like.gif"} alt="like" width={30} height={30} unoptimized/>
             </motion.button>
             <motion.button whileHover={{ scale: 2 }}
             className="px-2 py-2" onClick={()=>{
-              handleReaction('Love')
+              handleReaction('love')
             }}>
-            <Image src={"/love.gif"} alt="love"  width={30} height={30}/>
+            <Image src={"/love.gif"} alt="love"  width={30} height={30} unoptimized/>
             </motion.button>
             <motion.button whileHover={{ scale: 2 }}
             className="px-2 py-2" onClick={()=>{
-              handleReaction('Haha')
+              handleReaction('haha')
             }}>
-            <Image src={"/haha.gif"} alt="haha"  width={30} height={30}/>
+            <Image src={"/haha.gif"} alt="haha"  width={30} height={30} unoptimized/>
             </motion.button>
             <motion.button whileHover={{ scale: 2 }}
             className="px-2 py-2" onClick={()=>{
-              handleReaction('Wow')
+              handleReaction('wow')
             }}>
-              <Image src={"/wow.gif"} alt="wow"  width={30} height={30}/>
+              <Image src={"/wow.gif"} alt="wow"  width={30} height={30} unoptimized/>
             </motion.button>
             <motion.button whileHover={{ scale: 2 }}
             className="px-2 py-2" onClick={()=>{
-              handleReaction('Sad')
+              handleReaction('sad')
             }}>
-            <Image src={"/sad.gif"} alt="sad"  width={30} height={30}/>
+            <Image src={"/sad.gif"} alt="sad"  width={30} height={30} unoptimized/>
             </motion.button>
             <motion.button whileHover={{ scale: 2 }}
             className="px-2 py-2" onClick={()=>{
-              handleReaction('Angry')
+              handleReaction('angry')
             }}>
-            <Image src={"/angry.gif"} alt="angry"  width={30} height={30}/>
+            <Image src={"/angry.gif"} alt="angry"  width={30} height={30} unoptimized/>
             </motion.button>
             </div>
           )}
             <Button
               variant="ghost"
               className={`flex-1 hover:bg-gray-100 text-gray-500 hover:text-gray-500 text-[15px] h-8`}
+              onClick={handleCommentClick}
             >
               <MessageCircle style={{ width: "20px", height: "20px" }} /> Bình luận
             </Button>
-
-
-
-
-
-
 
             <Dialog
               open={isShareDialogOpen}
@@ -219,6 +242,7 @@ const PostCard = ({post, reaction, onReact, onComment, onShare}) => {
                 <Button
                   variant="ghost"
                   className="flex-1 hover:bg-gray-100 text-gray-500 hover:text-gray-500 text-[15px] h-8"
+                  onClick={onShare} //bấm vô là tăng lượt share :))
                 >
                   <PiShareFatBold style={{ width: "20px", height: "20px" }} /> Chia sẻ
                 </Button>
@@ -270,6 +294,8 @@ const PostCard = ({post, reaction, onReact, onComment, onShare}) => {
               >
                 <PostComments
                   post={post}
+                  onComment={onComment}
+                  commentInputRef={commentInputRef}
                 />
               </motion.div>
             )}

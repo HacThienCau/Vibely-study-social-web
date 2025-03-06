@@ -1,4 +1,4 @@
-import { addCommentToPost, createPost, getAllPosts, getAllStories, getPostByUserId, reactPost, sharePost } from '@/service/post.service';
+import { addCommentToPost, createPost, getAllPosts, getAllStories, getPostByUserId, reactPost, sharePost, createStory } from '@/service/post.service';
 import toast from 'react-hot-toast';
 import { create } from 'zustand';
 //quản lý trạng thái các bài viết và story
@@ -87,14 +87,16 @@ export const usePostStore = create((set)=>({
         }
     },
 
-    handleCommentPost: async(postId) =>{
+    handleCommentPost: async(postId,commentText) =>{
         set({loading:true})
         try {
-            const newComment = await addCommentToPost(postId,{comment})
+            console.log("handleCommentPost: ",commentText)
+            const newComment = await addCommentToPost(postId,commentText)
+            //console.log("handleCommentPost/newComment: ",newComment)
             set((state)=>({
                 posts: state.posts.map((post)=>
                 post?._id === postId
-                ?{...post,comments:{...post.comments,newComment}}      
+                ?newComment?.data   //object trả về là nguyên cái bài viết chứ ko phải mỗi cmt :))
                 //thêm 1 comment vào phẩn cuối danh sách comments của 1 bài viết với _id là postId
                 :post
                 ),

@@ -19,7 +19,7 @@ const Homepage = () => {
   useEffect(()=>{
     const saveReacts = localStorage.getItem('reactPosts')
     if(saveReacts){
-      setReactPosts(new Set(JSON.parse(saveReacts)))
+      setReactPosts(JSON.parse(saveReacts))
     }
   },[])
   const handleReact = async(postId, reactType)=>{
@@ -63,8 +63,9 @@ const Homepage = () => {
                   post={post} 
                   reaction = {reactPosts[post?._id]||null} //loại react
                   onReact={(reactType) => handleReact(post?._id, reactType)}  // chức năng react
-                  onComment = { async()=>{  //chức năng comment
-                    await handleCommentPost(post?._id, comment.text)
+                  onComment = { async(commentText)=>{  //chức năng comment
+                    //console.log("onComment: ",commentText)
+                    await handleCommentPost(post?._id, commentText)
                     await fetchPosts()
                   }}
                   onShare = { async()=>{  //chức năng share
