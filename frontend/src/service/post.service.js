@@ -70,7 +70,7 @@ export const addCommentToPost = async(postId,commentText) => {
 // phương thức để share cho một bài viết
 export const sharePost = async(postId) => {
     try {
-        const result = await axiosInstance.post(`/users/posts/share/${postId}`)
+        const result = await axiosInstance.post(`/users/posts/share/${postId}`,{ type: reactType })
         return result?.data?.data
     } catch (error) {
         console.error(error)
@@ -88,3 +88,13 @@ export const getPostByUserId = async(userId) => {
         throw error
     }
 }
+
+export const reactStory = async (postId) => {
+    try {
+        const result = await axiosInstance.post(`users/story/reacts/${postId}`);
+        return result?.data;
+    } catch (error) {
+        console.error("Lỗi khi react bài viết:", error);
+        throw error;
+    }
+};

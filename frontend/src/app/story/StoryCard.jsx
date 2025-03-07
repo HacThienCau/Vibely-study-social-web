@@ -8,7 +8,7 @@ import userStore from '@/store/userStore'
 import { usePostStore } from '@/store/usePostStore'
 import ShowStoryPreview from './ShowStoryPreview'
 
-const StoryCard = ({isAddStory, story}) => {
+const StoryCard = ({isAddStory, story, onReact, reaction}) => {
     const [filePreview, setFilePreview] = useState(null)
     const {handleCreateStory} = usePostStore()
     const {user} = userStore() //lấy thông tin người dùng
@@ -143,6 +143,8 @@ const StoryCard = ({isAddStory, story}) => {
             username={isNewStory? user?.username : story?.user?.username} //viet story moi thi username cua minh, nguoc lai dang xem cua ng khac
             avatar={isNewStory? user?.profilePicture : story?.user?.profilePicture}
             isLoading={loading}
+            reaction={reaction}
+            onReact={(reactType) => onReact(reactType)}  // chức năng react
         />
     )}
     </>

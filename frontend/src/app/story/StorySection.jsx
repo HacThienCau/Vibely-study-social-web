@@ -5,16 +5,46 @@ import { Button } from "@/components/ui/button";
 import StoryCard from "./StoryCard";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { usePostStore } from "@/store/usePostStore";
+import toast from "react-hot-toast";
 
 
 const StorySection = () => {
   const [scrollPosition, setScrollPosition] = useState(0);
   const [maxScroll, setMaxScroll] = useState(0);
   const containerRef = useRef();
-  const {stories, fetchStories} = usePostStore()
+  const {stories, fetchStories, handleReactStory} = usePostStore()
   useEffect(()=>{
     fetchStories()
   },[fetchStories])
+  const[reactStories, setReactStories] = useState(new Set()); // danh sách những story mà người dùng đã react
+  useEffect(()=>{
+    const saveReacts = localStorage.getItem('reactStories')
+    if(saveReacts){
+      setReactStories(JSON.parse(saveReacts))
+    }
+  },[])
+
+  const handleReact = async(storyId, reactType)=>{
+    const updatedReactStories = { ...reactStories }; 
+    if(updatedReactStories && updatedReactStories[storyId]=== reactType){ 
+      delete updatedReactStories[storyId]; // hủy react nếu nhấn lại
+    }
+    else{ 
+      updatedReactStories[storyId] = reactType; // cập nhật cảm xúc mới
+    }
+    //lưu danh sách mới vào biến
+    setReactStories(updatedReactStories)
+    //lưu vào cục bộ
+    localStorage.setItem('reactStories', JSON.stringify(updatedReactStories));
+
+    try {
+      await handleReactStory(storyId, updatedReactStories[storyId] || null) //api
+      await fetchStories()// tải lại danh sách
+    } catch (error) {
+      console.log(error)
+      toast.error("Đã xảy ra lỗi khi bày tỏ cảm xúc với bài viết này. Vui lòng thử lại.")
+    }
+  }
 
   useEffect(() => {
     const container = containerRef.current;
@@ -62,7 +92,9 @@ const StorySection = () => {
         >
           <StoryCard isAddStory={true}/>
           {stories?.map((story) => (
-            <StoryCard story={story} key={story._id} />
+            <StoryCard story={story} key={story._id} 
+            reaction = {reactStories[story?._id]||null} //loại react 
+            onReact={(reactType) => handleReact(story?._id, reactType)} />
           ))}
         </motion.div>
         {/* left side scrollbutton  */}

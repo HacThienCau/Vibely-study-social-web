@@ -1,9 +1,10 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
-import { X } from 'lucide-react'
+import { Heart, X } from 'lucide-react'
+import Image from 'next/image'
 import React from 'react'
 
-const ShowStoryPreview = ({file,fileType,onClose,onPost,isNewStory,username,avatar,isLoading}) => {
+const ShowStoryPreview = ({file,fileType,onClose,onPost,isNewStory,username,avatar,isLoading,onReact,reaction}) => {
     const userPlaceholder = username?.split(" ").map((name) => name[0]).join(""); //tên người dùng viết tắt
   return (
     <div className='fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50'>
@@ -53,6 +54,26 @@ const ShowStoryPreview = ({file,fileType,onClose,onPost,isNewStory,username,avat
                     {isLoading? "Đang lưu..." : "Đăng"}
                 </Button>
             </div>
+        )}
+        {/*tym*/}
+        {!isNewStory && (
+        <div className='absolute bottom-4 right-2 transform -translate-x-1/2'>
+            <Button className='bg-white hover:bg-gray-400 text-[#086280]'
+             onClick={()=>onReact('tym')}
+            >
+                {reaction?
+                <div className='flex gap-2'>
+                    <Image src={"/love.png"} alt="haha"  width={24} height={24}/>
+                    <span>Đã tym</span>
+                </div>
+                : 
+                <div className='flex gap-2'>
+                    <Heart style={{ width: "20px", height: "20px" }}/>
+                    <span>Tym</span>
+                </div>
+                }
+            </Button>
+        </div>
         )}
         </div>
     </div>
