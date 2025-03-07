@@ -70,7 +70,7 @@ export const addCommentToPost = async(postId,commentText) => {
 // phương thức để share cho một bài viết
 export const sharePost = async(postId) => {
     try {
-        const result = await axiosInstance.post(`/users/posts/share/${postId}`,{ type: reactType })
+        const result = await axiosInstance.post(`/users/posts/share/${postId}`)
         return result?.data?.data
     } catch (error) {
         console.error(error)
