@@ -88,3 +88,13 @@ export const getPostByUserId = async(userId) => {
         throw error
     }
 }
+
+export const reactStory = async (postId) => {
+    try {
+        const result = await axiosInstance.post(`users/story/reacts/${postId}`);
+        return result?.data;
+    } catch (error) {
+        console.error("Lỗi khi react bài viết:", error);
+        throw error;
+    }
+};
