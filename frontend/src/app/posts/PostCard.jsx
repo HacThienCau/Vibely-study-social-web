@@ -8,10 +8,13 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { MessageCircle, MoreHorizontal, ThumbsUp} from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { PiShareFatBold } from "react-icons/pi"
+import { FaXTwitter } from "react-icons/fa6";
+import { FaFacebook, FaLinkedin } from "react-icons/fa";
+import { AiOutlineCopy } from "react-icons/ai";
+import { QRCodeCanvas } from "qrcode.react";
 import PostComments from './PostComments'
 import { formatedDate } from '@/lib/utils'
 import Image from 'next/image'
-import toast from 'react-hot-toast'
 
 
 const PostCard = ({post, reaction, onReact, onComment, onShare}) => {
@@ -45,29 +48,31 @@ const PostCard = ({post, reaction, onReact, onComment, onShare}) => {
 }, [post?.reactionStats]); // Chạy lại khi reactionStats thay đổi
 
   const generateSharedLink = () => {
-    return `http://localhost:3000/${post?.id}`;
+    return `http://localhost:3000/${post?._id}`; //sau khi deploy thì đổi lại + tạo trang bài viết đi!!!!
   };
   const handleShare = (platform) => {
     const url = generateSharedLink();
     let shareUrl;
     switch (platform) {
       case "facebook":
-        shareUrl = `https://www.facebook.com/sharer/sharer.php?u=}`;
+        shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
         break;
       case "x":
-        shareUrl = `https://twitter.com/intent/tweet?url=}`;
+        shareUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}`;
         break;
       case "linkedin":
-        shareUrl = `https://www.linkedin.com/shareArticle?mini=true&url=}`;
+        shareUrl = `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(url)}`;
         break;
       case "copy":
         navigator.clipboard.writeText(url);
         setIsShareDialogOpen(false);
+        onShare()
         return;
       default:
         return;
     }
     window.open(shareUrl, "_blank");
+    onShare()
     setIsShareDialogOpen(false);
   };
   const handleReaction = (reaction) => {
@@ -242,7 +247,6 @@ const PostCard = ({post, reaction, onReact, onComment, onShare}) => {
                 <Button
                   variant="ghost"
                   className="flex-1 hover:bg-gray-100 text-gray-500 hover:text-gray-500 text-[15px] h-8"
-                  onClick={onShare} //bấm vô là tăng lượt share :))
                 >
                   <PiShareFatBold style={{ width: "20px", height: "20px" }} /> Chia sẻ
                 </Button>
@@ -254,31 +258,49 @@ const PostCard = ({post, reaction, onReact, onComment, onShare}) => {
                     Chọn cách bạn muốn chia sẻ bài viết này
                   </DialogDescription>
                 </DialogHeader>
-                <div className="flex flex-col space-y-4 ">
+                <div className="flex items-center justify-around my-[10px]">
                   <Button
-                    className="bg-gray-300 hover:bg-gray-200"
+                    className="hover:bg-gray-200 flex-col justify-between"
+                    variant="ghost"
+                    size="bigIcon"
                     onClick={() => handleShare("facebook")}
                   >
-                    Chia sẻ trên Facebook
+                    <FaFacebook style={{ width: "40px", height: "40px",color: "#1877F2" }} />
+                    Facebook
                   </Button>
                   <Button 
-                    className="bg-gray-300 hover:bg-gray-200"
+                    className="hover:bg-gray-200 flex-col justify-between"
+                    variant="ghost"
+                    size="bigIcon"
                     onClick={() => handleShare("x")}
                   >
-                    Chia sẻ trên X
+                    <FaXTwitter style={{ width: "40px", height: "40px",color: "#000000" }} />
+                    X
                   </Button>
                   <Button 
-                    className="bg-gray-300 hover:bg-gray-200"
+                    className="hover:bg-gray-200 flex-col justify-between"
+                    variant="ghost"
+                    size="bigIcon"
                     onClick={() => handleShare("linkedin")}
                   >
-                    Chia sẻ trên Linkedin
+                    <FaLinkedin  style={{ width: "40px", height: "40px",color: "#0088CC" }}/>
+                    LinkedIn
                   </Button>
                   <Button 
-                    className="bg-gray-300 hover:bg-gray-200"
+                    className="hover:bg-gray-200 flex-col justify-between"
+                    variant="ghost"
+                    size="bigIcon"
                     onClick={() => handleShare("copy")}
                   >
+                    <AiOutlineCopy style={{ width: "40px", height: "40px",color: "#000000" }} />
                     Sao chép liên kết
                   </Button>
+                </div>
+                <div>
+                  <div className='flex justify-center items-center'>
+
+                    <QRCodeCanvas value={generateSharedLink()} size={200} />
+                  </div>
                 </div>
               </DialogContent>
             </Dialog>
