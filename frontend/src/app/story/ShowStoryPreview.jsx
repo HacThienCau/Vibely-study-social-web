@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button'
 import { Heart, X } from 'lucide-react'
 import Image from 'next/image'
 import React from 'react'
+import { motion } from 'framer-motion'
 
 const ShowStoryPreview = ({file,fileType,onClose,onPost,isNewStory,username,avatar,isLoading,onReact,reaction}) => {
     const userPlaceholder = username?.split(" ").map((name) => name[0]).join(""); //tên người dùng viết tắt
@@ -57,23 +58,22 @@ const ShowStoryPreview = ({file,fileType,onClose,onPost,isNewStory,username,avat
         )}
         {/*tym*/}
         {!isNewStory && (
-        <div className='absolute bottom-4 right-2 transform -translate-x-1/2'>
-            <Button className='bg-white hover:bg-gray-400 text-[#086280]'
+        <motion.div className='absolute bottom-4 right-2 transform' whileTap={!reaction?{ scale: 5 }:{}}>
+            <Button className='py-6'
+            variant="ghost"
              onClick={()=>onReact('tym')}
             >
                 {reaction?
                 <div className='flex gap-2'>
-                    <Image src={"/love.png"} alt="haha"  width={24} height={24}/>
-                    <span>Đã tym</span>
+                    <Image src={"/love.png"} alt="loved" width={36} height={36}/>
                 </div>
                 : 
-                <div className='flex gap-2'>
-                    <Heart style={{ width: "20px", height: "20px" }}/>
-                    <span>Tym</span>
-                </div>
+                <motion.div className='flex gap-2 text-black'>
+                    <Heart style={{ width: "30px", height: "30px" }}/>
+                </motion.div>
                 }
             </Button>
-        </div>
+        </motion.div>
         )}
         </div>
     </div>
