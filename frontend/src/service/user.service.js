@@ -1,5 +1,6 @@
 import axiosInstance from "./url.service";
 
+// Lấy danh sách yêu cầu kết bạn
 export const getAllFriendsRequest = async() =>{
     try {
          const response = await axiosInstance.get('/users/friend-request')
@@ -10,6 +11,7 @@ export const getAllFriendsRequest = async() =>{
     }
 }
 
+//  Lấy danh sách gợi ý kết bạn
 export const getAllFriendsSuggestion = async() =>{
     try {
          const response = await axiosInstance.get('/users/user-to-request')
@@ -41,6 +43,7 @@ export const UnfollowUser = async(userId) =>{
     }
 }
 
+// Xóa một yêu cầu kết bạn
 export const deleteUserFromRequest = async(userId) =>{
     try {
          const response = await axiosInstance.post('/users/friend-request/remove', {requestSenderId:userId})
@@ -51,6 +54,7 @@ export const deleteUserFromRequest = async(userId) =>{
     }
 }
 
+//  Lấy thông tin hồ sơ người dùng
 export const fetchUserProfile = async(userId) =>{
     try {
          const response = await axiosInstance.get(`/users/profile/${userId}`)
@@ -61,6 +65,7 @@ export const fetchUserProfile = async(userId) =>{
     }
 }
 
+// Lấy danh sách bạn chung
 export const getMutualFriends = async() =>{
     try {
          const response = await axiosInstance.get(`/users/mutual-friends`)
@@ -71,6 +76,7 @@ export const getMutualFriends = async() =>{
     }
 }
 
+// Cập nhật hồ sơ người dùng
 export const updateUserProfile = async(userId,updateData) =>{
     try {
          const response = await axiosInstance.put(`/users/profile/${userId}`,updateData)
@@ -81,6 +87,7 @@ export const updateUserProfile = async(userId,updateData) =>{
     }
 }
 
+// Cập nhật ảnh bìa hồ sơ
 export const updateUserCoverPhoto = async(userId,updateData) =>{
     try {
          const response = await axiosInstance.put(`/users/profile/cover-photo/${userId}`,updateData)
@@ -91,6 +98,7 @@ export const updateUserCoverPhoto = async(userId,updateData) =>{
     }
 }
 
+// Tạo hoặc cập nhật tiểu sử (Bio) của người dùng
 export const createOrUpdateUserBio = async(userId,bioData) =>{
     try {
          const response = await axiosInstance.put(`/users/bio/${userId}`,bioData)
