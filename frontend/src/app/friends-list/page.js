@@ -1,15 +1,43 @@
 "use client";
 //import React from "react";
 import { FriendCardSkeleton, NoFriendsMessage } from "@/lib/Skeleton";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import LeftSideBar from "../components/LeftSideBar";
 import FriendRequest from "./FriendRequest";
 import FriendsSuggestion from "./FriendsSuggestion";
+import { userFriendStore } from "@/store/userFriendsStore";
+import toast from "react-hot-toast";
 
 const Page = () => {
-  const [loading, setLoading] = useState(false);
-  const friendRequest = [{}];
-  const friendSuggestion = [{}];
+  const {
+    followUser,
+    loading,
+    UnfollowUser,
+    fetchFriendRequest,
+    fetchFriendSuggestion,
+    deleteUserFromRequest,
+    fetchMutualFriends,
+    friendRequest,
+    friendSuggestion,
+    mutualFriends,
+  } = userFriendStore();
+
+  useEffect(() => {
+    fetchFriendRequest(), fetchFriendSuggestion();
+  }, []);
+
+  const handleAction = async (action, userId) => {
+    if (action === "confirm") {
+      toast.success("Thêm bạn thành công");
+      await followUser(userId);
+      fetchFriendRequest();
+      fetchFriendSuggestion();
+    } else if (action === "delete") {
+      await UnfollowUser(userId);
+      fetchFriendRequest();
+      fetchFriendSuggestion();
+    }
+  };
 
   return (
     <div className="min-h-screen">
@@ -29,8 +57,8 @@ const Page = () => {
               <FriendRequest
                 key={friend._id}
                 friend={friend}
-                //loading={loading}
-                //onAction={handleAction}
+                loading={loading}
+                onAction={handleAction}
               />
             ))
           )}
@@ -52,8 +80,8 @@ const Page = () => {
               <FriendsSuggestion
                 key={friend._id}
                 friend={friend}
-                //loading={loading}
-                //onAction={handleAction}
+                loading={loading}
+                onAction={handleAction}
               />
             ))
           )}

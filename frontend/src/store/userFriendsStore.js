@@ -50,28 +50,25 @@ export const userFriendStore = create((set, get) => ({
     }
   },
   followUser: async (userId) => {
-    set({ loading: true });
     try {
       await followUser(userId);
     } catch (error) {
-      set({ error, loading: false });
+      console.log(error);
     }
   },
   UnfollowUser: async (userId) => {
-    set({ loading: true });
     try {
       await UnfollowUser(userId);
     } catch (error) {
-      set({ error, loading: false });
+        console.log(error);
     }
   },
   deleteUserFromRequest: async (userId) => {
-    set({ loading: true });
     try {
       await deleteUserFromRequest(userId);
       toast.success("you have deleted friend successfully");
     } catch (error) {
-      set({ error, loading: false });
+        console.log(error);
     }
   },
 }));
