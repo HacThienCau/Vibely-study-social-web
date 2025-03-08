@@ -15,6 +15,8 @@ import { QRCodeCanvas } from "qrcode.react";
 import PostComments from './PostComments'
 import { formatedDate } from '@/lib/utils'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
+
 
 
 const PostCard = ({post, reaction, onReact, onComment, onShare}) => {
@@ -24,6 +26,13 @@ const PostCard = ({post, reaction, onReact, onComment, onShare}) => {
   const [isChoosing, setIsChoosing] = useState(false)
   const totalReact = post?.reactionStats?.like+post?.reactionStats?.love+post?.reactionStats?.haha+post?.reactionStats?.wow+post?.reactionStats?.sad+post?.reactionStats?.angry
   const commentInputRef = useRef(null)
+
+const router= useRouter()
+
+const handleUserProfile = ()  => {
+  router.push(`/user-profile/${post?.user?._id}`)
+}
+
   const handleCommentClick = () =>{
     setShowComments(!showComments)
     setTimeout(()=>{
@@ -91,7 +100,7 @@ const PostCard = ({post, reaction, onReact, onComment, onShare}) => {
       <Card className="bg-white shadow-md rounded-lg border border-gray-200">
         <CardContent className="p-4">
           <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center space-x-3 cursor-pointer">
+            <div className="flex items-center space-x-3 cursor-pointer" onClick={handleUserProfile}>
               <Avatar>
               {post?.user?.profilePicture ? (
                 <AvatarImage src={post?.user?.profilePicture} alt={post?.user?.username}/>

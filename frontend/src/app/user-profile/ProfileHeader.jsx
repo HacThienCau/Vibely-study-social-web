@@ -2,12 +2,28 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Check, Pencil, PenLine, Save, SquarePlus, X } from "lucide-react";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { updateUserProfile } from "@/service/user.service";
+import userStore from "@/store/userStore";
+import { useForm } from "react-hook-form";
 
-const ProfileHeader = () => {
+const ProfileHeader = ({
+  id,
+  profileData,
+  isOwner,
+  setProfileData,
+  fetchProfile,
+}) => {
   const [isEditProfileModel, setIsEditProfileModel] = useState(false);
   const [isEditingField, setIsEditingField] = useState(null);
   const [profile, setProfile] = useState({
@@ -17,6 +33,75 @@ const ProfileHeader = () => {
     education: "Trường đại học Công nghệ Thông tin",
     birthday: "01/01/2000",
   });
+  const [profilePictureFile, setProfilePictureFile] = useState(null);
+  const [coverPhotoFile, setCoverPhotoFile] = useState(null);
+
+  const [coverPhotoPreview, setCoverPhotoPreview] = useState(null);
+  const [profilePicturePreview, setProfilePicturePreview] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const { setUser } = userStore();
+
+  const { register, handleSubmit, setValue } = useForm({
+    defaultValues: {
+      username: profileData?.username,
+      dateOfBirth: profileData?.dateOfBirth?.split("T")[0],
+      gender: profileData?.gender,
+    },
+  });
+
+  const profileImageInputRef = useRef();
+  const coverImageInputRef = useRef();
+
+  const onSubmitProfile = async (data) => {
+    try {
+      setLoading(true);
+      const formData = new FormData();
+      formData.append("dateOfBirth", data.dateOfBirth);
+      formData.append("gender", data.gender);
+
+      if (profilePictureFile) {
+        formData.append("profilePicture", profilePictureFile);
+      }
+
+      if (coverPhotoFile) {
+        formData.append("coverPhoto", coverPhotoFile);
+      }
+
+      const updateProfile = await updateUserProfile(id, formData);
+      setProfileData({ ...profileData, ...updateProfile });
+      setIsEditProfileModel(false);
+      setProfilePicturePreview(null);
+
+      setCoverPhotoFile(null);
+
+      setUser(updateProfile);
+      await fetchProfile();
+    } catch (error) {
+      console.error("Lỗi khi cập nhật trang cá nhân", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleProfilePictureChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setProfilePictureFile(file);
+
+      const previewUrl = URL.createObjectURL(file);
+      setProfilePicturePreview(previewUrl);
+    }
+  };
+
+  const handleCoverPhotoChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setCoverPhotoFile(file);
+
+      const previewUrl = URL.createObjectURL(file);
+      setCoverPhotoPreview(previewUrl);
+    }
+  };
 
   const handleEdit = (field) => {
     setIsEditingField(field);
@@ -26,15 +111,22 @@ const ProfileHeader = () => {
     setIsEditingField(null);
   };
 
+  // const handleSave = (field, value) => {
+  //   setProfile((prev) => ({ ...prev, [field]: value }));
+  //   setIsEditingField(null);
+  // };
+
   const handleSave = (field, value) => {
     setProfile((prev) => ({ ...prev, [field]: value }));
+    setValue(field, value); //  Đồng bộ với react-hook-form
     setIsEditingField(null);
   };
   return (
     <div className="relative">
+      {/* Ảnh bìa trang cá nhân */}
       <div className="relative h-64 md:h-80 bg-gray-300 overflow-hidden ">
         <img
-          src="/images/BG.png"
+          src={profileData?.coverPhoto}
           alt="cover"
           className="w-full h-full object-cover"
         />
@@ -43,26 +135,38 @@ const ProfileHeader = () => {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 -mt-12 relative z-10">
         <div className="flex flex-col md:flex-row items-center md:items-end md:space-x-5 ">
           <Avatar className="w-32 h-32 border-4 border-white dark:border-gray-700">
-            <AvatarImage src="/images/phuong.jpg" />
-            <AvatarFallback className="dark:bg-gray-400">P</AvatarFallback>
+            <AvatarImage
+              src={profileData?.profilePicture}
+              alt={profileData.username}
+            />
+            <AvatarFallback className="dark:bg-gray-400">
+              {profileData?.username
+                ?.split(" ")
+                .map((name) => name[0])
+                .join("")}
+            </AvatarFallback>
           </Avatar>
           <div className="mt-4 mdLmt-0 text-center md:text-left flex-grow">
-            <h1 className="text-3xl font-bold">Võ Nhất Phương</h1>
-            <p className="text-gray-400 font-semibold">@phuong.vonhat.tuhy</p>
+            <h1 className="text-3xl font-bold">{profileData?.username}</h1>
+            <p className="text-gray-400 font-semibold">
+              {profileData?.followerCount} nguời bạn
+            </p>
           </div>
-          <div className="flex flex-col">
-            <Button className="mt-4 md:mt-0 bg-[#086280] text-white cursor-pointer">
-              <SquarePlus className="w-4 h-4 mr-2" />
-              Thêm bài viết
-            </Button>
-            <Button
-              className="mt-4 md:mt-1 font-semibold cursor-pointer"
-              onClick={() => setIsEditProfileModel(true)}
-            >
-              <PenLine className="w-4 h-4 mr-2" />
-              Chỉnh sửa trang cá nhân
-            </Button>
-          </div>
+          {isOwner && (
+            <div className="flex flex-col">
+              <Button className="mt-4 md:mt-0 bg-[#086280] text-white cursor-pointer">
+                <SquarePlus className="w-4 h-4 mr-2" />
+                Thêm tin
+              </Button>
+              <Button
+                className="mt-4 md:mt-1 font-semibold cursor-pointer"
+                onClick={() => setIsEditProfileModel(true)}
+              >
+                <PenLine className="w-4 h-4 mr-2" />
+                Chỉnh sửa trang cá nhân
+              </Button>
+            </div>
+          )}
         </div>
       </div>
       {/* edit profile model */}
@@ -95,7 +199,7 @@ const ProfileHeader = () => {
 
               <form
                 className="space-y-4"
-                // onSubmit={handleSubmit(onSubmitProfile)}
+                onSubmit={handleSubmit(onSubmitProfile)}
               >
                 {/* Ảnh đại diện */}
                 <div className="flex flex-col">
@@ -103,20 +207,36 @@ const ProfileHeader = () => {
                     <Label htmlFor="imageProfile" className="font-bold">
                       Ảnh đại diện
                     </Label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      ref={profileImageInputRef}
+                      onChange={handleProfilePictureChange}
+                    />
                     <Button
                       type="button"
                       variant="ghost"
                       size="sm"
                       className="text-[#086280] hover:text-gray-500"
+                      onClick={() => profileImageInputRef.current?.click()}
                     >
                       <Pencil className="w-4 h-4" />
                     </Button>
                   </div>
                   <div className="flex justify-center">
                     <Avatar className="w-24 h-24 border-4 border-white dark:border-gray-700">
-                      <AvatarImage src="/images/phuong.jpg" />
-                      <AvatarFallback className="dark:bg-gray-400">
-                        P
+                      <AvatarImage
+                        src={
+                          profilePicturePreview || profileData?.profilePicture
+                        }
+                        alt={profileData?.username}
+                      />
+                      <AvatarFallback className="bg-gray-400">
+                        {profileData?.username
+                          ?.split(" ")
+                          .map((name) => name[0])
+                          .join("")}
                       </AvatarFallback>
                     </Avatar>
                   </div>
@@ -196,17 +316,35 @@ const ProfileHeader = () => {
                   value={profile.birthday}
                   isEditingField={isEditingField}
                   onEdit={handleEdit}
-                  onSave={handleSave}
+                  // onSave={handleSave}
                   onCancel={handleCancel}
+                  onSave={(field, value) => handleSave(field, value)}
                 />
+
+                {/* Giới tính */}
+                <div>
+                  <Label htmlFor="gender">Giới tính</Label>
+                  <Select
+                    onValueChange={(value) => setValue("gender", value)}
+                    defaultValue={profileData?.gender}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Chọn giới tính" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="male">Nam</SelectItem>
+                      <SelectItem value="female">Nữ</SelectItem>
+                      <SelectItem value="other">Khác</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
 
                 <Button
                   type="submit"
                   className="w-full bg-blue-600 hover:bg-blue-400 text-white"
                 >
                   <Save className="w-4 h-4 mr-2" />
-                  Lưu thay đổi
-                  {/* {loading ? "Saving..." : "Save changes"} */}
+                  {loading ? "Đang lưu" : "Lưu thay đổi"}
                 </Button>
               </form>
             </motion.div>
