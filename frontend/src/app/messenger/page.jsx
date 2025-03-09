@@ -8,7 +8,7 @@ import Conversation from "../components/conversations/Conversation";
 import Message from "../components/message/Message";
 import ChatOnline from "../components/chatOnline/ChatOnline";
 import { checkUserAuth } from "@/service/auth.service";
-import {io} from "socket.io-client";
+import { io } from "socket.io-client";
 
 const Messenger = () => {
     const [user, setUser] = useState(null);
@@ -29,10 +29,10 @@ const Messenger = () => {
                 sender: data.senderId,
                 text: data.text,
                 createdAt: Date.now(),
-            }); 
+            });
         }
         );
-      }, []);
+    }, []);
 
     // Thêm tin nhắn mới vào danh sách tin nhắn
     useEffect(() => {
@@ -50,8 +50,8 @@ const Messenger = () => {
             });
         }
     }, [user]);
-    
-    
+
+
 
     // Kiểm tra xác thực người dùng
     useEffect(() => {
@@ -82,7 +82,7 @@ const Messenger = () => {
 
         getConversations();
     }, [user]);
- 
+
     // Lấy tin nhắn khi currentChat thay đổi
     useEffect(() => {
         if (!currentChat || !currentChat._id) return;
@@ -161,12 +161,12 @@ const Messenger = () => {
                             style={{ textIndent: "40px" }}
                         />
                     </div>
-                    
+
                     {/* Danh sách hội thoại */}
                     {conversations.length > 0 ? (
                         conversations.map((conv) => (
                             <button
-                                key={conv._id} 
+                                key={conv._id}
                                 onClick={() => {
                                     console.log("👉 Chọn hội thoại:", conv);
                                     setCurrentChat(conv);
@@ -199,10 +199,10 @@ const Messenger = () => {
                                 )}
                             </div>
                             <div className="chatBoxBottom">
-                                <textarea className="chatMessageInput" 
-                                          placeholder="Aa"
-                                          onChange={(e) => setNewMessage(e.target.value)}
-                                          value={newMessage}
+                                <textarea className="chatMessageInput"
+                                    placeholder="Aa"
+                                    onChange={(e) => setNewMessage(e.target.value)}
+                                    value={newMessage}
                                 ></textarea>
                                 <img src="images/send.png" alt="send" onClick={handleSubmit} className="chatSubmitButton" />
                             </div>
@@ -221,7 +221,7 @@ const Messenger = () => {
             {/* Danh sách bạn bè online */}
             <div className="chatOnline">
                 <div className="chatOnlineWrapper">
-                {user && <ChatOnline onlineUsers={onlineUsers} currentId={user._id} setCurrentChat={setCurrentChat} />}
+                    {user && <ChatOnline onlineUsers={onlineUsers} currentId={user._id} setCurrentChat={setCurrentChat} />}
                 </div>
             </div>
         </div>
