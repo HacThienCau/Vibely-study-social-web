@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { motion } from "framer-motion";
 import { Avatar } from "@radix-ui/react-avatar";
 import { Card } from "@/components/ui/card";
@@ -11,16 +11,22 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { MoreHorizontal, Search, UserX } from "lucide-react";
+import { userFriendStore } from "@/store/userFriendsStore";
+import toast from "react-hot-toast";
 
 export const MutualFriends = () => {
-  const mutualFriends = [
-    { id: 1, name: "Yoo Je Yi", avatar: "/images/yoo.jpg", fallback: "Y" },
-    { id: 2, name: "Woo Seul Gi", avatar: "/images/woo.jpg", fallback: "W" },
-    { id: 3, name: "Joo Ye Ri", avatar: "/images/joo.jpg", fallback: "J" },
-    { id: 4, name: "Choi Kyung", avatar: "/images/choi.jpg", fallback: "C" },
-    { id: 5, name: "Lê Nguyễn Thùy Dương", avatar: "/images/Duong.jpg", fallback: "D" },
-    { id: 6, name: "Nguyễn Đăng Hương Uyên", avatar: "/images/Uyen.jpg", fallback: "U" },
-  ];
+  const { fetchMutualFriends, mutualFriends, UnfollowUser } = userFriendStore();
+  useEffect(() => {
+
+      fetchMutualFriends();
+
+  }, [fetchMutualFriends]);
+
+  const handleUnfollow = async (userId) => {
+    await UnfollowUser(userId);
+    toast.success("Bạn đã hủy kết bạn thành công");
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -54,27 +60,48 @@ export const MutualFriends = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {mutualFriends.map((friend) => (
             <div
-              key={friend.id}
+              key={friend._id}
               className="flex items-center justify-between bg-white shadow-md rounded-lg border border-gray-200 p-3"
             >
               {/* Avatar + Tên */}
               <div className="flex items-center space-x-4">
-                <Avatar className="w-14 h-14 border-4 border-white dark:border-gray-700">
-                  <AvatarImage src={friend.avatar} />
-                  <AvatarFallback className="dark:bg-gray-400">{friend.fallback}</AvatarFallback>
-                </Avatar>
-                <p className="font-semibold dark:text-gray-100">{friend.name}</p>
+              <Avatar>
+                    {friend?.profilePicture ? (
+                      <AvatarImage
+                        src={friend?.profilePicture}
+                        alt={friend?.username}
+                      />
+                    ) : (
+                      <AvatarFallback className="bg-gray-400">
+                        {friend?.username
+                ?.split(" ")
+                .map((name) => name[0])
+                .join("")}
+                      </AvatarFallback>
+                    )}
+                  </Avatar>
+                <div>
+                    <p className="font-semibold dark:text-gray-100">
+                      {friend?.username}
+                    </p>
+                    <p className="text-sm text-gray-400">
+                      {friend?.followerCount} người theo dõi
+                    </p>
+                  </div>
               </div>
 
               {/* Dropdown */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" className="hover:bg-gray-200 rounded-full">
+                  <Button variant="ghost" size="icon" >
                     <MoreHorizontal className="h-5 w-5 text-gray-700" />
                   </Button>
                 </DropdownMenuTrigger>
 
-                <DropdownMenuContent align="end">
+                <DropdownMenuContent align="end" onClick={async () => {
+                        await handleUnfollow(friend?._id);
+                        await fetchMutualFriends(id);
+                      }}>
                   <DropdownMenuItem className="flex items-center text-red-500 cursor-pointer">
                     <UserX className="h-4 w-4 mr-2" /> Hủy kết bạn
                   </DropdownMenuItem>
