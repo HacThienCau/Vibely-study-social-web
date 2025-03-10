@@ -14,6 +14,7 @@ export const ProfileDetails = ({
   isOwner,
   fetchProfile,
 }) => {
+  
   const [isEditMottoModal, setIsEditMottoModal] = useState(false);
   const [motto, setMotto] = useState("Hãy học như Seulgi ✨");
   const [tempMotto, setTempMotto] = useState(motto);
@@ -199,7 +200,7 @@ export const ProfileDetails = ({
               ) : (
                 <>
                   <p className="flex justify-center text-gray-600 dark:text-gray-300 mb-4">
-                    {motto}
+                    {profileData?.bio?.motto}
                   </p>
                   <Button
                     className="w-full bg-[#A6A7AA] text-white mb-4"
