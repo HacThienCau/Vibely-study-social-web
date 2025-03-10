@@ -431,7 +431,7 @@ const ProfileHeader = ({
                     <SelectTrigger className="border-none bg-white shadow-none focus:ring-0">
                       <SelectValue placeholder="Chọn giới tính" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-white shadow-lg border border-gray-200">
                       <SelectItem value="male">Nam</SelectItem>
                       <SelectItem value="female">Nữ</SelectItem>
                       <SelectItem value="other">Khác</SelectItem>

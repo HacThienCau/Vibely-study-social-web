@@ -21,7 +21,7 @@ router.get('/friend-request',authMiddleware, getAllFriendsRequest )
 router.get('/user-to-request',authMiddleware, getAllUserForRequest)
 
 // Route lấy tất cả bạn chung
-router.get('/mutual-friends',authMiddleware, getAllMutualFriends)
+router.get('/mutual-friends/:userId',authMiddleware, getAllMutualFriends)
 
 // Route lấy tất cả người dùng cho việc tìm kiếm
 router.get('/',authMiddleware,getAllUser)
