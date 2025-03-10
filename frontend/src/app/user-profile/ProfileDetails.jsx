@@ -1,38 +1,76 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { PostsContent } from "./profileContent/PostsContent";
 import { Card, CardContent } from "@/components/ui/card";
 import { Briefcase, Home, MapPin, Pencil, SaveOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { MutualFriends } from "./profileContent/MutualFriends";
+import { usePostStore } from "@/store/usePostStore";
 
-export const ProfileDetails = ({ activeTab }) => {
-  const [isEditBioModal, setIsEditBioModal] = useState(false);
-  const [bio, setBio] = useState("Hãy học như Seulgi ✨");
-  const [tempBio, setTempBio] = useState(bio);
+export const ProfileDetails = ({
+  activeTab,
+  id,
+  profileData,
+  isOwner,
+  fetchProfile,
+}) => {
+  const [isEditMottoModal, setIsEditMottoModal] = useState(false);
+  const [motto, setMotto] = useState("Hãy học như Seulgi ✨");
+  const [tempMotto, setTempMotto] = useState(motto);
 
-  const handleSaveBio = () => {
-    setBio(tempBio);
-    setIsEditBioModal(false);
+  const handleSaveMotto = () => {
+    setMotto(tempMotto);
+    setIsEditMottoModal(false);
   };
 
-  const userPosts = [
-    {
-      _id: 1,
-      content: "Hello World",
-      mediaUrl:
-        "https://images.pexels.com/photos/757889/pexels-photo-757889.jpeg?auto=compress&cs=tinysrgb&w=600",
-      mediaType: "image",
-      comments: [
-        {
-          user: {
-            username: "Võ Nhất Phương",
-            text: "Ảnh đẹp quá",
-          },
-        },
-      ],
-    },
-  ];
+  const {
+    userPosts,
+    stories,
+    fetchStories,
+    fetchUserPost,
+    handleCreatePost,
+    handleCreateStory,
+    handleReactPost,
+    handleCommentPost,
+    handleSharePost,
+  } = usePostStore();
+
+  useEffect(() => {
+    if (id) {
+      fetchUserPost(id);
+    }
+  }, [id, fetchUserPost]);
+
+  const [reactPosts, setReactPosts] = useState(new Set()); // danh sách những bài viết mà người dùng đã react
+  useEffect(() => {
+    const saveReacts = localStorage.getItem("reactPosts");
+    if (saveReacts) {
+      setReactPosts(JSON.parse(saveReacts));
+    }
+  }, []);
+  const handleReact = async (postId, reactType) => {
+    console.log("reactType: ", reactType);
+    const updatedReactPosts = { ...reactPosts };
+    if (updatedReactPosts && updatedReactPosts[postId] === reactType) {
+      delete updatedReactPosts[postId]; // hủy react nếu nhấn lại
+    } else {
+      updatedReactPosts[postId] = reactType; // cập nhật cảm xúc mới
+    }
+    //lưu danh sách mới vào biến
+    setReactPosts(updatedReactPosts);
+    //lưu vào cục bộ
+    localStorage.setItem("reactPosts", JSON.stringify(updatedReactPosts));
+
+    try {
+      await handleReactPost(postId, updatedReactPosts[postId] || null); //api
+      await fetchPosts(); // tải lại danh sách
+    } catch (error) {
+      console.log(error);
+      toast.error(
+        "Đã xảy ra lỗi khi bày tỏ cảm xúc với bài viết này. Vui lòng thử lại."
+      );
+    }
+  };
 
   const userFiles = [
     {
@@ -88,8 +126,7 @@ export const ProfileDetails = ({ activeTab }) => {
   const userVideos = [
     {
       _id: 1,
-      thumbnail:
-        "https://i.ytimg.com/vi/3aNuJnzVjhE/maxresdefault.jpg",
+      thumbnail: "https://i.ytimg.com/vi/3aNuJnzVjhE/maxresdefault.jpg",
     },
     {
       _id: 2,
@@ -123,8 +160,6 @@ export const ProfileDetails = ({ activeTab }) => {
     },
   ];
 
-  
-
   const tabContent = {
     posts: (
       <div className="flex flex-col lg:flex-row gap-6 ">
@@ -135,27 +170,27 @@ export const ProfileDetails = ({ activeTab }) => {
                 Giới thiệu
               </h2>
               {/* Hiện Textarea khi nhấn Chỉnh sửa tiểu sử */}
-              {isEditBioModal ? (
+              {isEditMottoModal ? (
                 <div>
                   <textarea
                     className="w-full p-2 border rounded-md text-gray-700"
-                    value={tempBio}
-                    onChange={(e) => setTempBio(e.target.value)}
+                    value={tempMotto}
+                    onChange={(e) => setTempMotto(e.target.value)}
                     maxLength={101}
                   />
                   <div className="flex justify-end items-center mt-2 text-sm text-gray-500">
-                    <span>{tempBio.length}/101</span>
+                    <span>{tempMotto.length}/101</span>
                   </div>
                   <div className="flex justify-between gap-2 my-4">
                     <Button
                       className="bg-gray-400 text-white px-12 py-2 rounded-md"
-                      onClick={() => setIsEditBioModal(false)}
+                      onClick={() => setIsEditMottoModal(false)}
                     >
                       Hủy
                     </Button>
                     <Button
                       className="bg-[#086280] text-white px-8 py-2 rounded-md"
-                      onClick={handleSaveBio}
+                      onClick={handleSaveMotto}
                     >
                       Hoàn tất
                     </Button>
@@ -164,11 +199,11 @@ export const ProfileDetails = ({ activeTab }) => {
               ) : (
                 <>
                   <p className="flex justify-center text-gray-600 dark:text-gray-300 mb-4">
-                    {bio}
+                    {motto}
                   </p>
                   <Button
                     className="w-full bg-[#A6A7AA] text-white mb-4"
-                    onClick={() => setIsEditBioModal(true)}
+                    onClick={() => setIsEditMottoModal(true)}
                   >
                     Chỉnh sửa tiểu sử
                   </Button>
@@ -200,7 +235,23 @@ export const ProfileDetails = ({ activeTab }) => {
         {/* Bài viết đã đăng của người dùng */}
         <div className="w-full lg:w-[70%] space-y-6 mb-4">
           {userPosts?.map((post) => (
-            <PostsContent key={post?._id} post={post} />
+            <PostsContent
+              key={post?._id}
+              post={post}
+              reaction={reactPosts[post?._id] || null} //loại react
+              onReact={(reactType) => handleReact(post?._id, reactType)} // chức năng react
+              onComment={async (commentText) => {
+                //chức năng comment
+                //console.log("onComment: ",commentText)
+                await handleCommentPost(post?._id, commentText);
+                await fetchUserPost(id);
+              }}
+              onShare={async () => {
+                //chức năng share
+                await handleSharePost(post?._id);
+                await fetchUserPost(id);
+              }}
+            />
           ))}
         </div>
       </div>
@@ -224,20 +275,20 @@ export const ProfileDetails = ({ activeTab }) => {
             </div>
             {/* Grid hiển thị video */}
             <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-  {userVideos.map((video) => (
-    <div key={video._id} className="relative w-[200px] h-[150px]">
-      <img
-        src={video.thumbnail}
-        alt="user_video"
-        className="w-full h-full object-cover rounded-lg"
-      />
-      {/* Icon chỉnh sửa */}
-      <div className="absolute top-2 right-2 bg-black bg-opacity-50 p-1 rounded-full cursor-pointer">
-        <Pencil size={16} className="text-white" />
-      </div>
-    </div>
-  ))}
-</div>
+              {userVideos.map((video) => (
+                <div key={video._id} className="relative w-[200px] h-[150px]">
+                  <img
+                    src={video.thumbnail}
+                    alt="user_video"
+                    className="w-full h-full object-cover rounded-lg"
+                  />
+                  {/* Icon chỉnh sửa */}
+                  <div className="absolute top-2 right-2 bg-black bg-opacity-50 p-1 rounded-full cursor-pointer">
+                    <Pencil size={16} className="text-white" />
+                  </div>
+                </div>
+              ))}
+            </div>
           </CardContent>
         </Card>
       </motion.div>

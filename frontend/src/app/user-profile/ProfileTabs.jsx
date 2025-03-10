@@ -4,7 +4,11 @@ import React, { useState } from "react";
 import { ProfileDetails } from "./ProfileDetails";
 
 
-const ProfileTabs = ({
+const ProfileTabs = ({  id,
+  profileData,
+  isOwner,
+  setProfileData,
+  fetchProfile,
 }) => {
   const [activeTab, setActiveTab] = useState("posts");
   return (
@@ -25,6 +29,11 @@ const ProfileTabs = ({
         <div className='mt-6'>
            <ProfileDetails
             activeTab={activeTab}
+            profileData={profileData}
+            id={id}
+            isOwner={isOwner}
+            setProfileData={setProfileData}
+            fetchProfile={fetchProfile}
            />
         </div>
       </Tabs>

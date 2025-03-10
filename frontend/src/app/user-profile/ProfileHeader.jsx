@@ -1,7 +1,7 @@
 "use client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Check, Pencil, PenLine, Save, SquarePlus, X } from "lucide-react";
+import { Camera, Check, Pencil, PenLine, Save, SquarePlus, Upload, X } from "lucide-react";
 import React, { useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Label } from "@/components/ui/label";
@@ -13,7 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { updateUserProfile } from "@/service/user.service";
+import { updateUserCoverPhoto, updateUserProfile } from "@/service/user.service";
 import userStore from "@/store/userStore";
 import { useForm } from "react-hook-form";
 
@@ -25,6 +25,7 @@ const ProfileHeader = ({
   fetchProfile,
 }) => {
   const [isEditProfileModel, setIsEditProfileModel] = useState(false);
+  const [isEditCoverModel, setIsEditCoverModel] = useState(false);
   const [isEditingField, setIsEditingField] = useState(null);
   const [profile, setProfile] = useState({
     job: "Làm việc tại CLB Sách Và Hành Động UIT",
@@ -52,9 +53,44 @@ const ProfileHeader = ({
   const profileImageInputRef = useRef();
   const coverImageInputRef = useRef();
 
-  const onSubmitProfile = async (data) => {
+  // const onSubmitProfile = async (data) => {
+  //   try {
+  //     setLoading(true);
+  //     console.log("Dữ liệu gửi lên API:", data.dateOfBirth);
+  //     const formData = new FormData();
+  //     formData.append("dateOfBirth", data.dateOfBirth);
+  //     formData.append("gender", data.gender);
+
+  //     if (profilePictureFile) {
+  //       formData.append("profilePicture", profilePictureFile);
+  //     }
+
+  //     // if (coverPhotoFile) {
+  //     //   formData.append("coverPhoto", coverPhotoFile);
+  //     // }
+
+  //     const updateProfile = await updateUserProfile(id, formData);
+  //     setProfileData({ ...profileData, ...updateProfile });
+  //     setIsEditProfileModel(false);
+  //     setProfilePicturePreview(null);
+
+  //     // setCoverPhotoFile(null);
+
+  //     setUser(updateProfile);
+  //     await fetchProfile();
+  //   } catch (error) {
+  //     console.error("Lỗi khi cập nhật trang cá nhân", error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+  const onSubmitProfile = async (data) => { 
     try {
       setLoading(true);
+      console.log("Dữ liệu gửi lên API:", data.dateOfBirth);
+
+      // Tạo formData cho profile
       const formData = new FormData();
       formData.append("dateOfBirth", data.dateOfBirth);
       formData.append("gender", data.gender);
@@ -63,15 +99,23 @@ const ProfileHeader = ({
         formData.append("profilePicture", profilePictureFile);
       }
 
-      if (coverPhotoFile) {
-        formData.append("coverPhoto", coverPhotoFile);
+      // Gửi API cập nhật hồ sơ
+      const updateProfile = await updateUserProfile(id, formData);
+      
+      // Nếu có ảnh bìa, gửi tiếp API cập nhật ảnh bìa
+      if (coverPhotoFile) { 
+        const coverFormData = new FormData();
+        coverFormData.append("coverPicture", coverPhotoFile);
+        const updateCover = await updateUserCoverPhoto(id, coverFormData);
+
+        // Cập nhật coverPicture vào state
+        updateProfile.coverPicture = updateCover.coverPicture;
       }
 
-      const updateProfile = await updateUserProfile(id, formData);
+      // Cập nhật state với dữ liệu mới từ API
       setProfileData({ ...profileData, ...updateProfile });
       setIsEditProfileModel(false);
       setProfilePicturePreview(null);
-
       setCoverPhotoFile(null);
 
       setUser(updateProfile);
@@ -81,7 +125,32 @@ const ProfileHeader = ({
     } finally {
       setLoading(false);
     }
+};
+
+
+  const onSubmitCoverPhoto = async (e) => {
+    e.preventDefault();
+    try {
+      setLoading(true);
+      const formData = new FormData();
+      if (coverPhotoFile) {
+        formData.append("coverPicture", coverPhotoFile);
+      }
+      console.log("📤 Payload gửi lên API:", formData.get("coverPicture"));
+
+      const updateProfile = await updateUserCoverPhoto(id, formData);
+      setProfileData({ ...profileData, coverPicture:updateProfile.coverPicture });
+      setIsEditCoverModel(false);
+      setCoverPhotoFile(null);
+    } catch (error) {
+      console.error("Lỗi khi cập nhật ảnh bìa", error);
+    } finally {
+      setLoading(false);
+    }
   };
+
+
+
 
   const handleProfilePictureChange = (e) => {
     const file = e.target.files[0];
@@ -126,10 +195,22 @@ const ProfileHeader = ({
       {/* Ảnh bìa trang cá nhân */}
       <div className="relative h-64 md:h-80 bg-gray-300 overflow-hidden ">
         <img
-          src={profileData?.coverPhoto}
+          src={profileData?.coverPicture}
           alt="cover"
           className="w-full h-full object-cover"
         />
+
+{isOwner && (
+          <Button
+            className="absolute bottom-4 right-4 flex items-center"
+            variant="secondary"
+            size="sm"
+            onClick={() => setIsEditCoverModel(true)}
+          >
+            <Camera className=" mr-0 md:mr-2 h-4 w-4" />
+            <span className="hidden md:block">Chỉnh sửa ảnh bìa</span>
+          </Button>
+        )}
       </div>
       {/* profile section */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 -mt-12 relative z-10">
@@ -248,18 +329,27 @@ const ProfileHeader = ({
                     <Label htmlFor="imageCover" className="font-bold">
                       Ảnh bìa
                     </Label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      ref={coverImageInputRef}
+                      onChange={handleCoverPhotoChange}
+                    />
                     <Button
                       type="button"
                       variant="ghost"
                       size="sm"
                       className="text-[#086280] hover:text-gray-500"
+                      onClick={() => coverImageInputRef.current?.click()}
+                      
                     >
                       <Pencil className="w-4 h-4" />
                     </Button>
                   </div>
                   <div className="flex justify-center rounded-lg overflow-hidden">
                     <img
-                      src="/images/BG.png"
+                      src={coverPhotoPreview || profileData?.coverPicture || "/images/BG.png"}
                       alt="Ảnh bìa"
                       className="w-3/4 h-35 object-cover rounded-lg"
                     />
@@ -310,25 +400,35 @@ const ProfileHeader = ({
                 />
 
                 {/* Ngày sinh */}
-                <ProfileField
+                {/* <ProfileField
                   label="Ngày sinh"
                   field="birthday"
-                  value={profile.birthday}
+                  value={profileData?.dateOfBirth?.split("T")[0] || ""}
                   isEditingField={isEditingField}
                   onEdit={handleEdit}
                   // onSave={handleSave}
                   onCancel={handleCancel}
                   onSave={(field, value) => handleSave(field, value)}
-                />
+                /> */}
+
+                <div className="space-y-2">
+                  <Label htmlFor="dateOfBirth">Ngày sinh</Label>
+                  <Input
+                    id="dateOfBirth"
+                    type="date"
+                    {...register("dateOfBirth")}
+                    className="border-none shadow-none text-gray-700"
+                  />
+                </div>
 
                 {/* Giới tính */}
-                <div>
+                <div className="space-y-2">
                   <Label htmlFor="gender">Giới tính</Label>
                   <Select
                     onValueChange={(value) => setValue("gender", value)}
                     defaultValue={profileData?.gender}
                   >
-                    <SelectTrigger>
+                    <SelectTrigger className="border-none bg-white shadow-none focus:ring-0">
                       <SelectValue placeholder="Chọn giới tính" />
                     </SelectTrigger>
                     <SelectContent>
@@ -345,6 +445,64 @@ const ProfileHeader = ({
                 >
                   <Save className="w-4 h-4 mr-2" />
                   {loading ? "Đang lưu" : "Lưu thay đổi"}
+                </Button>
+              </form>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+
+       {/* edit cover model */}
+       <AnimatePresence>
+        {isEditCoverModel && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+          >
+            <motion.div
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 20 }}
+              className=" bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 w-full max-w-md"
+            >
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                  Chỉnh sửa ảnh bìa
+                </h2>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setIsEditCoverModel(false)}
+                >
+                  <X className="w-4 h-4" />
+                </Button>
+              </div>
+              <form className="space-y-4">
+                <div className="flex flex-col items-center mb-4">
+                  {coverPhotoPreview && (
+                    <img
+                      src={coverPhotoPreview}
+                      alt="cover-photo"
+                      className="w-full h-40 object-cover rounded-lg mb-4"
+                    />
+                  )}
+                  <input type="file" accept="image/*" className="hidden" ref={coverImageInputRef}  onChange={handleCoverPhotoChange}/>
+                  <Button type="button" variant="outline" size="sm" onClick={() => coverImageInputRef.current?.click()}>
+                    <Upload className="h-4 w-4 mr-2" />
+                    Tải ảnh lên
+                  </Button>
+                </div>
+
+                <Button
+                  className="w-full bg-blue-600 hover:bg-blue-400 text-white"
+                  onClick={onSubmitCoverPhoto}
+                  disabled = {!coverPhotoFile}
+                  type="button"
+                >
+                  <Save className="w-4 h-4 mr-2" /> {loading ? "Đang lưu" :"Lưu ảnh bìa mới"}
                 </Button>
               </form>
             </motion.div>
