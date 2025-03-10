@@ -34,6 +34,17 @@ export const getAllPosts = async() => {
     }
 }
 
+//get all users posts 
+export const getAllUserPosts = async(userId)=>{
+    try {
+        const result = await axiosInstance.get(`/users/posts/user/${userId}`)
+        return result?.data?.data;
+    } catch (error) {
+        console.error(error)
+        throw error;
+    }
+}
+
 //phương thức lấy tất cả story
 export const getAllStories = async() => {
     try {

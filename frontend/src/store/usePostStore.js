@@ -1,4 +1,4 @@
-import { addCommentToPost, createPost, getAllPosts, getAllStories, getPostByUserId, reactPost, sharePost, createStory, reactStory } from '@/service/post.service';
+import { addCommentToPost, createPost, getAllPosts, getAllStories, getPostByUserId, reactPost, sharePost, createStory, reactStory, getAllUserPosts } from '@/service/post.service';
 import toast from 'react-hot-toast';
 import { create } from 'zustand';
 //quản lý trạng thái các bài viết và story
@@ -21,15 +21,16 @@ export const usePostStore = create((set)=>({
         }
     },
     
-    fetchUserPosts: async(userId)=> {
-        set({loading:true})
-        try {
-            const posts = await getPostByUserId(userId);
-            set({posts,loading:false})
-        } catch (error) {
-            set({error, loading:false})
-        }
-    },
+    //fetch user posts
+  fetchUserPost: async (userId) => {
+    set({ loading: true });
+    try {
+      const userPosts = await getAllUserPosts(userId);
+      set({ userPosts, loading: false });
+    } catch (error) {
+      set({ error, loading: false });
+    }
+  },
     
     fetchStories: async()=> {
         set({loading:true})

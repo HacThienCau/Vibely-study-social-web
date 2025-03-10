@@ -62,7 +62,7 @@ const updateCoverPicture = async(req, res) =>{
         }
 
         if(!coverPicture){
-            return response(res,400, 'Không thể tải ảnh lên')
+            return response(res,400, 'Không thể tải ảnh bìa lên')
         }
 
         // Cập nhật ảnh bìa cho người dùng
@@ -101,9 +101,7 @@ const updateUserProfile = async(req, res) =>{
             profilePicture = uploadResult.secure_url
         }
 
-        if(!profilePicture){
-            return response(res,400, 'Không thể tải ảnh lên')
-        }
+       
 
         // Cập nhật hồ sơ người dùng với ảnh đại diện
         await User.updateOne(
