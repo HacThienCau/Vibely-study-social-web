@@ -44,7 +44,6 @@ const Header = () => {
   const handleNavigation = (path, item) => {
     router.push(path);
   };
-  const [showSetting, setShowSetting] = useState(false);
   const handleLogout = async () => {
     try {
       const result = await logout();
