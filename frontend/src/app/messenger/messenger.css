@@ -7,6 +7,10 @@
 }
 .chatBox{
     flex: 5.5;
+    /*tạo đường kẻ giữa 3 phần*/
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-color:rgba(139, 141, 145, 0.3)
 }
 .chatOnline{
     flex: 3;
@@ -54,9 +58,13 @@
     overflow-y: scroll;
     padding-right: 10px;
 }
+.noConversationContainer{
+    justify-self: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
 .noConversationText{
-    position: absolute;
-    top: 70%;
     text-align: center;
     font-size: 25px;
     font-style: italic;
@@ -70,3 +78,21 @@
     object-fit: cover;
 }
 
+@media screen and (max-width: 400px) {  /*các dòng iphone phổ biến*/
+    .chatImage{
+        width: 200px;
+        height: 200px;
+    }
+    .noConversationText{
+        font-size: 18px;
+    }
+}
+@media screen and (max-width: 340px) {  /*iphone SE, iphone 6*/
+    .chatImage{
+        width: 150px;
+        height: 150px;
+    }
+    .noConversationText{
+        font-size: 15px;
+    }
+}

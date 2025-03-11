@@ -23,19 +23,30 @@ import {
   Search,
   Users,
 } from "lucide-react";
+
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
+import { useState } from "react";
+import { SettingsMenu } from './SettingsMenu';
+
 
 const Header = () => {
   const [isSearchOpen, setIsSearchOpen] = React.useState(false);
+
   const [searchQuery, setSearchQuery] = useState("");
   const [userList, setUserList] = useState([]);
   const [filterUsers, setFilterUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const searchRef = useRef(null);
+
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const handleBackToMainMenu = () => {
+    setIsSettingsOpen(false); // Quay lại menu chính
+  };
+
   const navItems = [
     { icon: "/images/home_navbar.svg", path: "/" },
     { icon: "/images/video_navbar.svg", path: "/video-feed" },
@@ -118,7 +129,7 @@ const Header = () => {
   const handleNavigation = (path, item) => {
     router.push(path);
   };
-
+  const [showSetting, setShowSetting] = useState(false);
   const handleLogout = async () => {
     try {
       const result = await logout();
@@ -138,6 +149,7 @@ const Header = () => {
       <div className="mx-auto flex justify-between items-center h-full px-4">
         {/* Logo và Tìm kiếm */}
         <div className="flex items-center gap-2">
+
           <Image
             src="/images/vibely_logo.png"
             alt="logo"
@@ -148,6 +160,7 @@ const Header = () => {
           />
           <div className="relative -ml-2" ref={searchRef}>
             <form onSubmit={handleSearchSubmit}>
+
               <div className="relative">
                 <Search
                   className="absolute top-1/2 left-3 transform -translate-y-1/2 text-gray-800"
@@ -165,6 +178,7 @@ const Header = () => {
               {isSearchOpen && (
                 <div className="absolute top-full left-0 w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg mt-1 z-50 ">
                   <div className="p-2">
+
                     {filterUsers.length > 0 ? (
                       filterUsers.map((user) => (
                         <div
@@ -200,6 +214,7 @@ const Header = () => {
                         </div>
                       </>
                     )}
+
                   </div>
                 </div>
               )}
@@ -229,12 +244,14 @@ const Header = () => {
           >
             <Menu />
           </Button>
+
           <Button
             variant="ghost"
             size="icon"
             className="hidden md:block text-gray-600 cursor-pointer pl-1"
             onClick={() => handleNavigation("/messenger")}
           >
+
             <MessageCircle size={22} className="min-w-[22px] min-h-[22px]" />
           </Button>
           <Button
@@ -257,52 +274,64 @@ const Header = () => {
                       alt={user?.username}
                     />
                   ) : (
+
                     <AvatarFallback>{userPlaceholder}</AvatarFallback>
+
                   )}
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent
-              className="w-64 z-50 bg-white shadow-lg rounded-lg border border-gray-200"
-              align="end"
-            >
-              <DropdownMenuLabel className="font-normal">
-                <div className="flex flex-col space-y-1">
-                  <div className="flex items-center">
-                    <Avatar className="h-8 w-8 mr-2">
-                      {user?.profilePicture ? (
-                        <AvatarImage
-                          src={user?.profilePicture}
-                          alt={user?.username}
-                        />
-                      ) : (
-                        <AvatarFallback>{userPlaceholder}</AvatarFallback>
-                      )}
-                    </Avatar>
-                    <div className="ml-2">
-                      <p className="text-sm font-medium leading-none">
-                        {user?.username}
-                      </p>
+
+            <DropdownMenuContent className="w-64 z-50 bg-white shadow-lg rounded-lg border border-gray-200" align="end" sideOffset={5}>
+              {isSettingsOpen ? (
+                // Hiển thị SettingsMenu khi isSettingsOpen = true
+                <SettingsMenu onBack={handleBackToMainMenu} />
+              ) : (
+                // Menu Chính
+                <>
+                  <DropdownMenuLabel className="font-normal">
+                    <div className="flex flex-col space-y-1">
+                      <div className="flex items-center">
+                        <Avatar className="h-8 w-8 mr-2">
+                          {user?.profilePicture ? (
+                            <AvatarImage src={user?.profilePicture} alt={user?.username} />
+                          ) : (
+                            <AvatarFallback>{userPlaceholder}</AvatarFallback>
+                          )}
+                        </Avatar>
+                        <div className="ml-2">
+                          <p className="text-sm font-medium leading-none">{user?.username}</p>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-              </DropdownMenuLabel>
-              <div className="bg-gray-200 h-px my-2"></div>
-              <DropdownMenuItem
-                className="cursor-pointer"
-                onClick={() => handleNavigation(`/user-profile/${user?._id}`)}
-              >
-                <Users /> <span className="ml-2">Trang cá nhân</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem className="cursor-pointer">
-                <MessageCircle /> <span className="ml-2">Tin nhắn</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                className="cursor-pointer"
-                onClick={handleLogout}
-              >
-                <LogOut /> <span className="ml-2">Đăng xuất</span>
-              </DropdownMenuItem>
+                  </DropdownMenuLabel>
+                  <div className="bg-gray-200 h-px my-2"></div>
+                  <DropdownMenuItem
+                    className="cursor-pointer mb-2"
+                    onSelect={(event) => {
+                      event.preventDefault();
+                      setIsSettingsOpen(true);
+                    }}
+                  >
+                    <img src="images/setting_dropdown.png" alt="setting" className="mr-0" />
+                    <span className="ml-2 font-semibold">Cài đặt</span>
+                    <ChevronRight className="absolute right-2 text-[#54C8FD]" />
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="cursor-pointer mb-3" onClick={() => handleNavigation(`/help_center`)}>
+                    <img src="images/help_dropdown.png" alt="help" className="mr-0" />
+                    <span className="ml-2 font-semibold">Trung tâm trợ giúp</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="cursor-pointer mb-3" onClick={() => handleNavigation(`/faqs`)}>
+                    <img src="images/faqs_dropdown.png" alt="faqs" className="mr-0" />
+                    <span className="ml-2 font-semibold">Hộp thư hỗ trợ</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="cursor-pointer mb-3" onClick={handleLogout}>
+                    <img src="images/logout_dropdown.png" alt="logout" className="mr-0" />
+                    <span className="ml-2 font-semibold">Đăng xuất</span>
+                  </DropdownMenuItem>
+                </>
+              )}
+
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

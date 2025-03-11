@@ -39,11 +39,11 @@ export default function ChatOnline({ onlineUsers, currentId, setCurrentChat }) {
   }, [friends, onlineUsers]);
 
   const handleClick = async (user) => {
-    try{
+    try {
       const res = await axios.get(`http://localhost:8080/conversation/find/${currentId}/${user._id}`);
       setCurrentChat(res.data);
     }
-    catch(err){
+    catch (err) {
       console.error("❌ Lỗi khi tạo hoặc lấy cuộc trò chuyện:", err);
     }
   }
@@ -54,7 +54,7 @@ export default function ChatOnline({ onlineUsers, currentId, setCurrentChat }) {
         <>
           <div className="chatOnlineTitle">Bạn bè online</div>
           {onlineFriends.map((online) => (
-            <div className="chatOnlineFriend" key={online._id} onClick={()=>{handleClick(online)}}>
+            <div className="chatOnlineFriend" key={online._id} onClick={() => { handleClick(online) }}>
               <div className="chatOnlineImgContainer">
                 <img className="chatOnlineImg" src={online.profilePicture || "images/user_default.jpg"} alt={online.username} />
                 <div className="chatOnlineBadge"></div>
