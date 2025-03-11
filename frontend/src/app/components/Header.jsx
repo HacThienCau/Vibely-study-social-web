@@ -16,6 +16,7 @@ import userStore from "@/store/userStore";
 import { DropdownMenu } from "@radix-ui/react-dropdown-menu";
 import {
   Bell,
+  ChevronRight,
   Loader,
   LogOut,
   Menu,
@@ -29,7 +30,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
-import { useState } from "react";
 import { SettingsMenu } from './SettingsMenu';
 
 
