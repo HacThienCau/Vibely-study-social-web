@@ -16,6 +16,7 @@ import userStore from "@/store/userStore";
 import { DropdownMenu } from "@radix-ui/react-dropdown-menu";
 import {
   Bell,
+  ChevronRight,
   Loader,
   LogOut,
   Menu,
@@ -29,7 +30,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
-import { useState } from "react";
 import { SettingsMenu } from './SettingsMenu';
 
 
@@ -289,7 +289,7 @@ const Header = () => {
               ) : (
                 // Menu Chính
                 <>
-                  <DropdownMenuLabel className="font-normal">
+                  <DropdownMenuItem className="font-normal cursor-pointer" onClick={() => handleNavigation(`/user-profile/${user?._id}`)}>
                     <div className="flex flex-col space-y-1">
                       <div className="flex items-center">
                         <Avatar className="h-8 w-8 mr-2">
@@ -304,7 +304,7 @@ const Header = () => {
                         </div>
                       </div>
                     </div>
-                  </DropdownMenuLabel>
+                  </DropdownMenuItem>
                   <div className="bg-gray-200 h-px my-2"></div>
                   <DropdownMenuItem
                     className="cursor-pointer mb-2"
