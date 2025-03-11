@@ -2,33 +2,113 @@
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { logout } from "@/service/auth.service";
+import { getAllUsers } from "@/service/user.service";
 import useSidebarStore from "@/store/sidebarStore";
 import userStore from "@/store/userStore";
 import { DropdownMenu } from "@radix-ui/react-dropdown-menu";
-import { Bell, LogOut, Menu, MessageCircle, Search, Users } from "lucide-react";
+import {
+  Bell,
+  Loader,
+  LogOut,
+  Menu,
+  MessageCircle,
+  Search,
+  Users,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 
 const Header = () => {
   const [isSearchOpen, setIsSearchOpen] = React.useState(false);
-
+  const [searchQuery, setSearchQuery] = useState("");
+  const [userList, setUserList] = useState([]);
+  const [filterUsers, setFilterUsers] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const searchRef = useRef(null);
   const navItems = [
     { icon: "/images/home_navbar.svg", path: "/" },
     { icon: "/images/video_navbar.svg", path: "/video-feed" },
     { icon: "/images/document_navbar.svg", path: "/document" },
     { icon: "/images/calendar_navbar.svg", path: "/calendar" },
-    { icon: "/images/game_navbar.svg", path: "/game" }
+    { icon: "/images/game_navbar.svg", path: "/game" },
   ];
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        setLoading(true);
+        const result = await getAllUsers();
+        setUserList(result);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchUsers();
+  }, []);
+
+  useEffect(() => {
+    if (searchQuery) {
+      const filterUser = userList.filter((user) => {
+        return user.username.toLowerCase().includes(searchQuery.toLowerCase());
+      });
+      setFilterUsers(filterUser);
+      setIsSearchOpen(true);
+    } else {
+      setFilterUsers([]);
+      setIsSearchOpen(false);
+    }
+  }, [searchQuery, userList]);
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    setIsSearchOpen(false);
+  };
+
+  const handleUserClick = async (userId) => {
+    try {
+      setLoading(true);
+      setIsSearchOpen(false);
+      setSearchQuery("");
+      await router.push(`user-profile/${userId}`);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSearchClose = (e) => {
+    if (!searchRef.current?.contains(e.target)) {
+      setIsSearchOpen(false);
+    }
+  };
+  useEffect(() => {
+    document.addEventListener("click", handleSearchClose);
+    return () => {
+      document.removeEventListener("click", handleSearchClose);
+    };
+  });
+
+  // if (loading) {
+  //   return <Loader />;
+  // }
 
   const { toggleSidebar } = useSidebarStore();
   const router = useRouter();
-  const {user, clearUser} = userStore();
+  const { user, clearUser } = userStore();
 
   const userPlaceholder = user?.username
     ?.split(" ")
@@ -58,33 +138,68 @@ const Header = () => {
       <div className="mx-auto flex justify-between items-center h-full px-4">
         {/* Logo và Tìm kiếm */}
         <div className="flex items-center gap-2">
-          <Image src="/images/vibely_logo.png" alt="logo" width={60} height={60} className="-ml-2 cursor-pointer" onClick={() => handleNavigation('/')}/>
-          <div className="relative -ml-2">
-            <form>
+          <Image
+            src="/images/vibely_logo.png"
+            alt="logo"
+            width={60}
+            height={60}
+            className="-ml-2 cursor-pointer"
+            onClick={() => handleNavigation("/")}
+          />
+          <div className="relative -ml-2" ref={searchRef}>
+            <form onSubmit={handleSearchSubmit}>
               <div className="relative">
-                <Search className="absolute top-1/2 left-3 transform -translate-y-1/2 text-gray-800" size={20} />
+                <Search
+                  className="absolute top-1/2 left-3 transform -translate-y-1/2 text-gray-800"
+                  size={20}
+                />
                 <Input
                   type="text"
                   placeholder="Tìm kiếm"
                   className="pl-10 w-40 md:w-64 h-10 bg-search_bar rounded-full border-none"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onFocus={() => setIsSearchOpen(true)}
                 />
               </div>
               {isSearchOpen && (
-                <div className="absolute top-full left-0 w-full bg-white border border-gray-200 rounded-lg shadow-lg mt-1 z-50">
+                <div className="absolute top-full left-0 w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg mt-1 z-50 ">
                   <div className="p-2">
-                    <div className="flex items-center space-x-8 p-2 hover:bg-gray-100 rounded-lg cursor-pointer">
-                      <Search className="absolute text-sm text-gray-400" />
-                      <div className="flex items-center gap-2">
-                        <Avatar className="h-8 w-8">
-                          {user?.profilePicture ? (
-                            <AvatarImage src={user?.profilePicture} alt={user?.username}/>
-                          ):(
-                            <AvatarFallback>{userPlaceholder}</AvatarFallback>
-                          )}
-                        </Avatar>
-                        <span>Võ Nhất Phương</span>
-                      </div>
-                    </div>
+                    {filterUsers.length > 0 ? (
+                      filterUsers.map((user) => (
+                        <div
+                          className="flex items-center space-x-8 p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md cursor-pointer"
+                          key={user._id}
+                          onClick={() => handleUserClick(user?._id)}
+                        >
+                          <Search className="absolute text-sm  text-gray-400 " />
+                          <div className="flex items-center gap-2">
+                            <Avatar className="h-8 w-8">
+                              {user?.profilePicture ? (
+                                <AvatarImage
+                                  src={user?.profilePicture}
+                                  alt={user?.username}
+                                />
+                              ) : (
+                                <AvatarFallback className="bg-gray-400">
+                                  {user?.username
+                                    ?.split(" ")
+                                    .map((name) => name[0])
+                                    .join("")}
+                                </AvatarFallback>
+                              )}
+                            </Avatar>
+                            <span>{user?.username}</span>
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <>
+                        <div className="p-2 text-gray-500">
+                          Không tìm thấy người dùng
+                        </div>
+                      </>
+                    )}
                   </div>
                 </div>
               )}
@@ -100,20 +215,33 @@ const Header = () => {
                 src={icon}
                 alt="nav-icon"
                 className="w-6 h-6 filter brightness-50 contrast-200 transition-all duration-200 hover:invert-[40%] hover:sepia-[50%] hover:saturate-[300%] hover:hue-rotate-[160deg]"
-                />
+              />
             </Link>
           ))}
         </nav>
         {/* Profile cá nhân */}
         <div className="flex space-x-2 md:space-x-4 items-center">
-          <Button variant="ghost" size="icon" className="md:hidden text-gray-600 cursor-pointer" onClick={toggleSidebar}>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="md:hidden text-gray-600 cursor-pointer"
+            onClick={toggleSidebar}
+          >
             <Menu />
           </Button>
-          <Button variant="ghost" size="icon" className="hidden md:block text-gray-600 cursor-pointer pl-1"
-          onClick={() => handleNavigation('/messenger')}>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="hidden md:block text-gray-600 cursor-pointer pl-1"
+            onClick={() => handleNavigation("/messenger")}
+          >
             <MessageCircle size={22} className="min-w-[22px] min-h-[22px]" />
           </Button>
-          <Button variant="ghost" size="icon" className="hidden md:block text-gray-600 cursor-pointer pl-1">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="hidden md:block text-gray-600 cursor-pointer pl-1"
+          >
             <Bell size={24} className="min-w-[24px] min-h-[24px]" />
           </Button>
           <DropdownMenu>
@@ -124,20 +252,18 @@ const Header = () => {
               >
                 <Avatar>
                   {user?.profilePicture ? (
-                    <AvatarImage 
+                    <AvatarImage
                       src={user?.profilePicture}
                       alt={user?.username}
                     />
-                  ):(
-                    <AvatarFallback>
-                      {userPlaceholder}
-                    </AvatarFallback>
+                  ) : (
+                    <AvatarFallback>{userPlaceholder}</AvatarFallback>
                   )}
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent 
-              className="w-64 z-50 bg-white shadow-lg rounded-lg border border-gray-200" 
+            <DropdownMenuContent
+              className="w-64 z-50 bg-white shadow-lg rounded-lg border border-gray-200"
               align="end"
             >
               <DropdownMenuLabel className="font-normal">
@@ -145,14 +271,12 @@ const Header = () => {
                   <div className="flex items-center">
                     <Avatar className="h-8 w-8 mr-2">
                       {user?.profilePicture ? (
-                        <AvatarImage 
+                        <AvatarImage
                           src={user?.profilePicture}
                           alt={user?.username}
                         />
-                      ):(
-                        <AvatarFallback>
-                          {userPlaceholder}
-                        </AvatarFallback>
+                      ) : (
+                        <AvatarFallback>{userPlaceholder}</AvatarFallback>
                       )}
                     </Avatar>
                     <div className="ml-2">
@@ -164,23 +288,24 @@ const Header = () => {
                 </div>
               </DropdownMenuLabel>
               <div className="bg-gray-200 h-px my-2"></div>
-              <DropdownMenuItem className="cursor-pointer" onClick={() => handleNavigation(`/user-profile/${user?._id}`)}>
-                <Users/> <span className="ml-2">Trang cá nhân</span>
+              <DropdownMenuItem
+                className="cursor-pointer"
+                onClick={() => handleNavigation(`/user-profile/${user?._id}`)}
+              >
+                <Users /> <span className="ml-2">Trang cá nhân</span>
               </DropdownMenuItem>
               <DropdownMenuItem className="cursor-pointer">
-                <MessageCircle/> <span className="ml-2">Tin nhắn</span>
+                <MessageCircle /> <span className="ml-2">Tin nhắn</span>
               </DropdownMenuItem>
-              <DropdownMenuItem className="cursor-pointer" onClick={handleLogout}>
-                <LogOut/> <span className="ml-2">Đăng xuất</span>
+              <DropdownMenuItem
+                className="cursor-pointer"
+                onClick={handleLogout}
+              >
+                <LogOut /> <span className="ml-2">Đăng xuất</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
-
-
           </DropdownMenu>
-
-
         </div>
-
       </div>
     </header>
   );

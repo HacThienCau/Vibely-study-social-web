@@ -14,13 +14,13 @@ import { MoreHorizontal, Search, UserX } from "lucide-react";
 import { userFriendStore } from "@/store/userFriendsStore";
 import toast from "react-hot-toast";
 
-export const MutualFriends = () => {
+export const MutualFriends = ({id, isOwner}) => {
   const { fetchMutualFriends, mutualFriends, UnfollowUser } = userFriendStore();
   useEffect(() => {
-
-      fetchMutualFriends();
-
-  }, [fetchMutualFriends]);
+    if (id) {
+      fetchMutualFriends(id);
+    }
+  }, [id, fetchMutualFriends]);
 
   const handleUnfollow = async (userId) => {
     await UnfollowUser(userId);
@@ -97,7 +97,7 @@ export const MutualFriends = () => {
                     <MoreHorizontal className="h-5 w-5 text-gray-700" />
                   </Button>
                 </DropdownMenuTrigger>
-
+                {isOwner && (
                 <DropdownMenuContent align="end" onClick={async () => {
                         await handleUnfollow(friend?._id);
                         await fetchMutualFriends(id);
@@ -106,6 +106,7 @@ export const MutualFriends = () => {
                     <UserX className="h-4 w-4 mr-2" /> Hủy kết bạn
                   </DropdownMenuItem>
                 </DropdownMenuContent>
+                )}
               </DropdownMenu>
             </div>
           ))}

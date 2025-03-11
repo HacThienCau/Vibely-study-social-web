@@ -38,10 +38,10 @@ export const userFriendStore = create((set, get) => ({
       set({ loading: false });
     }
   },
-  fetchMutualFriends: async () => {
+  fetchMutualFriends: async (userId) => {
     set({ loading: true });
     try {
-      const friend = await getMutualFriends();
+      const friend = await getMutualFriends(userId);
       set({ mutualFriends: friend, loading: false });
     } catch (error) {
       set({ error, loading: false });

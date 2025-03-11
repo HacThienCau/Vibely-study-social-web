@@ -2,7 +2,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Camera, Check, Pencil, PenLine, Save, SquarePlus, Upload, X } from "lucide-react";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -13,7 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { updateUserCoverPhoto, updateUserProfile } from "@/service/user.service";
+import { createOrUpdateUserBio, updateUserCoverPhoto, updateUserProfile } from "@/service/user.service";
 import userStore from "@/store/userStore";
 import { useForm } from "react-hook-form";
 
@@ -28,12 +28,22 @@ const ProfileHeader = ({
   const [isEditCoverModel, setIsEditCoverModel] = useState(false);
   const [isEditingField, setIsEditingField] = useState(null);
   const [profile, setProfile] = useState({
-    job: "Làm việc tại CLB Sách Và Hành Động UIT",
-    location: "Sống tại Khánh Hòa, Việt Nam",
-    hometown: "Khánh Hòa",
-    education: "Trường đại học Công nghệ Thông tin",
-    birthday: "01/01/2000",
+    workplace: profileData.bio?.workplace,
+    liveIn: profileData.bio?.liveIn,
+    hometown: profileData.bio?.hometown,
+    education: profileData.bio?.education,
   });
+
+  // Cập nhật profile khi profileData thay đổi
+// useEffect(() => {
+//   setProfile({
+//     workplace: profileData.bio?.workplace,
+//     liveIn: profileData.bio?.liveIn,
+//     hometown: profileData.bio?.hometown,
+//     education: profileData.bio?.education,
+//   });
+// }, [profileData]);
+
   const [profilePictureFile, setProfilePictureFile] = useState(null);
   const [coverPhotoFile, setCoverPhotoFile] = useState(null);
 
@@ -53,78 +63,94 @@ const ProfileHeader = ({
   const profileImageInputRef = useRef();
   const coverImageInputRef = useRef();
 
-  // const onSubmitProfile = async (data) => {
-  //   try {
-  //     setLoading(true);
-  //     console.log("Dữ liệu gửi lên API:", data.dateOfBirth);
-  //     const formData = new FormData();
-  //     formData.append("dateOfBirth", data.dateOfBirth);
-  //     formData.append("gender", data.gender);
+console.log('Loading profileData:', profileData);
+//   const onSubmitProfile = async (data) => { 
+//     try {
+//       setLoading(true);
+//       console.log("Dữ liệu gửi lên API:", data.dateOfBirth);
 
-  //     if (profilePictureFile) {
-  //       formData.append("profilePicture", profilePictureFile);
-  //     }
+//       // Tạo formData cho profile
+//       const formData = new FormData();
+//       formData.append("dateOfBirth", data.dateOfBirth);
+//       formData.append("gender", data.gender);
 
-  //     // if (coverPhotoFile) {
-  //     //   formData.append("coverPhoto", coverPhotoFile);
-  //     // }
+//       if (profilePictureFile) {
+//         formData.append("profilePicture", profilePictureFile);
+//       }
 
-  //     const updateProfile = await updateUserProfile(id, formData);
-  //     setProfileData({ ...profileData, ...updateProfile });
-  //     setIsEditProfileModel(false);
-  //     setProfilePicturePreview(null);
-
-  //     // setCoverPhotoFile(null);
-
-  //     setUser(updateProfile);
-  //     await fetchProfile();
-  //   } catch (error) {
-  //     console.error("Lỗi khi cập nhật trang cá nhân", error);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
-  const onSubmitProfile = async (data) => { 
-    try {
-      setLoading(true);
-      console.log("Dữ liệu gửi lên API:", data.dateOfBirth);
-
-      // Tạo formData cho profile
-      const formData = new FormData();
-      formData.append("dateOfBirth", data.dateOfBirth);
-      formData.append("gender", data.gender);
-
-      if (profilePictureFile) {
-        formData.append("profilePicture", profilePictureFile);
-      }
-
-      // Gửi API cập nhật hồ sơ
-      const updateProfile = await updateUserProfile(id, formData);
+//       // Gửi API cập nhật hồ sơ
+//       const updateProfile = await updateUserProfile(id, formData);
       
-      // Nếu có ảnh bìa, gửi tiếp API cập nhật ảnh bìa
-      if (coverPhotoFile) { 
-        const coverFormData = new FormData();
-        coverFormData.append("coverPicture", coverPhotoFile);
-        const updateCover = await updateUserCoverPhoto(id, coverFormData);
+//       // Nếu có ảnh bìa, gửi tiếp API cập nhật ảnh bìa
+//       if (coverPhotoFile) { 
+//         const coverFormData = new FormData();
+//         coverFormData.append("coverPicture", coverPhotoFile);
+//         const updateCover = await updateUserCoverPhoto(id, coverFormData);
 
-        // Cập nhật coverPicture vào state
-        updateProfile.coverPicture = updateCover.coverPicture;
-      }
+//         // Cập nhật coverPicture vào state
+//         updateProfile.coverPicture = updateCover.coverPicture;
+//       }
 
-      // Cập nhật state với dữ liệu mới từ API
-      setProfileData({ ...profileData, ...updateProfile });
-      setIsEditProfileModel(false);
-      setProfilePicturePreview(null);
-      setCoverPhotoFile(null);
+//       // Cập nhật state với dữ liệu mới từ API
+//       setProfileData({ ...profileData, ...updateProfile });
+//       setIsEditProfileModel(false);
+//       setProfilePicturePreview(null);
+//       setCoverPhotoFile(null);
 
-      setUser(updateProfile);
-      await fetchProfile();
-    } catch (error) {
-      console.error("Lỗi khi cập nhật trang cá nhân", error);
-    } finally {
-      setLoading(false);
+//       setUser(updateProfile);
+//       await fetchProfile();
+//     } catch (error) {
+//       console.error("Lỗi khi cập nhật trang cá nhân", error);
+//     } finally {
+//       setLoading(false);
+//     }
+// };
+
+const onSubmitProfile = async (data) => {
+  try {
+    setLoading(true);
+    console.log("Dữ liệu gửi lên API:", data);
+
+    const formData = new FormData();
+    formData.append("dateOfBirth", data.dateOfBirth);
+    formData.append("gender", data.gender);
+
+    if (profilePictureFile) {
+      formData.append("profilePicture", profilePictureFile);
     }
+
+    // Gửi API cập nhật hồ sơ cá nhân
+    const updateProfile = await updateUserProfile(id, formData);
+
+    // Nếu có ảnh bìa, cập nhật ảnh bìa
+    if (coverPhotoFile) {
+      const coverFormData = new FormData();
+      coverFormData.append("coverPicture", coverPhotoFile);
+      const updateCover = await updateUserCoverPhoto(id, coverFormData);
+      updateProfile.coverPicture = updateCover.coverPicture;
+    }
+
+    // **Gửi API cập nhật Bio**
+    const bioData = {
+      liveIn: data.liveIn,
+      workplace: data.workplace,
+      education: data.education,
+      hometown: data.hometown,
+    };
+    const updatedBio = await createOrUpdateUserBio(id, bioData);
+
+    // Cập nhật dữ liệu mới vào state
+    setProfileData({ ...profileData, ...updateProfile, bio: updatedBio });
+    setIsEditProfileModel(false);
+    setProfilePicturePreview(null);
+    setCoverPhotoFile(null);
+    setUser(updateProfile);
+    await fetchProfile();
+  } catch (error) {
+    console.error("Lỗi khi cập nhật trang cá nhân", error);
+  } finally {
+    setLoading(false);
+  }
 };
 
 
@@ -358,8 +384,8 @@ const ProfileHeader = ({
                 {/* Công việc */}
                 <ProfileField
                   label="Công việc"
-                  field="job"
-                  value={profile.job}
+                  field="workplace"
+                  value={profile.workplace} 
                   isEditingField={isEditingField}
                   onEdit={handleEdit}
                   onSave={handleSave}
@@ -369,8 +395,8 @@ const ProfileHeader = ({
                 {/* Tỉnh/Thành phố hiện tại */}
                 <ProfileField
                   label="Tỉnh/Thành phố hiện tại"
-                  field="location"
-                  value={profile.location}
+                  field="liveIn"
+                  value={profile.liveIn} 
                   isEditingField={isEditingField}
                   onEdit={handleEdit}
                   onSave={handleSave}
@@ -381,7 +407,7 @@ const ProfileHeader = ({
                 <ProfileField
                   label="Quê quán"
                   field="hometown"
-                  value={profile.hometown}
+                  value={profile.hometown} 
                   isEditingField={isEditingField}
                   onEdit={handleEdit}
                   onSave={handleSave}
@@ -392,24 +418,14 @@ const ProfileHeader = ({
                 <ProfileField
                   label="Học vấn"
                   field="education"
-                  value={profile.education}
+                  value={profile.education} 
                   isEditingField={isEditingField}
                   onEdit={handleEdit}
                   onSave={handleSave}
                   onCancel={handleCancel}
                 />
 
-                {/* Ngày sinh */}
-                {/* <ProfileField
-                  label="Ngày sinh"
-                  field="birthday"
-                  value={profileData?.dateOfBirth?.split("T")[0] || ""}
-                  isEditingField={isEditingField}
-                  onEdit={handleEdit}
-                  // onSave={handleSave}
-                  onCancel={handleCancel}
-                  onSave={(field, value) => handleSave(field, value)}
-                /> */}
+               
 
                 <div className="space-y-2">
                   <Label htmlFor="dateOfBirth">Ngày sinh</Label>
