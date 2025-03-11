@@ -16,18 +16,21 @@ import PostComments from './PostComments'
 import { formatedDate } from '@/lib/utils'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
+import userStore from '@/store/userStore'
 
 
 
-const PostCard = ({post, reaction, onReact, onComment, onShare}) => {
+const PostCard = ({post, onReact, onComment, onShare}) => {
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false)
   const [showComments, setShowComments] = useState(false)
   const [showReactionChooser, setShowReactionChooser] = useState(false)
   const [isChoosing, setIsChoosing] = useState(false)
   const totalReact = post?.reactionStats?.like+post?.reactionStats?.love+post?.reactionStats?.haha+post?.reactionStats?.wow+post?.reactionStats?.sad+post?.reactionStats?.angry
   const commentInputRef = useRef(null)
-
 const router= useRouter()
+
+const {user} = userStore()
+const [reaction,setReaction] = useState(null) 
 
 const handleUserProfile = ()  => {
   router.push(`/user-profile/${post?.user?._id}`)
@@ -42,6 +45,7 @@ const handleUserProfile = ()  => {
   const userPostPlaceholder = post?.user?.username?.split(" ").map((name) => name[0]).join(""); // tên người đăng bài viết tắt
   const [topReactions, setTopReactions] = useState([]);
   useEffect(() => {
+    setReaction(post?.reactions?.find(react=>react?.user == user?._id)?post?.reactions?.find(react=>react?.user == user?._id).type:null)
     //đảm bảo object hợp lệ
       if (!post?.reactionStats || typeof post?.reactionStats !== "object") {
       setTopReactions([]);
