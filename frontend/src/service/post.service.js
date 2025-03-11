@@ -78,6 +78,17 @@ export const addCommentToPost = async(postId,commentText) => {
     }
 }
 
+export const addReplyToPost = async(postId,commentId, replyText) => {
+    try {
+        console.log("service:",postId,commentId, replyText)
+        const result = await axiosInstance.post(`/users/posts/reply/${postId}`, {commentId, replyText})
+        return result?.data
+    } catch (error) {
+        console.error(error)
+        throw error
+    }
+}
+
 // phương thức để share cho một bài viết
 export const sharePost = async(postId) => {
     try {
