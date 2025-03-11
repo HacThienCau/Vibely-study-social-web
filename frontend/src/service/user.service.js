@@ -66,9 +66,9 @@ export const fetchUserProfile = async(userId) =>{
 }
 
 // Lấy danh sách bạn chung
-export const getMutualFriends = async() =>{
+export const getMutualFriends = async(userId) =>{
     try {
-         const response = await axiosInstance.get(`/users/mutual-friends`)
+         const response = await axiosInstance.get(`/users/mutual-friends/${userId}`)
          return response?.data?.data;
     } catch (error) {
         console.log(error);

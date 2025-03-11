@@ -5,20 +5,62 @@ const response = require("../utils/responseHandler");
 
 
 
+// const createOrUpdateUserBio = async(req,res) =>{
+//     try {
+//         const {userId} = req.params;
+//         const {bioText,liveIn,relationship,workplace,education,phone,hometown} = req.body;
+
+//         let bio = await Bio.findOneAndUpdate(
+//             {user:userId},
+//             {
+//                 bioText,
+//                 liveIn,
+//                 relationship,
+//                 workplace,
+//                 education,
+//                 phone,
+//                 hometown
+//             },
+//             {new : true, runValidators:true},
+//         )
+
+//         // Nếu không có thông tin bio thì tạo mới
+//         if(!bio){
+//             bio = new Bio({
+//                 user:userId,
+//                 bioText,
+//                 liveIn,
+//                 relationship,
+//                 workplace,
+//                 education,
+//                 phone,
+//                 hometown
+//             })
+
+//             await bio.save();
+//             await User.findByIdAndUpdate(userId,{bio: bio._id})
+//         }
+
+//         return response(res,201, 'Tạo mới hoặc cập nhật tiểu sử thành công',bio)
+
+//     } catch (error) {
+//         console.log(error)
+//         return response(res,500,'Lỗi máy chủ nội bộ',error.message)
+//     }
+// }
+
 const createOrUpdateUserBio = async(req,res) =>{
     try {
         const {userId} = req.params;
-        const {bioText,liveIn,relationship,workplace,education,phone,hometown} = req.body;
+        const {motto,liveIn,workplace,education,hometown} = req.body;
 
         let bio = await Bio.findOneAndUpdate(
             {user:userId},
             {
-                bioText,
+                motto,
                 liveIn,
-                relationship,
                 workplace,
                 education,
-                phone,
                 hometown
             },
             {new : true, runValidators:true},
@@ -28,12 +70,10 @@ const createOrUpdateUserBio = async(req,res) =>{
         if(!bio){
             bio = new Bio({
                 user:userId,
-                bioText,
+                motto,
                 liveIn,
-                relationship,
                 workplace,
                 education,
-                phone,
                 hometown
             })
 
@@ -48,7 +88,6 @@ const createOrUpdateUserBio = async(req,res) =>{
         return response(res,500,'Lỗi máy chủ nội bộ',error.message)
     }
 }
-
 
 const updateCoverPicture = async(req, res) =>{
     try {

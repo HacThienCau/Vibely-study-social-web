@@ -184,10 +184,10 @@ const getAllUserForRequest = async (req, res) => {
 // Xây dựng API để lấy danh sách bạn chung
 const getAllMutualFriends = async (req, res) => {
     try {
-        const loggedInUserId = req.user.userId;
+        const ProfileUserId = req.params.userId;
 
         // Tìm người dùng đăng nhập và lấy danh sách người theo dõi và người đang theo dõi của họ
-        const loggedInUser = await User.findById(loggedInUserId)
+        const loggedInUser = await User.findById(ProfileUserId)
         .select('followers followings')
         .populate('followings', 'username profilePicture email followerCount followingCount')
         .populate('followers','username profilePicture email followerCount followingCount')

@@ -202,12 +202,14 @@ export const ProfileDetails = ({
                   <p className="flex justify-center text-gray-600 dark:text-gray-300 mb-4">
                     {profileData?.bio?.motto}
                   </p>
+                  {isOwner && (
                   <Button
                     className="w-full bg-[#A6A7AA] text-white mb-4"
                     onClick={() => setIsEditMottoModal(true)}
                   >
                     Chỉnh sửa tiểu sử
                   </Button>
+                  )}
                 </>
               )}
               <div className="space-y-2 mb-4 dark:text-gray-300">
@@ -294,7 +296,7 @@ export const ProfileDetails = ({
         </Card>
       </motion.div>
     ),
-    friends: <MutualFriends />,
+    friends: <MutualFriends id={id} isOwner={isOwner} />,
     photos: (
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -308,9 +310,9 @@ export const ProfileDetails = ({
               <h2 className="text-xl font-semibold mb-4 dark:text-gray-300">
                 Ảnh
               </h2>
-              <h3 className="text-[#086280] font-semibold cursor-pointer">
+              {/* <h3 className="text-[#086280] font-semibold cursor-pointer">
                 Thêm ảnh
-              </h3>
+              </h3> */}
             </div>
             <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
               {userPosts
