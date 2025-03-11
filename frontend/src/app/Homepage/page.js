@@ -6,7 +6,6 @@ import RightSideBar from '../components/RightSideBar'
 import NewPostForm from '../posts/NewPostForm'
 import PostCard from '../posts/PostCard'
 import { usePostStore } from '@/store/usePostStore'
-import toast from 'react-hot-toast'
 
 const Homepage = () => {
   const [isPostFormOpen, setIsPostFormOpen] = useState(false)
@@ -15,35 +14,6 @@ const Homepage = () => {
   useEffect(()=>{
     fetchPosts()  //tải các bài viết
   },[fetchPosts])
-  const[reactPosts, setReactPosts] = useState(new Set()); // danh sách những bài viết mà người dùng đã react
-  useEffect(()=>{
-    const saveReacts = localStorage.getItem('reactPosts')
-    if(saveReacts){
-      setReactPosts(JSON.parse(saveReacts))
-    }
-  },[])
-  const handleReact = async(postId, reactType)=>{
-    console.log("reactType: ", reactType)
-    const updatedReactPosts = { ...reactPosts }; 
-    if(updatedReactPosts && updatedReactPosts[postId]=== reactType){ 
-      delete updatedReactPosts[postId]; // hủy react nếu nhấn lại
-    }
-    else{ 
-      updatedReactPosts[postId] = reactType; // cập nhật cảm xúc mới
-    }
-    //lưu danh sách mới vào biến
-    setReactPosts(updatedReactPosts)
-    //lưu vào cục bộ
-    localStorage.setItem('reactPosts', JSON.stringify(updatedReactPosts));
-
-    try {
-      await handleReactPost(postId, updatedReactPosts[postId] || null) //api
-      await fetchPosts()// tải lại danh sách
-    } catch (error) {
-      console.log(error)
-      toast.error("Đã xảy ra lỗi khi bày tỏ cảm xúc với bài viết này. Vui lòng thử lại.")
-    }
-  }
 
   return (
     <div className="flex flex-col min-h-screen text-foreground">
@@ -61,8 +31,10 @@ const Homepage = () => {
                 {posts.map(post => (
                   <PostCard key={post._id} 
                   post={post} 
-                  reaction = {reactPosts[post?._id]||null} //loại react
-                  onReact={(reactType) => handleReact(post?._id, reactType)}  // chức năng react
+                  onReact={async(reactType) => {
+                    await handleReactPost(post?._id, reactType)
+                    await fetchPosts()// tải lại danh sách
+                  }}  // chức năng react
                   onComment = { async(commentText)=>{  //chức năng comment
                     //console.log("onComment: ",commentText)
                     await handleCommentPost(post?._id, commentText)
