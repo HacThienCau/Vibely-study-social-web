@@ -97,6 +97,10 @@ const getAllPosts = async (req, res) => {
             path: 'comments.user',
             select: 'username profilePicture'
         })
+        .populate({
+            path: 'comments.replies.user',
+            select: 'username profilePicture'
+        })
         return response(res, 200, "Lấy tất cả bài viết thành công", posts);
     } catch (error) {
         console.error("Lỗi khi lấy tất cả bài viết:", error);
@@ -245,6 +249,27 @@ const addCommentToPost = async (req, res) => {
     }
 };
 
+const addReplyToPost = async (req, res) => {
+    const { postId } = req.params;
+    const userId = req.user.userId;
+    const { commentId, replyText } = req.body;
+    try {
+        const post = await Post.findById(postId);
+        if (!post) return response(res, 404, "Không tìm thấy bài viết");
+
+        const comment = post?.comments?.find(cmt => cmt._id.toString() === commentId);
+        if (!comment) return response(res, 404, "Không tìm thấy bình luận");
+        
+        comment?.replies.push({ user: userId, text:replyText });
+
+        await post.save();
+        return response(res, 201, "Phản hồi bình luận thành công", post);
+    } catch (error) {
+        console.error("Lỗi khi phản hồi bình luận:", error);
+        return response(res, 500, "Phản hồi bình luận thất bại", error.message);
+    }
+};
+
 //Chia sẻ bài viết
 const sharePost = async (req, res) => {
     const { postId } = req.params;
@@ -267,4 +292,4 @@ const sharePost = async (req, res) => {
     }
 }
 
-module.exports = { createPost, getAllPosts, getPostByUserId, reactPost, addCommentToPost, sharePost, createStory, getAllStories, reactStory };
+module.exports = { createPost, getAllPosts, getPostByUserId, reactPost, addCommentToPost, addReplyToPost, sharePost, createStory, getAllStories, reactStory };

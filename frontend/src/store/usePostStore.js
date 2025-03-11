@@ -1,4 +1,4 @@
-import { addCommentToPost, createPost, getAllPosts, getAllStories, getPostByUserId, reactPost, sharePost, createStory, reactStory, getAllUserPosts } from '@/service/post.service';
+import { addCommentToPost, createPost, getAllPosts, getAllStories, getPostByUserId, reactPost, sharePost, createStory, reactStory, getAllUserPosts, addReplyToPost } from '@/service/post.service';
 import toast from 'react-hot-toast';
 import { create } from 'zustand';
 //quản lý trạng thái các bài viết và story
@@ -122,6 +122,25 @@ export const usePostStore = create((set)=>({
         } catch (error) {
             set({error, loading:false})
             toast.error("Đã xảy ra lỗi khi thêm bình luận. Vui lòng thử lại.")
+        }
+    },
+
+    handleReplyComment: async(postId,commentId, replyText) =>{
+        set({loading:true})
+        try {
+            const newReply = await addReplyToPost(postId,commentId,replyText)
+            set((state)=>({
+                posts: state.posts.map((post)=>
+                post?._id === postId
+                ?newReply?.data
+                :post
+                ),
+                loading:false
+            }))
+            toast.success("Thêm phản hồi thành công.")
+        } catch (error) {
+            set({error, loading:false})
+            toast.error("Đã xảy ra lỗi khi thêm phản hồi. Vui lòng thử lại.")
         }
     },
 
