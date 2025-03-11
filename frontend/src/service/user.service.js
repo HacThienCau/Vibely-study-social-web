@@ -35,7 +35,7 @@ export const followUser = async(userId) =>{
 
 export const UnfollowUser = async(userId) =>{
     try {
-         const response = await axiosInstance.post('/users/unfollow', {userIdToUnFollow:userId})
+         const response = await axiosInstance.post('/users/unfollow', {userIdToUnfollow:userId})
          return response?.data;
     } catch (error) {
         console.log(error);
