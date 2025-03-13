@@ -13,8 +13,13 @@ export const registerUser = async(userData)=>{
 // Đăng nhập người dùng
 export const loginUser = async(userData)=>{
     try {
-        const response = await axiosInstance.post('/auth/login',userData);
-            return response.data
+        const response = await axiosInstance.post('/auth/login',userData,{withCredentials: true});
+
+        if (response.data.data.token) {
+            localStorage.setItem("token", response.data.data.token); // Lưu token vào localStorage
+        }
+
+        return response.data
     } catch (error) {
         console.log(error)
     }

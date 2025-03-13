@@ -13,6 +13,7 @@ const Quotation = require('./model/Quotation');
 const userRoute = require('./routes/userRoute');
 const passport = require('./controllers/googleController');
 const scheduleRoute = require('./routes/scheduleRoute');
+const documentRoute = require('./routes/documentRoute');
 
 const YAML = require('yamljs');
 
@@ -44,6 +45,7 @@ app.use('/conversation', conversationRoute);
 app.use('/message', messageRoute);
 app.use('/users', userRoute);
 app.use('/schedules', scheduleRoute);
+app.use("/documents", documentRoute);
 
 // ✅ API lấy danh ngôn ngẫu nhiên
 app.get('/quotations/random', async (req, res) => {
@@ -65,4 +67,4 @@ const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
     console.log(`📜 API Docs available at http://localhost:${PORT}/api-docs`);
-    });
+});
