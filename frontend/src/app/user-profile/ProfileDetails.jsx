@@ -330,7 +330,7 @@ export const ProfileDetails = ({
               </h3>
             </div>
             {/* Grid hiển thị video */}
-            <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            {/* <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
               {userVideos.map((video) => (
                 <div key={video._id} className="relative w-[200px] h-[150px]">
                   <img
@@ -338,12 +338,26 @@ export const ProfileDetails = ({
                     alt="user_video"
                     className="w-full h-full object-cover rounded-lg"
                   />
-                  {/* Icon chỉnh sửa */}
+
                   <div className="absolute top-2 right-2 bg-black bg-opacity-50 p-1 rounded-full cursor-pointer">
                     <Pencil size={16} className="text-white" />
                   </div>
                 </div>
               ))}
+            </div> */}
+            <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+              {userPosts
+                ?.filter(
+                  (post) => post?.mediaType === "video/mp4" && post?.mediaUrl
+                )
+                .map((post) => (
+                  <img
+                    key={post?._id}
+                    src={post?.mediaUrl}
+                    alt="user_all_photos"
+                    className="w-[200px] h-[150px] object-cover rounded-lg"
+                  />
+                ))}
             </div>
           </CardContent>
         </Card>
