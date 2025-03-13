@@ -5,8 +5,7 @@ import { Button } from "@/components/ui/button";
 import {
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
+  DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { logout } from "@/service/auth.service";
@@ -17,12 +16,9 @@ import { DropdownMenu } from "@radix-ui/react-dropdown-menu";
 import {
   Bell,
   ChevronRight,
-  Loader,
-  LogOut,
   Menu,
   MessageCircle,
-  Search,
-  Users,
+  Search
 } from "lucide-react";
 
 import Image from "next/image";
@@ -320,8 +316,8 @@ const Header = () => {
                     <img src="images/help_dropdown.png" alt="help" className="mr-0" />
                     <span className="ml-2 font-semibold">Trung tâm trợ giúp</span>
                   </DropdownMenuItem>
-                  <DropdownMenuItem className="cursor-pointer mb-3" onClick={() => handleNavigation(`/faqs`)}>
-                    <img src="images/faqs_dropdown.png" alt="faqs" className="mr-0" />
+                  <DropdownMenuItem className="cursor-pointer mb-3" onClick={() => handleNavigation(`/support`)}>
+                    <img src="images/faqs_dropdown.png" alt="support" className="mr-0" />
                     <span className="ml-2 font-semibold">Hộp thư hỗ trợ</span>
                   </DropdownMenuItem>
                   <DropdownMenuItem className="cursor-pointer mb-3" onClick={handleLogout}>
