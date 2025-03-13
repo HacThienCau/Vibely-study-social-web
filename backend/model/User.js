@@ -74,6 +74,9 @@ const userSchema = new mongoose.Schema({
     // 🔹 Học tập - Lưu danh sách tài liệu đã mua
     purchasedDocuments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Document' }],
 
+    // Danh sách tài liệu đã lưu
+    savedDocuments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Document' }],
+
     role: {
         type: String,
         enum: ['user', 'admin'],
