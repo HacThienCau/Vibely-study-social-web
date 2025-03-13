@@ -64,15 +64,17 @@ const unfollowUser =  async(req,res) =>{
         }
 
         // Kiểm tra xem currentUser đã theo dõi userToUnfollow chưa
-        if(!currentUser.followings.includes(userIdToUnfollow)){
+        if(!currentUser.followers.includes(userIdToUnfollow)){
             return response(res,404, 'Bạn chưa theo dõi người dùng này');
         }
 
         // Xóa người dùng khỏi danh sách theo dõi và cập nhật số lượng người theo dõi
-        currentUser.followings = currentUser.followings.filter(id => id.toString() !== userIdToUnfollow)
+        currentUser.followers = currentUser.followers.filter(id => id.toString() !== userIdToUnfollow)
+        currentUser.followeings = currentUser.followings.filter(id => id.toString() !== userIdToUnfollow)
         userToUnfollow.followers = userToUnfollow.followers.filter(id => id.toString() !== userId)
 
         // Cập nhật số lượng người theo dõi và người đang theo dõi
+        currentUser.followerCount -=1;
         currentUser.followingCount -=1;
         userToUnfollow.followerCount -=1;
 
@@ -244,7 +246,7 @@ const getUserProfile = async(req, res) =>{
         const loggedInUserId = req?.user?.userId
 
         // Nạp thông tin người dùng và loại bỏ thông tin nhạy cảm
-        const userProfile = await User.findById(userId).select('-password');
+        const userProfile = await User.findById(userId).select('-password').populate("bio");
 
         if(!userProfile) return response(res,403, 'Người dùng không tồn tại')
 

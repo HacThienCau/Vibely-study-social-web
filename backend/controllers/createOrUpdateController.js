@@ -52,12 +52,12 @@ const response = require("../utils/responseHandler");
 const createOrUpdateUserBio = async(req,res) =>{
     try {
         const {userId} = req.params;
-        const {motto,liveIn,workplace,education,hometown} = req.body;
+        const {bioText,liveIn,workplace,education,hometown} = req.body;
 
         let bio = await Bio.findOneAndUpdate(
             {user:userId},
             {
-                motto,
+                bioText,
                 liveIn,
                 workplace,
                 education,
@@ -70,7 +70,7 @@ const createOrUpdateUserBio = async(req,res) =>{
         if(!bio){
             bio = new Bio({
                 user:userId,
-                motto,
+                bioText,
                 liveIn,
                 workplace,
                 education,

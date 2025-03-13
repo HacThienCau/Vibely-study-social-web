@@ -28,21 +28,12 @@ const ProfileHeader = ({
   const [isEditCoverModel, setIsEditCoverModel] = useState(false);
   const [isEditingField, setIsEditingField] = useState(null);
   const [profile, setProfile] = useState({
-    workplace: profileData.bio?.workplace,
-    liveIn: profileData.bio?.liveIn,
-    hometown: profileData.bio?.hometown,
-    education: profileData.bio?.education,
+    workplace: profileData?.bio?.workplace,
+    liveIn: profileData?.bio?.liveIn,
+    hometown: profileData?.bio?.hometown,
+    education: profileData?.bio?.education,
   });
 
-  // Cập nhật profile khi profileData thay đổi
-// useEffect(() => {
-//   setProfile({
-//     workplace: profileData.bio?.workplace,
-//     liveIn: profileData.bio?.liveIn,
-//     hometown: profileData.bio?.hometown,
-//     education: profileData.bio?.education,
-//   });
-// }, [profileData]);
 
   const [profilePictureFile, setProfilePictureFile] = useState(null);
   const [coverPhotoFile, setCoverPhotoFile] = useState(null);
@@ -63,48 +54,6 @@ const ProfileHeader = ({
   const profileImageInputRef = useRef();
   const coverImageInputRef = useRef();
 
-console.log('Loading profileData:', profileData);
-//   const onSubmitProfile = async (data) => { 
-//     try {
-//       setLoading(true);
-//       console.log("Dữ liệu gửi lên API:", data.dateOfBirth);
-
-//       // Tạo formData cho profile
-//       const formData = new FormData();
-//       formData.append("dateOfBirth", data.dateOfBirth);
-//       formData.append("gender", data.gender);
-
-//       if (profilePictureFile) {
-//         formData.append("profilePicture", profilePictureFile);
-//       }
-
-//       // Gửi API cập nhật hồ sơ
-//       const updateProfile = await updateUserProfile(id, formData);
-      
-//       // Nếu có ảnh bìa, gửi tiếp API cập nhật ảnh bìa
-//       if (coverPhotoFile) { 
-//         const coverFormData = new FormData();
-//         coverFormData.append("coverPicture", coverPhotoFile);
-//         const updateCover = await updateUserCoverPhoto(id, coverFormData);
-
-//         // Cập nhật coverPicture vào state
-//         updateProfile.coverPicture = updateCover.coverPicture;
-//       }
-
-//       // Cập nhật state với dữ liệu mới từ API
-//       setProfileData({ ...profileData, ...updateProfile });
-//       setIsEditProfileModel(false);
-//       setProfilePicturePreview(null);
-//       setCoverPhotoFile(null);
-
-//       setUser(updateProfile);
-//       await fetchProfile();
-//     } catch (error) {
-//       console.error("Lỗi khi cập nhật trang cá nhân", error);
-//     } finally {
-//       setLoading(false);
-//     }
-// };
 
 const onSubmitProfile = async (data) => {
   try {
@@ -138,6 +87,7 @@ const onSubmitProfile = async (data) => {
       hometown: data.hometown,
     };
     const updatedBio = await createOrUpdateUserBio(id, bioData);
+    console.log("Dữ liệu Bio trả về:", updatedBio);
 
     // Cập nhật dữ liệu mới vào state
     setProfileData({ ...profileData, ...updateProfile, bio: updatedBio });
@@ -425,7 +375,7 @@ const onSubmitProfile = async (data) => {
                   onCancel={handleCancel}
                 />
 
-               
+               {/* Ngàu sinh */}
 
                 <div className="space-y-2">
                   <Label htmlFor="dateOfBirth">Ngày sinh</Label>
