@@ -31,6 +31,7 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { SettingsMenu } from './SettingsMenu';
+import NotificationIcon from "./Notification/NotificationIcon";
 
 
 const Header = () => {
@@ -258,7 +259,8 @@ const Header = () => {
             size="icon"
             className="hidden md:block text-gray-600 cursor-pointer pl-1"
           >
-            <Bell size={24} className="min-w-[24px] min-h-[24px]" />
+            {/* <Bell size={24} className="min-w-[24px] min-h-[24px]" /> */}
+            <NotificationIcon />
           </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
