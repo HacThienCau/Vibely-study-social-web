@@ -13,6 +13,7 @@ const Quotation = require('./model/Quotation');
 const userRoute = require('./routes/userRoute');
 const passport = require('./controllers/googleController');
 const scheduleRoute = require('./routes/scheduleRoute');
+const chatbotRoute = require('./routes/chatbotRoute');
 const documentRoute = require('./routes/documentRoute');
 const inquiryRoute = require('./routes/inquiryRoute');
 
@@ -46,6 +47,7 @@ app.use('/conversation', conversationRoute);
 app.use('/message', messageRoute);
 app.use('/users', userRoute);
 app.use('/schedules', scheduleRoute);
+app.use('/chatbot', chatbotRoute);
 app.use("/documents", documentRoute);
 app.use('/inquiry', inquiryRoute);
 
