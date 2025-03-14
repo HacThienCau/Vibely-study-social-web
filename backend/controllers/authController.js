@@ -64,7 +64,8 @@ const loginUser = async (req, res) => {
         return response(res, 200, 'Đăng nhập thành công',
             {
                 username: user.username,
-                email: user.email
+                email: user.email,
+                token: accessToken
             }
         )
     }
