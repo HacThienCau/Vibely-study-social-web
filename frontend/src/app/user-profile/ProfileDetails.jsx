@@ -1,11 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { PostsContent } from "./profileContent/PostsContent";
 import { Card, CardContent } from "@/components/ui/card";
-import { Briefcase, Home, MapPin, Pencil, SaveOff } from "lucide-react";
+import {
+  Briefcase,
+  GraduationCap,
+  Home,
+  MapPin,
+  Pencil,
+  SaveOff,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { MutualFriends } from "./profileContent/MutualFriends";
 import { usePostStore } from "@/store/usePostStore";
+import { createOrUpdateUserBio } from "@/service/user.service";
 
 export const ProfileDetails = ({
   activeTab,
@@ -13,15 +21,39 @@ export const ProfileDetails = ({
   profileData,
   isOwner,
   fetchProfile,
+  setProfileData,
 }) => {
-  
-  const [isEditMottoModal, setIsEditMottoModal] = useState(false);
-  const [motto, setMotto] = useState("Hãy học như Seulgi ✨");
-  const [tempMotto, setTempMotto] = useState(motto);
+  const [isEditBioModal, setIsEditBioModal] = useState(false);
+  const [bio, setBio] = useState("");
+  const [tempBio, setTempBio] = useState(bio);
 
-  const handleSaveMotto = () => {
-    setMotto(tempMotto);
-    setIsEditMottoModal(false);
+  // const handleSaveBio = () => {
+  //   setBio(tempBio);
+  //   setIsEditBioModal(false);
+  // };
+
+  const handleSaveBio = async () => {
+    try {
+      if (!tempBio.trim()) {
+        alert("Tiểu sử không được để trống!");
+        return;
+      }
+  
+      // Gửi API cập nhật
+      const updatedBio = await createOrUpdateUserBio(id, { bioText: tempBio });
+
+  
+      // Cập nhật dữ liệu mới vào state
+      setProfileData((prev) => ({
+        ...prev,
+        bio: { ...prev.bio, bioText: tempBio }, // Cập nhật motto mới
+      }));
+  
+      // Đóng modal chỉnh sửa
+      setIsEditBioModal(false);
+    } catch (error) {
+      console.error("❌ Lỗi khi cập nhật Bio:", error);
+    }
   };
 
   const {
@@ -171,27 +203,27 @@ export const ProfileDetails = ({
                 Giới thiệu
               </h2>
               {/* Hiện Textarea khi nhấn Chỉnh sửa tiểu sử */}
-              {isEditMottoModal ? (
+              {isEditBioModal ? (
                 <div>
                   <textarea
                     className="w-full p-2 border rounded-md text-gray-700"
-                    value={tempMotto}
-                    onChange={(e) => setTempMotto(e.target.value)}
+                    value={tempBio}
+                    onChange={(e) => setTempBio(e.target.value)}
                     maxLength={101}
                   />
                   <div className="flex justify-end items-center mt-2 text-sm text-gray-500">
-                    <span>{tempMotto.length}/101</span>
+                    <span>{tempBio.length}/101</span>
                   </div>
                   <div className="flex justify-between gap-2 my-4">
                     <Button
                       className="bg-gray-400 text-white px-12 py-2 rounded-md"
-                      onClick={() => setIsEditMottoModal(false)}
+                      onClick={() => setIsEditBioModal(false)}
                     >
                       Hủy
                     </Button>
                     <Button
                       className="bg-[#086280] text-white px-8 py-2 rounded-md"
-                      onClick={handleSaveMotto}
+                      onClick={handleSaveBio}
                     >
                       Hoàn tất
                     </Button>
@@ -200,35 +232,56 @@ export const ProfileDetails = ({
               ) : (
                 <>
                   <p className="flex justify-center text-gray-600 dark:text-gray-300 mb-4">
-                    {profileData?.bio?.motto}
+                    {profileData?.bio?.bioText || "Chưa có tiểu sử"}
                   </p>
                   {isOwner && (
-                  <Button
-                    className="w-full bg-[#A6A7AA] text-white mb-4"
-                    onClick={() => setIsEditMottoModal(true)}
-                  >
-                    Chỉnh sửa tiểu sử
-                  </Button>
+                    <Button
+                      className="w-full bg-[#A6A7AA] text-white mb-4"
+                      onClick={() => setIsEditBioModal(true)}
+                    >
+                      Chỉnh sửa tiểu sử
+                    </Button>
                   )}
                 </>
               )}
               <div className="space-y-2 mb-4 dark:text-gray-300">
                 <div className="flex items-center">
-                  <MapPin className="w-5 h-5 mr-2 text-[#086280]" />
+                  <GraduationCap className="w-5 h-5 mr-2 text-[#086280]" />
                   <p>
-                    Sống tại{" "}
-                    <span className="font-semibold">Khánh Hòa, Việt Nam</span>{" "}
+                    Đã học tại{" "}
+                    <span className="font-semibold">
+                      {profileData?.bio?.education}
+                    </span>{" "}
                   </p>
                 </div>
 
                 <div className="flex items-center">
-                  <Briefcase className="w-5 h-5 mr-3 text-[#086280]" />
+                  <Briefcase className="w-5 h-5 mr-2 text-[#086280]" />
                   <p>
                     Làm việc tại{" "}
                     <span className="font-semibold">
-                      {" "}
-                      CLB Sách Và Hành Động UIT
+                      {profileData?.bio?.workplace}
                     </span>
+                  </p>
+                </div>
+
+                <div className="flex items-center">
+                  <Home className="w-5 h-5 mr-2 text-[#086280]" />
+                  <p>
+                    Sống tại{" "}
+                    <span className="font-semibold">
+                      {profileData?.bio?.liveIn}
+                    </span>{" "}
+                  </p>
+                </div>
+
+                <div className="flex items-center">
+                  <MapPin className="w-5 h-5 mr-2 text-[#086280]" />
+                  <p>
+                    Đến từ{" "}
+                    <span className="font-semibold">
+                      {profileData?.bio?.hometown}
+                    </span>{" "}
                   </p>
                 </div>
               </div>
@@ -277,7 +330,7 @@ export const ProfileDetails = ({
               </h3>
             </div>
             {/* Grid hiển thị video */}
-            <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            {/* <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
               {userVideos.map((video) => (
                 <div key={video._id} className="relative w-[200px] h-[150px]">
                   <img
@@ -285,12 +338,26 @@ export const ProfileDetails = ({
                     alt="user_video"
                     className="w-full h-full object-cover rounded-lg"
                   />
-                  {/* Icon chỉnh sửa */}
+
                   <div className="absolute top-2 right-2 bg-black bg-opacity-50 p-1 rounded-full cursor-pointer">
                     <Pencil size={16} className="text-white" />
                   </div>
                 </div>
               ))}
+            </div> */}
+            <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+              {userPosts
+                ?.filter(
+                  (post) => post?.mediaType === "video/mp4" && post?.mediaUrl
+                )
+                .map((post) => (
+                  <img
+                    key={post?._id}
+                    src={post?.mediaUrl}
+                    alt="user_all_photos"
+                    className="w-[200px] h-[150px] object-cover rounded-lg"
+                  />
+                ))}
             </div>
           </CardContent>
         </Card>

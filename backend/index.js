@@ -14,6 +14,8 @@ const userRoute = require('./routes/userRoute');
 const passport = require('./controllers/googleController');
 const scheduleRoute = require('./routes/scheduleRoute');
 const chatbotRoute = require('./routes/chatbotRoute');
+const documentRoute = require('./routes/documentRoute');
+const inquiryRoute = require('./routes/inquiryRoute');
 
 const YAML = require('yamljs');
 
@@ -46,7 +48,8 @@ app.use('/message', messageRoute);
 app.use('/users', userRoute);
 app.use('/schedules', scheduleRoute);
 app.use('/chatbot', chatbotRoute);
-
+app.use("/documents", documentRoute);
+app.use('/inquiry', inquiryRoute);
 
 // ✅ API lấy danh ngôn ngẫu nhiên
 app.get('/quotations/random', async (req, res) => {

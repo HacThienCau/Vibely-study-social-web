@@ -54,9 +54,11 @@ const userSchema = new mongoose.Schema({
         default: 0,
     },
 
+    // 🔥 Sửa lại bio thành ObjectId
     bio: { 
-        type: String,
-        default: null,
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'Bio', 
+        default: null 
     },
 
     // 🔹 Học tập - Lưu lịch sự kiện của người dùng (bài giảng, kiểm tra, deadline, sự kiện)
@@ -71,6 +73,9 @@ const userSchema = new mongoose.Schema({
 
     // 🔹 Học tập - Lưu danh sách tài liệu đã mua
     purchasedDocuments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Document' }],
+
+    // Danh sách tài liệu đã lưu
+    savedDocuments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Document' }],
 
     role: {
         type: String,

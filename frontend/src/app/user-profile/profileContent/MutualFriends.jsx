@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { motion } from "framer-motion";
 import { Avatar } from "@radix-ui/react-avatar";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -13,9 +13,14 @@ import { Button } from "@/components/ui/button";
 import { MoreHorizontal, Search, UserX } from "lucide-react";
 import { userFriendStore } from "@/store/userFriendsStore";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 export const MutualFriends = ({id, isOwner}) => {
   const { fetchMutualFriends, mutualFriends, UnfollowUser } = userFriendStore();
+  const router = useRouter();
+  const handleNavigation = (path, item) => {
+    router.push(path);
+  };
   useEffect(() => {
     if (id) {
       fetchMutualFriends(id);
@@ -51,11 +56,12 @@ export const MutualFriends = ({id, isOwner}) => {
                 <Search className="h-5 w-5" />
               </button>
             </div>
-            <p className="text-[#086280] font-semibold cursor-pointer">Lời mời kết bạn</p>
+            <p className="text-[#086280] font-semibold cursor-pointer" onClick={() => handleNavigation("/friends-list")}>Lời mời kết bạn</p>
             <p className="text-[#086280] font-semibold cursor-pointer">Tìm bạn bè</p>
           </div>
         </div>
 
+        <CardContent>
         {/* Danh sách bạn bè */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {mutualFriends.map((friend) => (
@@ -64,8 +70,8 @@ export const MutualFriends = ({id, isOwner}) => {
               className="flex items-center justify-between bg-white shadow-md rounded-lg border border-gray-200 p-3"
             >
               {/* Avatar + Tên */}
-              <div className="flex items-center space-x-4">
-              <Avatar>
+              <div className="flex items-center space-x-4 rounded-md">
+              <Avatar className="w-20 h-20 border-4 border-white dark:border-gray-700">
                     {friend?.profilePicture ? (
                       <AvatarImage
                         src={friend?.profilePicture}
@@ -111,6 +117,7 @@ export const MutualFriends = ({id, isOwner}) => {
             </div>
           ))}
         </div>
+        </CardContent>
       </Card>
     </motion.div>
   );
