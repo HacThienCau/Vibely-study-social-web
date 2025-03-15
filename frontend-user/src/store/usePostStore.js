@@ -1,4 +1,4 @@
-import { addCommentToPost, createPost, getAllPosts, getAllStories, getPostByUserId, reactPost, sharePost, createStory, reactStory, getAllUserPosts, addReplyToPost } from '@/service/post.service';
+import { addCommentToPost, createPost, getAllPosts, getAllStories, getPostByUserId, reactPost, sharePost, createStory, reactStory, getAllUserPosts, addReplyToPost, deletePost, deleteComment, deleteReply } from '@/service/post.service';
 import toast from 'react-hot-toast';
 import { create } from 'zustand';
 //quản lý trạng thái các bài viết và story
@@ -153,5 +153,38 @@ export const usePostStore = create((set)=>({
             set({error, loading:false})
             toast.error("Đã xảy ra lỗi khi chia sẻ bài viết. Vui lòng thử lại.")
         }
-    }
+    },
+
+    handleDeletePost:async(postId) =>{
+        set({loading:true})
+        try {
+            await deletePost(postId) 
+            toast.success("Xóa bài viết thành công.")
+        } catch (error) {
+            set({error, loading:false})
+            toast.error("Đã xảy ra lỗi khi xóa bài viết. Vui lòng thử lại.")
+        }
+    },
+
+    handleDeleteComment:async(postId, commentId)=>{
+        set({loading:true})
+        try {
+            await deleteComment(postId, commentId) 
+            toast.success("Xóa bình luận thành công.")
+        } catch (error) {
+            set({error, loading:false})
+            toast.error("Đã xảy ra lỗi khi xóa bình luận. Vui lòng thử lại.")
+        }
+    },
+
+    handleDeleteReply:async(postId, commentId, replyId)=>{
+        set({loading:true})
+        try {
+            await deleteReply(postId, commentId, replyId) 
+            toast.success("Xóa phản hồi thành công.")
+        } catch (error) {
+            set({error, loading:false})
+            toast.error("Đã xảy ra lỗi khi xóa phản hồi. Vui lòng thử lại.")
+        }
+    },
 }))

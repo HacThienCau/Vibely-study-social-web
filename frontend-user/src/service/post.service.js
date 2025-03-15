@@ -110,7 +110,7 @@ export const getPostByUserId = async(userId) => {
         throw error
     }
 }
-
+//tim story
 export const reactStory = async (postId) => {
     try {
         const result = await axiosInstance.post(`users/story/reacts/${postId}`);
@@ -120,3 +120,34 @@ export const reactStory = async (postId) => {
         throw error;
     }
 };
+
+//xóa bài viết
+export const deletePost = async(postId) => {
+    try {
+        const result = await axiosInstance.delete(`/users/posts/deletePost/${postId}`)
+        return result?.data?.data
+    } catch (error) {
+        console.error(error)
+        throw error
+    }
+}
+
+export const deleteComment = async(postId, commentId) => {
+    try {
+        const result = await axiosInstance.delete(`/users/posts/deleteComment/${postId}/${commentId}`)
+        return result?.data?.data
+    } catch (error) {
+        console.error(error)
+        throw error
+    }
+}
+
+export const deleteReply = async(postId, commentId, replyId) => {
+    try {
+        const result = await axiosInstance.delete(`/users/posts/deleteReply/${postId}/${commentId}/${replyId}`)
+        return result?.data?.data
+    } catch (error) {
+        console.error(error)
+        throw error
+    }
+}
