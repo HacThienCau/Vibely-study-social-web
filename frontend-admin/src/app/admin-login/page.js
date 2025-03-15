@@ -1,9 +1,10 @@
 "use client";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { loginUser } from "@/service/auth.service";
+import { loginAdmin } from "@/service/authAdmin.service";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { motion } from "framer-motion";
 import { LogIn } from "lucide-react";
@@ -13,6 +14,7 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import * as yup from "yup";
 
+// Schema validation cho form đăng nhập
 const loginSchema = yup.object().shape({
     email: yup.string().email("Email không hợp lệ").required("Email không được để trống"),
     password: yup.string().min(6, "Mật khẩu phải có ít nhất 6 ký tự").required("Mật khẩu không được để trống"),
@@ -26,14 +28,22 @@ const Page = () => {
         resolver: yupResolver(loginSchema),
     });
 
+    // Hàm xử lý đăng nhập
     const onSubmit = async (data) => {
         setLoading(true);
         try {
-            const response = await loginUser(data);
-            toast.success("Đăng nhập thành công");
-            router.push("/admin/dashboard");
+            const response = await loginAdmin(data); // Gọi API đăng nhập admin
+
+            // Kiểm tra nếu API trả về thành công
+            if (response?.status === "success" && response?.data?.token) {
+                localStorage.setItem("adminToken", response.data.token); // Lưu token
+                toast.success("Đăng nhập thành công!");
+                router.push("/admin/dashboard");
+            } else {
+                throw new Error(response?.message || "Đăng nhập thất bại!");
+            }
         } catch (error) {
-            toast.error("Đăng nhập thất bại. Kiểm tra lại email và mật khẩu");
+            toast.error(error.response?.data?.message || "Sai email hoặc mật khẩu!");
         } finally {
             setLoading(false);
         }
@@ -48,7 +58,7 @@ const Page = () => {
                             <img src="/images/logo.png" alt="Admin Panel" className="w-24 mx-auto" />
                         </CardTitle>
                         <CardDescription className="text-center text-[#1CA2C1] text-[16px]">
-                            Đăng nhập vào tài khoản quản trị Vibely
+                            Đăng nhập vào hệ thống quản trị
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -58,32 +68,26 @@ const Page = () => {
                                     <Label htmlFor="loginEmail" className="text-[#086280]">Email</Label>
                                     <Input
                                         id="loginEmail"
-                                        name="email"
                                         type="email"
                                         {...register("email")}
                                         placeholder="Nhập email của bạn"
-                                        className="col-span-3 dark:border-gray-400 border-[#0E42D2] placeholder:text-gray-400"
+                                        className="border-[#0E42D2] placeholder:text-gray-400"
                                     />
-                                    {errors.email && (
-                                        <p className="text-red-500">{errors.email.message}</p>
-                                    )}
+                                    {errors.email && <p className="text-red-500">{errors.email.message}</p>}
                                 </div>
                                 <div className="space-y-2">
                                     <Label htmlFor="loginPassword" className="text-[#086280]">Mật khẩu</Label>
                                     <Input
                                         id="loginPassword"
-                                        name="password"
                                         type="password"
                                         {...register("password")}
                                         placeholder="Nhập mật khẩu của bạn"
-                                        className="col-span-3 dark:border-gray-400 border-[#0E42D2] placeholder:text-gray-400"
+                                        className="border-[#0E42D2] placeholder:text-gray-400"
                                     />
-                                    {errors.password && (
-                                        <p className="text-red-500">{errors.password.message}</p>
-                                    )}
+                                    {errors.password && <p className="text-red-500">{errors.password.message}</p>}
                                 </div>
-                                <Button className="w-full bg-[#23CAF1] text-white mt-5" type="submit">
-                                    <LogIn className="mr-2 w-4 h-4" /> Đăng nhập
+                                <Button className="w-full bg-[#23CAF1] text-white mt-5" type="submit" disabled={loading}>
+                                    {loading ? "Đang đăng nhập..." : <><LogIn className="mr-2 w-4 h-4" /> Đăng nhập</>}
                                 </Button>
                             </div>
                         </form>
