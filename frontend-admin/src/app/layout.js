@@ -1,5 +1,6 @@
 import { Geist_Mono, Roboto_Condensed } from "next/font/google";
 import "./globals.css";
+import { Toaster } from "react-hot-toast";
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -21,6 +22,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={`${geistMono.variable} ${robotoCondensed.variable} antialiased`}>
+        <Toaster />
         {children}
       </body>
     </html>

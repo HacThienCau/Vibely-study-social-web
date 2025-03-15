@@ -16,7 +16,8 @@ const scheduleRoute = require('./routes/scheduleRoute');
 const chatbotRoute = require('./routes/chatbotRoute');
 const documentRoute = require('./routes/documentRoute');
 const inquiryRoute = require('./routes/inquiryRoute');
-const adminRoute = require('./routes/adminRoute');
+const adminAuthRoute = require('./routes/adminAuthRoute');
+const adminDashboardRoute = require('./routes/adminDashboardRoute');
 
 const YAML = require('yamljs');
 
@@ -51,7 +52,8 @@ app.use('/schedules', scheduleRoute);
 app.use('/chatbot', chatbotRoute);
 app.use("/documents", documentRoute);
 app.use('/inquiry', inquiryRoute);
-app.use('/admin', adminRoute);
+app.use('/admin/auth', adminAuthRoute);
+app.use('/admin', adminDashboardRoute);
 
 // ✅ API lấy danh ngôn ngẫu nhiên
 app.get('/quotations/random', async (req, res) => {
