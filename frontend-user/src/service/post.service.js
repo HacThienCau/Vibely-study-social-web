@@ -34,7 +34,7 @@ export const getAllPosts = async() => {
     }
 }
 
-//get all users posts 
+//Phương thức lấy tất cả bài viết của người dùng
 export const getAllUserPosts = async(userId)=>{
     try {
         const result = await axiosInstance.get(`/users/posts/user/${userId}`)
@@ -100,10 +100,10 @@ export const sharePost = async(postId) => {
     }
 }
 
-//Phương thức lấy tất cả bài viết của người dùng
-export const getPostByUserId = async(userId) => {
+//Phương thức lấy 1 bài viết theo ID
+export const getSinglePost = async(postId) => {
     try {
-        const result = await axiosInstance.get(`/users/posts/user/${userId}`)
+        const result = await axiosInstance.get(`/users/posts/${postId}`)
         return result?.data?.data
     } catch (error) {
         console.error(error)

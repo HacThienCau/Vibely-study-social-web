@@ -62,6 +62,10 @@ const handleUserProfile = ()  => {
   router.push(`/user-profile/${post?.user?._id}`)
 }
 
+const handleSinglePost = ()  => {
+  router.push(`/posts/${post?._id}`)
+}
+
   const handleCommentClick = () =>{
     setShowComments(!showComments)
     setTimeout(()=>{
@@ -87,7 +91,7 @@ const handleUserProfile = ()  => {
 }, [post?.reactionStats]); // Chạy lại khi reactionStats thay đổi
 
   const generateSharedLink = () => {
-    return `http://localhost:3000/${post?._id}`; //sau khi deploy thì đổi lại + tạo trang bài viết đi!!!!
+    return `http://localhost:3000/posts/${post?._id}`; //sau khi deploy thì đổi lại + tạo trang bài viết đi!!!!
   };
   const handleShare = (platform) => {
     const url = generateSharedLink();
@@ -134,7 +138,7 @@ const handleUserProfile = ()  => {
       <Card className="bg-white shadow-md rounded-lg border border-gray-200">
         <CardContent className="p-4">
           <div className="flex items-center justify-between mb-4 relative">
-            <div className="flex items-center space-x-3 cursor-pointer" onClick={handleUserProfile}>
+            <div className="flex items-center space-x-3 cursor-pointer">
               <Avatar>
               {post?.user?.profilePicture ? (
                 <AvatarImage src={post?.user?.profilePicture} alt={post?.user?.username}/>
@@ -143,10 +147,10 @@ const handleUserProfile = ()  => {
               )}
               </Avatar>
               <div>
-                <p className="font-semibold">
+                <p className="font-semibold" onClick={handleUserProfile}>
                   {post?.user?.username} {/*tên người đăng bài*/}
                 </p>
-                <p className="font-sm text-gray-500 text-xs">
+                <p className="font-sm text-gray-500 text-xs" onClick={handleSinglePost}>
                   {formatedDate(post?.createdAt)} {/*thời gian đăng bài*/}
                 </p>
               </div>

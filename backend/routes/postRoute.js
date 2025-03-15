@@ -1,11 +1,12 @@
 const express = require('express');
 const authMiddleware = require('../middleware/authMiddleware');
 const { multerMiddleware } = require('../config/cloudinary');
-const { createPost, getAllPosts, getPostByUserId, reactPost, addCommentToPost, sharePost, createStory, getAllStories, reactStory, addReplyToPost, deletePost, deleteComment, deleteReply} = require('../controllers/postController');
+const { createPost, getAllPosts, getPostByUserId, reactPost, addCommentToPost, sharePost, createStory, getAllStories, reactStory, addReplyToPost, deletePost, deleteComment, deleteReply, getSinglePost} = require('../controllers/postController');
 const router = express.Router();
 
 router.post('/posts', authMiddleware, multerMiddleware.single('media'), createPost);
 router.get('/posts', authMiddleware, getAllPosts);
+router.get('/posts/:postId', authMiddleware, getSinglePost);
 router.get('/posts/user/:id', authMiddleware, getPostByUserId);
 router.post('/posts/reacts/:postId', authMiddleware, reactPost);
 router.post('/posts/comments/:postId', authMiddleware, addCommentToPost);
