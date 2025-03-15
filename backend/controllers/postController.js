@@ -291,5 +291,24 @@ const sharePost = async (req, res) => {
         return response(res, 500, "Chia sẻ bài viết thất bại", error.message);
     }
 }
+//xóa bài viết
+const deletePost = async(req,res) =>{
+    const { postId } = req.params;
+    const userId = req.user.userId;
+    try {
+        const post = await Post.findById(postId);
+        if (!post) return response(res, 404, "Không tìm thấy bài viết");
 
-module.exports = { createPost, getAllPosts, getPostByUserId, reactPost, addCommentToPost, addReplyToPost, sharePost, createStory, getAllStories, reactStory };
+       const postUserId = post?.user?._id.toString();  //just double check :))
+       if (userId!=postUserId) return response(res, 403, "Bạn không có quyền thực hiện hành động này");
+
+       await Post.findByIdAndDelete(postId)
+       return response(res, 200, "Xóa bài viết thành công", post);
+    } catch (error) {
+        console.error("Lỗi khi xóa bài viết:", error);
+        return response(res, 500, "Xóa bài viết thất bại", error.message);
+    }
+}
+
+
+module.exports = { createPost, getAllPosts, getPostByUserId, reactPost, addCommentToPost, addReplyToPost, sharePost, createStory, getAllStories, reactStory, deletePost };

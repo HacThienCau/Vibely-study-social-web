@@ -10,7 +10,7 @@ import { useEffect, useRef, useState } from 'react'
 import { PiShareFatBold } from "react-icons/pi"
 import { FaXTwitter } from "react-icons/fa6";
 import { FaFacebook, FaLinkedin } from "react-icons/fa";
-import { AiOutlineCopy } from "react-icons/ai";
+import { AiOutlineCopy, AiOutlineDelete } from "react-icons/ai";
 import { QRCodeCanvas } from "qrcode.react";
 import PostComments from './PostComments'
 import { formatedDate } from '@/lib/utils'
@@ -20,7 +20,7 @@ import userStore from '@/store/userStore'
 
 
 
-const PostCard = ({post, onReact, onComment, onShare}) => {
+const PostCard = ({post, onReact, onComment, onShare, onDelete}) => {
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false)
   const [showComments, setShowComments] = useState(false)
   const [showReactionChooser, setShowReactionChooser] = useState(false)
@@ -31,6 +31,9 @@ const router= useRouter()
 
 const {user} = userStore()
 const [reaction,setReaction] = useState(null) 
+
+const [dropdownOpen, setDropdownOpen] = useState(false);
+const [popupOpen, setPopupOpen] = useState(false);
 
 const handleUserProfile = ()  => {
   router.push(`/user-profile/${post?.user?._id}`)
@@ -94,6 +97,10 @@ const handleUserProfile = ()  => {
     onReact(reaction);
     setShowReactionChooser(false); // Ẩn thanh reaction sau khi chọn
   };
+  const handleDeletePost = () =>{
+    onDelete();
+  }
+
   return (
     <motion.div
       key={post?._id}
@@ -103,7 +110,7 @@ const handleUserProfile = ()  => {
     >
       <Card className="bg-white shadow-md rounded-lg border border-gray-200">
         <CardContent className="p-4">
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-4 relative">
             <div className="flex items-center space-x-3 cursor-pointer" onClick={handleUserProfile}>
               <Avatar>
               {post?.user?.profilePicture ? (
@@ -121,10 +128,51 @@ const handleUserProfile = ()  => {
                 </p>
               </div>
             </div>
-            <Button variant="ghost" className="hover:bg-gray-100">
+            <Button onClick={() => setDropdownOpen(!dropdownOpen)} variant="ghost" 
+            className={`hover:bg-gray-100 ${post?.user?._id===user?._id?"flex":"hidden"}`}  //chủ bài viết mới có option này
+            >
               <MoreHorizontal className="h-4 w-4" />
             </Button>
+            {dropdownOpen && (
+            <div className="absolute top-10 right-4 w-40 bg-white border border-gray-300 rounded-md shadow-lg">
+              <button className="block w-full px-4 py-2 text-left text-red-600 hover:bg-gray-200 flex items-center gap-2"
+              onClick={()=>{
+                setDropdownOpen(false)
+                setPopupOpen(true)
+              }}
+              >
+                <AiOutlineDelete style={{ width: "20px", height: "20px" }}/>
+                Xóa bài viết
+              </button>
+            </div>
+            )}
           </div>
+          
+          {popupOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-80 z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            <h2 className="text-lg font-bold mb-4">Bạn có chắc chắn muốn xóa?</h2>
+            <p className="text-md mb-4">Hành động này không thể hoàn tác và toàn bộ nội dung của bài viết sẽ bị xóa bỏ.</p>
+            <div className="flex justify-end space-x-4">
+              <button
+                onClick={() => setPopupOpen(false)}
+                className="px-4 py-2 bg-gray-300 rounded-md hover:bg-gray-400"
+              >
+                Hủy
+              </button>
+              <button
+                onClick={() => {
+                  setPopupOpen(false);
+                  handleDeletePost();
+                }}
+                className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+              >
+                Xác nhận
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
           <p className="mb-4">{post?.content}</p>
           {post?.mediaUrl && post.mediaType === "image" && (
             <img

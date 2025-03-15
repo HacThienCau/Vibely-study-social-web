@@ -11,7 +11,7 @@ import { usePostStore } from '@/store/usePostStore'
 const Homepage = () => {
   const [isPostFormOpen, setIsPostFormOpen] = useState(false)
   //lấy các bài viết, story, phương thức từ usePostStore
-  const { posts, stories, fetchStories, fetchPosts, handleCreatePost, handleCreateStory, handleReactPost, handleCommentPost, handleSharePost } = usePostStore();
+  const { posts, stories, fetchStories, fetchPosts, handleCreatePost, handleCreateStory, handleReactPost, handleCommentPost, handleSharePost, handleDeletePost } = usePostStore();
   const router = useRouter()
 
   const handleNavigation = (path) => {
@@ -48,6 +48,10 @@ const Homepage = () => {
                   }}
                   onShare={async () => {  //chức năng share
                     await handleSharePost(post?._id)
+                    await fetchPosts()
+                  }}
+                  onDelete={async () => {  //chức năng xóa
+                    await handleDeletePost(post?._id)
                     await fetchPosts()
                   }}
                 />
