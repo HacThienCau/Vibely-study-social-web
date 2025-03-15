@@ -3,11 +3,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { formatedDate } from "@/lib/utils";
 import userStore from "@/store/userStore";
-import { ChevronDown, ChevronUp, Send } from "lucide-react";
+import { ChevronDown, ChevronUp, MoreHorizontal, Send } from "lucide-react";
+import { AiOutlineDelete } from "react-icons/ai";
 import { useEffect, useRef, useState } from "react";
-import toast from "react-hot-toast";
 
-function PostComment({ comment, onReply }) {
+function PostComment({ comment, onReply, onDeleteComment, onDeleteReply }) {
   const [showAllReplies, setShowAllReplies] = useState(false); //xem tất cả/2 cái đầu
   const [showReplies, setShowReplies] = useState(false); //mở xem replies
   const [replyText, setReplyText] = useState("");
@@ -27,6 +27,33 @@ function PostComment({ comment, onReply }) {
       setReplyText("");
     }
   };
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [dropdownReplyOpen, setDropdownReplyOpen] = useState(null);
+  const [popupOpen, setPopupOpen] = useState(false);
+  const dropdownRef = useRef(null);
+  const popupRef = useRef(null);
+  // Đóng dropdown khi click ra ngoài
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropdownOpen(false);
+        setDropdownReplyOpen(null);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // Đóng popup khi click ra ngoài
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (popupRef.current && !popupRef.current.contains(event.target)) {
+        setPopupOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   return (
     <div className="flex flex-col w-full">
@@ -48,11 +75,76 @@ function PostComment({ comment, onReply }) {
           )}
         </Avatar>
         <div className="flex flex-col">
-          <div className="bg-[#F0F2F5] rounded-lg px-3 py-2">
-            <p className="font-semibold text-[13px]">
-              {comment?.user?.username}
-            </p>
-            <p className="text-[15px]">{comment?.text}</p>
+          <div className="flex items-center gap-2">
+            <div className="bg-[#F0F2F5] rounded-lg px-3 py-2">
+              <p className="font-semibold text-[13px]">
+                {comment?.user?.username}
+              </p>
+              <p className="text-[15px]">{comment?.text}</p>
+            </div>
+            <div className="relative">
+              <Button
+                onClick={() => setDropdownOpen(!dropdownOpen)}
+                variant="ghost"
+                className={`hover:bg-gray-100 ${
+                  comment?.user?._id === user?._id ? "flex" : "hidden"
+                }`} //chủ cmt mới có option này
+              >
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+              {dropdownOpen && (
+                <div
+                  className="absolute top-10 right-10 translate-x-full w-40 bg-white border border-gray-300 rounded-md shadow-lg"
+                  ref={dropdownRef}
+                >
+                  <button
+                    className="block w-full px-4 py-2 text-left text-red-600 hover:bg-gray-200 flex items-center gap-2"
+                    onClick={() => {
+                      setDropdownOpen(false);
+                      setPopupOpen(true);
+                    }}
+                  >
+                    <AiOutlineDelete
+                      style={{ width: "20px", height: "20px" }}
+                    />
+                    Xóa bình luận
+                  </button>
+                </div>
+              )}
+            </div>
+            {popupOpen && (
+              <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-80 z-50">
+                <div
+                  className="bg-white p-6 rounded-lg shadow-lg"
+                  ref={popupRef}
+                >
+                  <h2 className="text-lg font-bold mb-4">
+                    Bạn có chắc chắn muốn xóa?
+                  </h2>
+                  <p className="text-md mb-4">
+                    Hành động này không thể hoàn tác và toàn bộ phản hồi của
+                    bình luận cũng sẽ bị xóa bỏ.
+                  </p>
+                  <div className="flex justify-end space-x-4">
+                    <button
+                      onClick={() => setPopupOpen(false)}
+                      className="px-4 py-2 bg-gray-300 rounded-md hover:bg-gray-400"
+                    >
+                      Hủy
+                    </button>
+                    <button
+                      onClick={() => {
+                        setPopupOpen(false);
+                        onDeleteComment();
+                      }}
+                      className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+                    >
+                      Xác nhận
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
           <div className="flex items-center text-xs text-gray-500">
             <Button
@@ -111,11 +203,47 @@ function PostComment({ comment, onReply }) {
                 )}
               </Avatar>
               <div className="flex flex-col">
-                <div className="bg-[#F0F2F5] rounded-lg px-3 py-2">
-                  <p className="font-semibold text-[13px]">
-                    {reply?.user?.username}
-                  </p>
-                  <p className="text-[15px]">{reply?.text}</p>
+                <div className="flex items-center gap-2">
+                  <div className="bg-[#F0F2F5] rounded-lg px-3 py-2">
+                    <p className="font-semibold text-[13px]">
+                      {reply?.user?.username}
+                    </p>
+                    <p className="text-[15px]">{reply?.text}</p>
+                  </div>
+                  <div className="relative">
+                    <Button
+                      onClick={() =>
+                        setDropdownReplyOpen(
+                          dropdownReplyOpen === reply?._id ? null : reply?._id
+                        )
+                      } //lưu id reply thay vì true/false
+                      variant="ghost"
+                      className={`hover:bg-gray-100 ${
+                        reply?.user?._id === user?._id ? "flex" : "hidden"
+                      }`} //chủ reply mới có option này
+                    >
+                      <MoreHorizontal className="h-4 w-4" />
+                    </Button>
+                    {dropdownReplyOpen === reply?._id && (
+                      <div
+                        className="absolute top-10 right-10 translate-x-full w-40 bg-white border border-gray-300 rounded-md shadow-lg"
+                        ref={dropdownRef}
+                      >
+                        <button
+                          className="block w-full px-4 py-2 text-left text-red-600 hover:bg-gray-200 flex items-center gap-2"
+                          onClick={() => {
+                            setDropdownReplyOpen(null);
+                            onDeleteReply(reply?._id);
+                          }}
+                        >
+                          <AiOutlineDelete
+                            style={{ width: "20px", height: "20px" }}
+                          />
+                          Xóa phản hồi
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </div>
                 <div className="flex items-center text-xs text-gray-500">
                   <Button
@@ -141,18 +269,22 @@ function PostComment({ comment, onReply }) {
               </div>
             </div>
           ))}
-           {comment?.replies?.length > 2 && (
-                    <p
-                        className="font-semibold text-[13px] text-gray-500 px-2 hover:underline cursor-pointer ml-10"
-                        onClick={() => setShowAllReplies(!showAllReplies)}
-                    >
-                        {showAllReplies ? (
-                            <>Rút gọn <ChevronUp className="ml-2 h-4 w-4" /></>
-                        ) : (
-                            <>Tất cả phản hồi <ChevronDown className="ml-2 h-4 w-4" /></>
-                        )}
-                    </p>
-                )}
+          {comment?.replies?.length > 2 && (
+            <p
+              className="font-semibold text-[13px] text-gray-500 px-2 hover:underline cursor-pointer ml-10"
+              onClick={() => setShowAllReplies(!showAllReplies)}
+            >
+              {showAllReplies ? (
+                <>
+                  Rút gọn <ChevronUp className="ml-2 h-4 w-4" />
+                </>
+              ) : (
+                <>
+                  Tất cả phản hồi <ChevronDown className="ml-2 h-4 w-4" />
+                </>
+              )}
+            </p>
+          )}
           {/*Viết phản hồi */}
           <div className="flex items-center space-x-2 w-2/3 mb-4 ml-10">
             <Avatar className="w-8 h-8">

@@ -34,6 +34,29 @@ const [reaction,setReaction] = useState(null)
 
 const [dropdownOpen, setDropdownOpen] = useState(false);
 const [popupOpen, setPopupOpen] = useState(false);
+const dropdownRef = useRef(null);
+const popupRef = useRef(null);
+// Đóng dropdown khi click ra ngoài
+useEffect(() => {
+  function handleClickOutside(event) {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      setDropdownOpen(false);
+    }
+  }
+  document.addEventListener("mousedown", handleClickOutside);
+  return () => document.removeEventListener("mousedown", handleClickOutside);
+}, []);
+
+// Đóng popup khi click ra ngoài
+useEffect(() => {
+  function handleClickOutside(event) {
+    if (popupRef.current && !popupRef.current.contains(event.target)) {
+      setPopupOpen(false);
+    }
+  }
+  document.addEventListener("mousedown", handleClickOutside);
+  return () => document.removeEventListener("mousedown", handleClickOutside);
+}, []);
 
 const handleUserProfile = ()  => {
   router.push(`/user-profile/${post?.user?._id}`)
@@ -134,7 +157,7 @@ const handleUserProfile = ()  => {
               <MoreHorizontal className="h-4 w-4" />
             </Button>
             {dropdownOpen && (
-            <div className="absolute top-10 right-4 w-40 bg-white border border-gray-300 rounded-md shadow-lg">
+            <div className="absolute top-10 right-4 w-40 bg-white border border-gray-300 rounded-md shadow-lg" ref={dropdownRef}>
               <button className="block w-full px-4 py-2 text-left text-red-600 hover:bg-gray-200 flex items-center gap-2"
               onClick={()=>{
                 setDropdownOpen(false)
@@ -150,7 +173,7 @@ const handleUserProfile = ()  => {
           
           {popupOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-80 z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg">
+          <div className="bg-white p-6 rounded-lg shadow-lg" ref={popupRef}>
             <h2 className="text-lg font-bold mb-4">Bạn có chắc chắn muốn xóa?</h2>
             <p className="text-md mb-4">Hành động này không thể hoàn tác và toàn bộ nội dung của bài viết sẽ bị xóa bỏ.</p>
             <div className="flex justify-end space-x-4">
