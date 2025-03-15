@@ -28,7 +28,7 @@ const Page = () => {
 
   const handleAction = async (action, userId) => {
     if (action === "confirm") {
-      toast.success("Thêm bạn thành công");
+      toast.success("Gửi lời mời kết bạn thành công");
       await followUser(userId);
       fetchFriendRequest();
       fetchFriendSuggestion();

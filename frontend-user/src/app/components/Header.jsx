@@ -44,6 +44,8 @@ const Header = () => {
     setIsSettingsOpen(false); // Quay lại menu chính
   };
 
+
+
   const navItems = [
     { icon: "/images/home_navbar.svg", path: "/" },
     { icon: "/images/video_navbar.svg", path: "/video-feed" },
@@ -90,7 +92,7 @@ const Header = () => {
       setLoading(true);
       setIsSearchOpen(false);
       setSearchQuery("");
-      await router.push(`user-profile/${userId}`);
+      await router.push(`/user-profile/${userId}`);
     } catch (error) {
       console.log(error);
     } finally {
