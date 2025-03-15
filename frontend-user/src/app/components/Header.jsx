@@ -89,7 +89,7 @@ const Header = () => {
       setLoading(true);
       setIsSearchOpen(false);
       setSearchQuery("");
-      await router.push(`user-profile/${userId}`);
+      await router.push(`/user-profile/${userId}`);
     } catch (error) {
       console.log(error);
     } finally {

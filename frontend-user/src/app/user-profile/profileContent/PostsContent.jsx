@@ -13,8 +13,9 @@ import { FaFacebook, FaLinkedin, FaXTwitter } from 'react-icons/fa6';
 import { AiOutlineCopy } from 'react-icons/ai';
 import { QRCodeCanvas } from 'qrcode.react';
 import Image from 'next/image'
+import userStore from '@/store/userStore';
 
-export const PostsContent = ({post, reaction, onReact, onComment, onShare}) => {
+export const PostsContent = ({post, onReact, onComment, onShare}) => {
   const [showComments,setShowComments] = useState(false)
   const [isShareDialogOpen,setIsShareDialogOpen] = useState(false)
 
@@ -23,7 +24,8 @@ export const PostsContent = ({post, reaction, onReact, onComment, onShare}) => {
     const [isChoosing, setIsChoosing] = useState(false)
     const totalReact = post?.reactionStats?.like+post?.reactionStats?.love+post?.reactionStats?.haha+post?.reactionStats?.wow+post?.reactionStats?.sad+post?.reactionStats?.angry
     const commentInputRef = useRef(null)
-  
+    const {user} =userStore()
+    const [reaction,setReaction] = useState(null) 
 
   
     const handleCommentClick = () =>{
@@ -35,6 +37,7 @@ export const PostsContent = ({post, reaction, onReact, onComment, onShare}) => {
     const userPostPlaceholder = post?.user?.username?.split(" ").map((name) => name[0]).join(""); // tên người đăng bài viết tắt
     const [topReactions, setTopReactions] = useState([]);
     useEffect(() => {
+      setReaction(post?.reactions?.find(react=>react?.user == user?._id)?post?.reactions?.find(react=>react?.user == user?._id).type:null)
       //đảm bảo object hợp lệ
         if (!post?.reactionStats || typeof post?.reactionStats !== "object") {
         setTopReactions([]);
