@@ -303,9 +303,6 @@ const deletePost = async(req,res) =>{
         const post = await Post.findById(postId);
         if (!post) return response(res, 404, "Không tìm thấy bài viết");
 
-       const postUserId = post?.user?._id.toString();  //just double check :))
-       if (userId!=postUserId) return response(res, 403, "Bạn không có quyền thực hiện hành động này");
-
        await Post.findByIdAndDelete(postId)
        return response(res, 200, "Xóa bài viết thành công", post);
     } catch (error) {
@@ -324,9 +321,6 @@ const deleteComment = async(req,res) =>{
         const commentIndex = post?.comments.findIndex((comment)=>comment._id.toString() === commentId)
         if (commentIndex===-1) return response(res, 404, "Không tìm thấy bình luận");
 
-        if (post.comments[commentIndex].user._id.toString() !== userId) {
-            return response(res, 403, "Bạn không có quyền thực hiện hành động này");
-          }
         post.commentCount -= 1;
         post.comments.splice(commentIndex, 1);
         await post.save();
