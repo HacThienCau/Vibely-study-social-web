@@ -29,8 +29,15 @@ app.use(cookieParser());
 
 
 const corsOptions = {
-    origin: ["http://localhost:3000", "http://localhost:3001"],
+    origin: [
+        "http://localhost:3000",
+        "http://localhost:3001",
+        "https://blooming-inlet-52288-69374ad73067.herokuapp.com",
+        process.env.FRONTEND_URL
+    ].filter(Boolean),
     credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept']
 };
 
 
