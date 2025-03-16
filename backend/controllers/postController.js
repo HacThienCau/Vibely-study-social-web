@@ -135,6 +135,10 @@ const getPostByUserId = async (req, res) => {
             path: 'comments.user',
             select: 'username profilePicture'
         })
+        .populate({
+            path: 'comments.replies.user',
+            select: 'username profilePicture'
+        })
         return response(res, 200, "Lấy bài viết theo ID người dùng thành công", posts);
     }
     catch (error) {
@@ -359,5 +363,25 @@ const deleteReply = async(req,res) =>{
     }
 }
 
+const getSinglePost = async(req,res) =>{
+    const { postId } = req.params;
+    try {
+        const post = await Post.findById(postId)
+        .populate("user", "_id username profilePicture email")
+        .populate({
+            path: 'comments.user',
+            select: 'username profilePicture'
+        })
+        .populate({
+            path: 'comments.replies.user',
+            select: 'username profilePicture'
+        })
+        if (!post) return response(res, 404, "Không tìm thấy bài viết");
+        return response(res, 200, "Lấy bài viết thành công", post);
+    } catch (error) {
+        console.error("Lỗi khi xóa phản hồi:", error);
+        return response(res, 500, "Xóa phản hồi thất bại", error.message);
+    }
+}
 
-module.exports = { createPost, getAllPosts, getPostByUserId, reactPost, addCommentToPost, addReplyToPost, sharePost, createStory, getAllStories, reactStory, deletePost, deleteComment, deleteReply };
+module.exports = { createPost, getAllPosts, getPostByUserId, reactPost, addCommentToPost, addReplyToPost, sharePost, createStory, getAllStories, reactStory, deletePost, deleteComment, deleteReply, getSinglePost };
