@@ -49,7 +49,7 @@ app.use('/conversation', conversationRoute);
 app.use('/message', messageRoute);
 app.use('/users', userRoute);
 app.use('/schedules', scheduleRoute);
-app.use('/chatbot', chatbotRoute);
+app.use('/chats', chatbotRoute);
 app.use("/documents", documentRoute);
 app.use('/inquiry', inquiryRoute);
 app.use('/admin/auth', adminAuthRoute);
