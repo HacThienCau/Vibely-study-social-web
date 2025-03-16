@@ -55,6 +55,7 @@ function Posts() {
     || post?.content?.toLowerCase().includes(searchQuery.toLowerCase()) //tìm theo nội dung bài viết
     ? post : null
       );
+      if(filterPost.length<1) toast.error("Không tìm thấy kết quả")
       setFilterPosts(filterPost);
     } else {
       setFilterPosts([]);
