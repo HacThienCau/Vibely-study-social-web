@@ -116,7 +116,7 @@ function Posts() {
 
   const PostCard = ({ post }) => {
     return (
-      <div className="flex bg-white w-full rounded-lg my-2 relative">
+      <div className="flex bg-white w-full rounded-lg my-2 relative drop-shadow-lg">
         {/*Nội dung*/}
         <div className="flex flex-col ml-5 w-1/2 pt-5">
           <div className="flex items-center space-x-3 mb-3">
@@ -165,18 +165,18 @@ function Posts() {
             </video>
           )}
           {!post?.mediaUrl && (
-            <div className="h-[150px] italic text-gray-800">
+            <div className="h-[250px] italic text-gray-800">
                 Không có file phương tiện
             </div>
           )}
         </div>
         {/*Thông số*/}
-        <div className="flex flex-col space-x-3 w-1/2 absolute right-0 mt-5">
-          <div className="flex mb-5">
+        <div className="flex flex-col space-x-3 w-1/2 absolute right-0 mt-5 self-center">
+          <div className="flex mb-3">
             <p className="font-['Roboto_Condensed'] text-lg md:text-xl">Số lượt bày tỏ cảm xúc: &nbsp;</p>
             <p className="font-bold font-['Roboto_Condensed'] text-lg md:text-xl">{Object.values(post.reactionStats).reduce((acc, val) => acc + val,0)}</p>
           </div>
-          <div className="flex items-center gap-10 mb-5">
+          <div className="flex items-center gap-10 mb-7">
           <div className="flex items-center gap-2">
             <Image src={"/like.png"} alt="like"  width={30} height={30}/> 
             <p>{post?.reactionStats?.like}</p>
@@ -202,11 +202,11 @@ function Posts() {
             <p>{post?.reactionStats?.angry}</p>
           </div>
           </div>
-          <div className="flex mb-5">
+          <div className="flex mb-7">
             <p className="font-['Roboto_Condensed'] text-lg md:text-xl">Số lượt bình luận: &nbsp;</p>
             <p className="font-bold font-['Roboto_Condensed'] text-lg md:text-xl">{post?.commentCount}</p>
           </div>
-          <div className="flex mb-5">
+          <div className="flex mb-7">
             <p className="font-['Roboto_Condensed'] text-lg md:text-xl">Số lượt chia sẻ: &nbsp;</p>
             <p className="font-bold font-['Roboto_Condensed'] text-lg md:text-xl">{post?.shareCount}</p>
           </div>
