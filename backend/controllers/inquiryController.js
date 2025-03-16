@@ -7,7 +7,10 @@ const createInquiry = async (req, res) => {
         const { message } = req.body;
         if (!message) return response(res, 400, "Vui lòng điền đầy đủ thông tin.");
 
-        const newInquiry = new Inquiry({ message });
+        const userId = req.user.userId;
+        if (!userId) return response(res, 401, "Bạn cần đăng nhập để gửi thắc mắc.");
+
+        const newInquiry = new Inquiry({ userId, message });
         await newInquiry.save();
 
         return response(res, 201, "Thắc mắc đã được gửi!", newInquiry);
