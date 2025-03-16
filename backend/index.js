@@ -27,23 +27,23 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 
+// Add basic error handling
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).send('Something broke!');
+});
+
+// Add a basic root route
+app.get('/', (req, res) => {
+    res.send('Server is running');
+});
 
 const corsOptions = {
-    origin: [
-        "http://localhost:3000",
-        "http://localhost:3001",
-        "https://blooming-inlet-52288-69374ad73067.herokuapp.com",
-        process.env.FRONTEND_URL
-    ].filter(Boolean),
+    origin: ["http://localhost:3000", "http://localhost:3001"],
     credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept']
 };
 
-
 app.use(cors(corsOptions));
-
-
 
 connectDb();
 app.use(passport.initialize())
@@ -77,9 +77,8 @@ app.get('/quotations/random', async (req, res) => {
     }
 });
 
-
 const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server is running on port ${PORT}`);
     console.log(`📜 API Docs available at http://localhost:${PORT}/api-docs`);
 });
