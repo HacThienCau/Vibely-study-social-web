@@ -21,14 +21,14 @@ const SidebarItem = ({ path, icon, label }) => {
     return (
         <Button
             variant="ghost"
-            className={`w-full justify-start mb-3 cursor-pointer flex items-center text-[15px] ${isActive ? "text-[#086280]" : "text-[#A3AED0]"
+            className={`w-full justify-start mb-3 cursor-pointer flex items-center text-[15px] ${isActive ? "text-black" : "text-[#A3AED0]"
                 }`}
             onClick={handleClick}
         >
             <img
                 src={icon}
                 alt={label}
-                className={`mr-3 w-5 h-6 ${isActive ? "filter brightness-0 invert-[30%]" : ""}`}
+                className={`mr-3 w-5 h-6 ${isActive ? "filter brightness-0 invert-[10%]" : ""}`}
             />
             <span>{label}</span>
         </Button>
