@@ -18,6 +18,7 @@ const documentRoute = require('./routes/documentRoute');
 const inquiryRoute = require('./routes/inquiryRoute');
 const adminAuthRoute = require('./routes/adminAuthRoute');
 const adminDashboardRoute = require('./routes/adminDashboardRoute');
+const adminPostRoute = require('./routes/adminPostRoute')
 
 const YAML = require('yamljs');
 
@@ -61,6 +62,7 @@ app.use("/documents", documentRoute);
 app.use('/inquiry', inquiryRoute);
 app.use('/admin/auth', adminAuthRoute);
 app.use('/admin', adminDashboardRoute);
+app.use('/admin/posts', adminPostRoute);
 
 // ✅ API lấy danh ngôn ngẫu nhiên
 app.get('/quotations/random', async (req, res) => {
