@@ -71,8 +71,8 @@ const Messenger = () => {
 
         const getConversations = async () => {
             try {
-                console.log(`📞 Gọi API: http://localhost:8080/conversation/${user._id}`);
-                const res = await axios.get(`http://localhost:8080/conversation/${user._id}`);
+                console.log(`📞 Gọi API: https://vibely-study-social-web.onrender.com/conversation/${user._id}`);
+                const res = await axios.get(`https://vibely-study-social-web.onrender.com/conversation/${user._id}`);
                 console.log("📨 Danh sách hội thoại:", res.data);
                 setConversations(res.data);
             } catch (err) {
@@ -89,7 +89,7 @@ const Messenger = () => {
 
         const getMessages = async () => {
             try {
-                const res = await axios.get(`http://localhost:8080/message/${currentChat._id}`);
+                const res = await axios.get(`https://vibely-study-social-web.onrender.com/message/${currentChat._id}`);
                 setMessages(res.data);
             } catch (err) {
                 console.error("❌ Lỗi khi lấy tin nhắn:", err);
@@ -123,7 +123,7 @@ const Messenger = () => {
 
 
         try {
-            const res = await axios.post("http://localhost:8080/message", message);
+            const res = await axios.post("https://vibely-study-social-web.onrender.com/message", message);
             setMessages([...messages, res.data]);
             setNewMessage("");
         } catch (err) {

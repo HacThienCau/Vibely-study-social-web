@@ -27,15 +27,15 @@ const SupportPage = () => {
             setEmpty(true);
             return;
         }
-    
+
         setLoading(true);
         setEmpty(false);
-    
+
         try {
-            const response = await axios.post("http://localhost:8080/inquiry", { message }, {
+            const response = await axios.post("https://vibely-study-social-web.onrender.com/inquiry", { message }, {
                 headers: { Authorization: `Bearer ${token}` },
             });
-        
+
             if (response.status === 201) {
                 setMessage("");
                 toast.success("Thắc mắc đã được gửi thành công!");
@@ -45,7 +45,7 @@ const SupportPage = () => {
         } catch (error) {
             toast.error(error);
         }
-    
+
         setLoading(false);
     };
 
@@ -61,7 +61,7 @@ const SupportPage = () => {
                         height={500}
                     />
                 </div>
-                
+
                 {/* Form bên phải */}
                 <div className="w-1/2 flex flex-col justify-center px-10">
                     <h2 className="text-2xl font-bold mb-6 text-center">GỬI THẮC MẮC</h2>
