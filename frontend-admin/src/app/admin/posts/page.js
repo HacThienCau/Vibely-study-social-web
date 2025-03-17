@@ -245,7 +245,7 @@ function Posts() {
               onChange={(e) => setSearchQuery(e.target.value)}
             />
             <Button
-              className="w-24 h-10 cursor-pointer hover:bg-gray-700 text-white text-[20px] bg-[#07617f] font-['Roboto_Condensed'] rounded-[25px] overflow-hidden"
+              className="w-24 h-10 cursor-pointer hover:bg-gray-700 text-white text-[20px] bg-[#07617f] font-['Roboto_Condensed'] font-bold rounded-[25px] overflow-hidden"
               onClick={() => {
                 handleSearch();
               }}
@@ -259,7 +259,7 @@ function Posts() {
               Sắp xếp theo:
             </div>
             <Button
-              className="w-40 h-10 cursor-pointer hover:bg-gray-700 text-white text-[20px] bg-[#07617f] font-['Roboto_Condensed'] rounded-[25px] overflow-hidden"
+              className="w-40 h-10 cursor-pointer hover:bg-gray-700 text-white text-[18px] bg-[#07617f] font-['Roboto_Condensed'] rounded-[25px] overflow-hidden"
               onClick={() => {
                 setModeChooserOpen(!modeChooserOpen);
               }}
