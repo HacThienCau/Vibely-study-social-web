@@ -298,7 +298,6 @@ const sharePost = async (req, res) => {
 //xóa bài viết
 const deletePost = async(req,res) =>{
     const { postId } = req.params;
-    const userId = req.user.userId;
     try {
         const post = await Post.findById(postId);
         if (!post) return response(res, 404, "Không tìm thấy bài viết");
@@ -313,7 +312,6 @@ const deletePost = async(req,res) =>{
 
 const deleteComment = async(req,res) =>{
     const { postId, commentId } = req.params;
-    const userId = req.user.userId;
     try {
         const post = await Post.findById(postId);
         if (!post) return response(res, 404, "Không tìm thấy bài viết");
@@ -333,7 +331,6 @@ const deleteComment = async(req,res) =>{
 
 const deleteReply = async(req,res) =>{
     const { postId, commentId , replyId} = req.params;
-    const userId = req.user.userId;
     try {
         const post = await Post.findById(postId);
         if (!post) return response(res, 404, "Không tìm thấy bài viết");
@@ -343,10 +340,6 @@ const deleteReply = async(req,res) =>{
 
         const replyIndex = post?.comments[commentIndex].replies.findIndex((reply)=>reply._id.toString() === replyId)
         if (replyIndex===-1) return response(res, 404, "Không tìm thấy phản hồi");
-
-        if (post.comments[commentIndex].replies[replyIndex].user._id.toString() !== userId) {
-            return response(res, 403, "Bạn không có quyền thực hiện hành động này");
-        }
 
         post.comments[commentIndex].replies.splice(replyIndex, 1);
         await post.save();
