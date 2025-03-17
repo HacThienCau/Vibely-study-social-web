@@ -26,13 +26,28 @@ const swaggerDocument = YAML.load('./API/swagger.yaml');
 
 const app = express();
 app.use(express.json());
-app.use(cookieParser());
 
 // Add basic error handling
 app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).send('Something broke!');
 });
+const session = require('express-session');
+app.use(cors(corsOptions));
+
+app.use(
+    session({
+        secret: process.env.SESSION_SECRET,
+        resave: false,
+        saveUninitialized: false,
+        cookie: {
+            secure: isProduction,   // ✅ Chỉ bật secure nếu chạy trên Render (HTTPS)
+            sameSite: isProduction ? "none" : "lax", // ✅ Tránh lỗi CORS trên local
+            httpOnly: true
+        }
+    })
+);
+app.use(cookieParser());
 
 // Add a basic root route
 app.get('/', (req, res) => {
@@ -40,11 +55,11 @@ app.get('/', (req, res) => {
 });
 
 const corsOptions = {
-    origin: ["http://localhost:3000", "http://localhost:3001"],
+    origin: ["http://localhost:3000", "http://localhost:3001", "https://vibely-study-social-web.onrender.com"],
     credentials: true,
 };
 
-app.use(cors(corsOptions));
+app.set("trust proxy", 1); // 🔥 Bật proxy để Express hiểu request từ frontend
 
 connectDb();
 app.use(passport.initialize())
