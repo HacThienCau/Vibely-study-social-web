@@ -15,7 +15,7 @@ export default function ChatOnline({ onlineUsers, currentId, setCurrentChat }) {
           return;
         }
 
-        const res = await axios.get(`http://localhost:8080/users/mutual-friends/${currentId}`, {
+        const res = await axios.get(`https://vibely-study-social-web.onrender.com/users/mutual-friends/${currentId}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
 
@@ -40,7 +40,7 @@ export default function ChatOnline({ onlineUsers, currentId, setCurrentChat }) {
 
   const handleClick = async (user) => {
     try {
-      const res = await axios.get(`http://localhost:8080/conversation/find/${currentId}/${user._id}`);
+      const res = await axios.get(`https://vibely-study-social-web.onrender.com/conversation/find/${currentId}/${user._id}`);
       setCurrentChat(res.data);
     }
     catch (err) {

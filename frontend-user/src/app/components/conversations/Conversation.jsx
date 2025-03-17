@@ -11,7 +11,7 @@ export default function Conversation({ conversation, currentUser }) {
       try {
         const token = localStorage.getItem("token");
         const res = await axios.post(
-          "http://localhost:8080/users/get-users",
+          "https://vibely-study-social-web.onrender.com/users/get-users",
           { userIds: friendIds },
           { headers: { Authorization: `Bearer ${token}` } }
         );

@@ -14,9 +14,9 @@ import { IoIosShareAlt } from "react-icons/io";
 const DocumentDetail = () => {
     const { id } = useParams();
     const router = useRouter();
-    
+
     const [document, setDocument] = useState(null);
-    const [isSidebarOpen,setSidebarOpen] = useState(false)
+    const [isSidebarOpen, setSidebarOpen] = useState(false)
     const [token, setToken] = useState(null);
     const [isSharePopupOpen, setSharePopupOpen] = useState(false);
 
@@ -48,7 +48,7 @@ const DocumentDetail = () => {
                 if (!token) return;
 
                 try {
-                    const result = await axios.get(`http://localhost:8080/documents/${id}`, {
+                    const result = await axios.get(`https://vibely-study-social-web.onrender.com/documents/${id}`, {
                         headers: { Authorization: `Bearer ${token}` },
                     });
 
@@ -71,11 +71,11 @@ const DocumentDetail = () => {
 
         try {
             const response = await axios.post(
-                "http://localhost:8080/documents/save",
+                "https://vibely-study-social-web.onrender.com/documents/save",
                 { documentId },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
-    
+
             toast.success("Lưu tài liệu thành công!");
             console.log("Lưu tài liệu thành công:", response.data);
         } catch (error) {
@@ -103,41 +103,41 @@ const DocumentDetail = () => {
             <Button
                 variant="bigIcon"
                 className="flex lg:hidden hover:bg-gray-100 absolute left-0 top-15"
-                onClick={() => {setSidebarOpen(true)}}
-            > 
-                <GiHamburgerMenu style={{width:24,height:24}}/>
+                onClick={() => { setSidebarOpen(true) }}
+            >
+                <GiHamburgerMenu style={{ width: 24, height: 24 }} />
             </Button>
 
             {/*Nội dung thanh bên*/}
             <div className={`fixed top-14 left-0 lg:h-full sm:w-2/5 w-3/4 p-5 pt-8 bg-white z-50 transform transition-transform duration-300  
-                ${isSidebarOpen 
-                    ? "translate-x-0" 
+                ${isSidebarOpen
+                    ? "translate-x-0"
                     : "-translate-x-full"
                 }
                 lg:translate-x-0 lg:static lg:w-1/5 rounded-xl shadow-lg overflow-auto flex flex-col h-[calc(100vh-3.5rem)]`}
             >
                 {/*Nút đóng sidebar*/}
-                <Button variant="bigIcon" className="lg:hidden absolute top-1 right-0" onClick={()=>setSidebarOpen(false)}> 
-                    <AiOutlineClose style={{width:24,height:24,color:"black"}}/>
+                <Button variant="bigIcon" className="lg:hidden absolute top-1 right-0" onClick={() => setSidebarOpen(false)}>
+                    <AiOutlineClose style={{ width: 24, height: 24, color: "black" }} />
                 </Button>
 
                 <div className="min-h-0 flex-1">
                     <h2 className="text-xl font-bold">{document.title}</h2>
                     <div className="mt-5 space-y-3">
                         <p className="flex items-center">
-                            <span className="mr-3"><BookMarked size={20}/></span> 
+                            <span className="mr-3"><BookMarked size={20} /></span>
                             <span>Môn học</span>
                         </p>
                         <p className="font-bold ml-8">{document.subject.name}</p>
 
                         <p className="flex items-center">
-                            <span className="mr-3"><GraduationCap size={20}/></span> 
+                            <span className="mr-3"><GraduationCap size={20} /></span>
                             <span>Cấp bậc</span>
                         </p>
                         <p className="font-bold ml-8">{document.level.name}</p>
 
                         <p className="flex items-center">
-                            <span className="mr-3"><CalendarDays size={20}/></span> 
+                            <span className="mr-3"><CalendarDays size={20} /></span>
                             <span>Ngày đăng</span>
                         </p>
                         <p className="font-bold ml-8">{formatDate(document.uploadDate)}</p>
@@ -168,10 +168,10 @@ const DocumentDetail = () => {
 
             {/* Nội dung tài liệu bên phải */}
             <div className="flex-1 pr-7 pl-12 pt-8 pb-0">
-                <iframe 
-                    src={document.fileUrl.replace("/view", "/preview")} 
-                    width="100%" 
-                    height="100%" 
+                <iframe
+                    src={document.fileUrl.replace("/view", "/preview")}
+                    width="100%"
+                    height="100%"
                     allow="autoplay"
                     className="border border-gray-300 rounded-lg shadow-lg"
                 ></iframe>
@@ -184,10 +184,10 @@ const DocumentDetail = () => {
                         <h3 className="text-lg font-bold mb-3">Chia sẻ tài liệu</h3>
                         <p className="text-sm mb-1 text-gray-500">Sao chép liên kết dưới đây để chia sẻ tài liệu cho mọi người</p>
                         <div className="flex items-center py-2 px-0">
-                            <Input 
-                                type="text" 
-                                value={window.location.href} 
-                                readOnly 
+                            <Input
+                                type="text"
+                                value={window.location.href}
+                                readOnly
                                 className="flex-1 outline-none bg-transparent text-sm border border-gray-400 p-2 rounded-md"
                             />
                             <Button

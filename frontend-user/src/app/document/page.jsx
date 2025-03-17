@@ -43,13 +43,13 @@ const DocumentPage = () => {
             if (!token) return;
 
             try {
-                const levelsRes = await axios.get("http://localhost:8080/documents/levels", {
+                const levelsRes = await axios.get("https://vibely-study-social-web.onrender.com/documents/levels", {
                     headers: { Authorization: `Bearer ${token}` },
                 });
 
                 setLevels(levelsRes.data.data);
 
-                const docsRes = await axios.get("http://localhost:8080/documents", {
+                const docsRes = await axios.get("https://vibely-study-social-web.onrender.com/documents", {
                     headers: { Authorization: `Bearer ${token}` },
                 });
 
@@ -71,7 +71,7 @@ const DocumentPage = () => {
             }
 
             try {
-                const res = await axios.get(`http://localhost:8080/documents/subjects/${selectedLevelId}`, {
+                const res = await axios.get(`https://vibely-study-social-web.onrender.com/documents/subjects/${selectedLevelId}`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
 
@@ -89,7 +89,7 @@ const DocumentPage = () => {
         const fetchFilteredDocs = async () => {
             if (!token) return;
     
-            let url = "http://localhost:8080/documents?";
+            let url = "https://vibely-study-social-web.onrender.com/documents?";
             if (query) url += `query=${query}&`;
             if (selectedLevelId) url += `level=${selectedLevelId}&`;
             if (selectedSubjectId) url += `subject=${selectedSubjectId}`;

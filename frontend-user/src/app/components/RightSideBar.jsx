@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 const RightSideBar = () => {
-  const [countdown, setCountdown] = useState(300); 
+  const [countdown, setCountdown] = useState(300);
   const [quote, setQuote] = useState("Đang tải...");
   const [author, setAuthor] = useState("Khuyết danh");
 
@@ -16,7 +16,7 @@ const RightSideBar = () => {
 
   // Lấy danh ngôn từ MongoDB
   useEffect(() => {
-    axios.get("http://localhost:8080/quotations/random")
+    axios.get("https://vibely-study-social-web.onrender.com/quotations/random")
       .then((response) => {
         console.log("✅ API trả về:", response.data);
         if (response.data.text) {
@@ -30,7 +30,7 @@ const RightSideBar = () => {
         console.error("❌ Lỗi khi gọi API:", error);
       });
   }, []);
-  
+
 
   return (
     <aside className="w-full max-w-sm space-y-4">
