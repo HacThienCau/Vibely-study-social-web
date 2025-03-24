@@ -194,7 +194,7 @@ const Documents = () => {
             });
 
             console.log("New document:", res.data.data);
-            setDocuments([...documents, res.data.data]);
+            setDocuments([res.data.data, ...documents]);
             toast.success("Thêm tài liệu thành công!");
             closeModal();
         } catch (err) {

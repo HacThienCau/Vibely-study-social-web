@@ -110,7 +110,8 @@ const getFilteredDocuments = async (req, res) => {
 
         const documents = await Document.find(filter)
             .populate("level", "name")
-            .populate("subject", "name");
+            .populate("subject", "name")
+            .sort({ createdAt: -1 });
 
         return response(res, 200, "Lấy danh sách tài liệu thành công", documents);
     } catch (error) {
