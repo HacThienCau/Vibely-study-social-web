@@ -298,13 +298,9 @@ const sharePost = async (req, res) => {
 //xóa bài viết
 const deletePost = async(req,res) =>{
     const { postId } = req.params;
-    const userId = req.user.userId;
     try {
         const post = await Post.findById(postId);
         if (!post) return response(res, 404, "Không tìm thấy bài viết");
-
-       const postUserId = post?.user?._id.toString();  //just double check :))
-       if (userId!=postUserId) return response(res, 403, "Bạn không có quyền thực hiện hành động này");
 
        await Post.findByIdAndDelete(postId)
        return response(res, 200, "Xóa bài viết thành công", post);
@@ -316,7 +312,6 @@ const deletePost = async(req,res) =>{
 
 const deleteComment = async(req,res) =>{
     const { postId, commentId } = req.params;
-    const userId = req.user.userId;
     try {
         const post = await Post.findById(postId);
         if (!post) return response(res, 404, "Không tìm thấy bài viết");
@@ -324,9 +319,6 @@ const deleteComment = async(req,res) =>{
         const commentIndex = post?.comments.findIndex((comment)=>comment._id.toString() === commentId)
         if (commentIndex===-1) return response(res, 404, "Không tìm thấy bình luận");
 
-        if (post.comments[commentIndex].user._id.toString() !== userId) {
-            return response(res, 403, "Bạn không có quyền thực hiện hành động này");
-          }
         post.commentCount -= 1;
         post.comments.splice(commentIndex, 1);
         await post.save();
@@ -339,7 +331,6 @@ const deleteComment = async(req,res) =>{
 
 const deleteReply = async(req,res) =>{
     const { postId, commentId , replyId} = req.params;
-    const userId = req.user.userId;
     try {
         const post = await Post.findById(postId);
         if (!post) return response(res, 404, "Không tìm thấy bài viết");
@@ -349,10 +340,6 @@ const deleteReply = async(req,res) =>{
 
         const replyIndex = post?.comments[commentIndex].replies.findIndex((reply)=>reply._id.toString() === replyId)
         if (replyIndex===-1) return response(res, 404, "Không tìm thấy phản hồi");
-
-        if (post.comments[commentIndex].replies[replyIndex].user._id.toString() !== userId) {
-            return response(res, 403, "Bạn không có quyền thực hiện hành động này");
-        }
 
         post.comments[commentIndex].replies.splice(replyIndex, 1);
         await post.save();

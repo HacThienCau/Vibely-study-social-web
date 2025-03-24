@@ -4,6 +4,8 @@ import useSidebarStore from "@/store/sidebarStore";
 import userStore from "@/store/userStore";
 import { usePathname, useRouter } from "next/navigation";
 
+import React from 'react';
+
 const SidebarItem = ({ path, icon, label }) => {
     const router = useRouter();
     const pathname = usePathname();
@@ -21,14 +23,14 @@ const SidebarItem = ({ path, icon, label }) => {
     return (
         <Button
             variant="ghost"
-            className={`w-full justify-start mb-3 cursor-pointer flex items-center text-[15px] ${isActive ? "text-black" : "text-[#A3AED0]"
+            className={`w-full justify-start mb-3 cursor-pointer flex items-center text-[15px] ${isActive ? "text-[#086280]" : "text-[#A3AED0]"
                 }`}
             onClick={handleClick}
         >
             <img
                 src={icon}
                 alt={label}
-                className={`mr-3 w-5 h-6 ${isActive ? "filter brightness-0 invert-[10%]" : ""}`}
+                className={`mr-3 w-5 h-6 ${isActive ? "filter brightness-0 invert-[30%]" : ""}`}
             />
             <span>{label}</span>
         </Button>
@@ -49,7 +51,10 @@ const Sidebar = () => {
         { path: "/admin/posts", icon: "/svg/post_admin.svg", label: "Bài viết" },
         { path: "/admin/documents", icon: "/svg/document_admin.svg", label: "Tài liệu" },
         { path: "/admin/support", icon: "/svg/support_admin.svg", label: "Hỗ trợ" },
+        { path: "/admin/settings", icon: "/svg/settings_admin.svg", label: "Cài đặt" },
+        { path: "/admin/account", icon: "/svg/account_admin.svg", label: "Tài khoản" },
     ];
+
 
     return (
         <aside

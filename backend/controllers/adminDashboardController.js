@@ -45,13 +45,11 @@ const groupByTime = async (Model, timeUnit) => {
 // API lấy dữ liệu tổng quan
 const getAdminDashboard = async (req, res) => {
     try {
-        // Đếm tổng số
         const totalUsers = await User.countDocuments();
         const totalPosts = await Post.countDocuments();
         const totalDocuments = await Document.countDocuments();
         const totalInquiries = await Inquiry.countDocuments();
 
-        // Lấy tham số `timeUnit` từ query (day, month, year)
         const { timeUnit = "month" } = req.query;
 
         const usersData = await groupByTime(User, timeUnit);
@@ -74,5 +72,76 @@ const getAdminDashboard = async (req, res) => {
         return res.status(500).json({ error: error.message });
     }
 };
+// API lấy dữ liệu thống kê theo thời gian
+const getDashboardStats = async (req, res) => {
+    try {
+        const { timeUnit = "month" } = req.query;
 
-module.exports = { getAdminDashboard };
+        const usersStats = await groupByTime(User, timeUnit);
+        const postsStats = await groupByTime(Post, timeUnit);
+        const documentsStats = await groupByTime(Document, timeUnit);
+        const inquiriesStats = await groupByTime(Inquiry, timeUnit);
+
+        return res.status(200).json({
+            usersStats,
+            postsStats,
+            documentsStats,
+            inquiriesStats
+        });
+    } catch (error) {
+        console.error("Lỗi khi lấy thống kê dữ liệu:", error);
+        return res.status(500).json({ error: error.message });
+    }
+};
+// Lấy số lượng người dùng
+const getTotalUsers = async (req, res) => {
+    try {
+        const totalUsers = await User.countDocuments();
+        return res.status(200).json({ totalUsers });
+    } catch (error) {
+        console.error("Lỗi khi lấy tổng số người dùng:", error);
+        return res.status(500).json({ error: error.message });
+    }
+};
+
+// Lấy số lượng bài viết
+const getTotalPosts = async (req, res) => {
+    try {
+        const totalPosts = await Post.countDocuments();
+        return res.status(200).json({ totalPosts });
+    } catch (error) {
+        console.error("Lỗi khi lấy tổng số bài viết:", error);
+        return res.status(500).json({ error: error.message });
+    }
+};
+
+// Lấy số lượng tài liệu
+const getTotalDocuments = async (req, res) => {
+    try {
+        const totalDocuments = await Document.countDocuments();
+        return res.status(200).json({ totalDocuments });
+    } catch (error) {
+        console.error("Lỗi khi lấy tổng số tài liệu:", error);
+        return res.status(500).json({ error: error.message });
+    }
+};
+
+// Lấy số lượng câu hỏi
+const getTotalInquiries = async (req, res) => {
+    try {
+        const totalInquiries = await Inquiry.countDocuments();
+        return res.status(200).json({ totalInquiries });
+    } catch (error) {
+        console.error("Lỗi khi lấy tổng số câu hỏi:", error);
+        return res.status(500).json({ error: error.message });
+    }
+};
+
+module.exports = {
+    getAdminDashboard,
+    getTotalUsers,
+    getTotalPosts,
+    getTotalDocuments,
+    getTotalInquiries,
+    getDashboardStats,
+};

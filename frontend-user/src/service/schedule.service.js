@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8080/schedules';
+const API_URL = 'https://vibely-study-social-web.onrender.com/schedules';
 
 // Lấy tất cả lịch trình
 export const getSchedules = async () => {
@@ -8,7 +8,7 @@ export const getSchedules = async () => {
   const response = await axios.get(API_URL, {
     headers: { Authorization: `Bearer ${token}` }
   });
-  return response.data.data; 
+  return response.data.data;
 };
 
 // Thêm lịch trình mới
