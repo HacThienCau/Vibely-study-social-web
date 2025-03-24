@@ -13,7 +13,6 @@ const UpdateDocumentPopup = ({ levels, fetchSubjects, document, updateDocument, 
         fileType: document?.fileType || "",
         fileUrl: document?.fileUrl || "",
     });
-    console.log("Subject:", document?.subject._id);
 
     const [errors, setErrors] = useState({});
     const [subjects, setSubjects] = useState([]);
@@ -66,7 +65,6 @@ const UpdateDocumentPopup = ({ levels, fetchSubjects, document, updateDocument, 
     // Gửi dữ liệu cập nhật
     const handleSubmit = () => {
         if (validate()) {
-            console.log(formData);
             updateDocument(formData);
         }
     };

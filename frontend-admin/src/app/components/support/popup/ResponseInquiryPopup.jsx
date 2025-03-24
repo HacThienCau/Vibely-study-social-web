@@ -1,23 +1,38 @@
 import { useState } from "react";
 import { IoClose } from "react-icons/io5";
 
-const ResponseInquiryPopup = ({ inquiry, onClose, onUpdate }) => {
+const ResponseInquiryPopup = ({ inquiry, onUpdate, onClose }) => {
 
     // State lưu dữ liệu nhập
     const [formData, setFormData] = useState({
         inquiryId: inquiry?._id || "",
-        response: "",
-        status: "Đã phản hồi",
+        response: inquiry?.response || "",
     });
+
+    const [error, setError] = useState({});
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     // Xử lý khi thay đổi dữ liệu nhập
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
+        setError({ ...error, [e.target.name]: "" });
+    };
+
+    const validate = () => {
+        let newError = {};
+        if (!formData.response.trim()) newError.response = "Nội dung phản hồi không được để trống";
+        
+        setError(newError);
+        return Object.keys(newError).length === 0;
     };
 
     // Gửi dữ liệu cập nhật
-    const handleSubmit = () => {
-        onUpdate(formData);
+    const handleSubmit = async () => {
+        if(validate()){
+            setIsSubmitting(true);
+            await onUpdate(formData);
+            setIsSubmitting(false);
+        }
     };
 
     return (
@@ -38,7 +53,7 @@ const ResponseInquiryPopup = ({ inquiry, onClose, onUpdate }) => {
                     <input
                         type="text"
                         name="email"
-                        value={inquiry.email}
+                        value={inquiry.userId.email}
                         className="w-full border border-gray-400 p-2 rounded-lg focus:outline-none"
                         readOnly
                     />
@@ -63,10 +78,12 @@ const ResponseInquiryPopup = ({ inquiry, onClose, onUpdate }) => {
                         name="response"
                         value={formData.response}
                         onChange={handleChange}
-                        className="w-full border border-gray-400 p-2 rounded-lg focus:outline-none"
+                        className={`w-full border p-2 rounded-lg focus:outline-none
+                            ${error.response ? "border-red-500" : "border-gray-400"}`}
                         placeholder="Nhập nội dung phản hồi"
                         rows={3}
                     />
+                    {error.response && <p className="text-red-500 text-sm">{error.response}</p>}
                 </div>
             </div>
 
@@ -74,9 +91,11 @@ const ResponseInquiryPopup = ({ inquiry, onClose, onUpdate }) => {
             <div className="flex justify-center mt-6">
                 <button
                     onClick={handleSubmit}
-                    className="px-10 py-[10px] bg-[#086280] text-white rounded-lg hover:bg-[#07556F] cursor-pointer text-[16px] transition-all duration-200"
+                    disabled={isSubmitting}
+                    className={`px-10 py-[10px] text-white rounded-lg cursor-pointer text-[16px] transition-all duration-200
+                        ${isSubmitting ? "bg-gray-400 cursor-not-allowed" : "bg-[#086280] hover:bg-[#07556F]"}`}
                 >
-                    Gửi
+                    {isSubmitting ? "Đang gửi..." : "Gửi"}
                 </button>
             </div>
         </div>
