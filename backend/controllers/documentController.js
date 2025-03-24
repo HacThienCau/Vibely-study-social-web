@@ -61,7 +61,13 @@ const createDocument = async (req, res) => {
         });
 
         await newDocument.save();
-        return response(res, 201, "Tạo tài liệu thành công", newDocument);
+
+        // Populate thêm thông tin `name` của level và subject
+        const populatedDocument = await Document.findById(newDocument._id)
+            .populate("level", "name")
+            .populate("subject", "name");
+        
+        return response(res, 201, "Tạo tài liệu thành công", populatedDocument);
     } catch (error) {
         console.error("Lỗi khi tạo tài liệu:", error);
         return response(res, 400, "Tạo tài liệu thất bại", error.message);
