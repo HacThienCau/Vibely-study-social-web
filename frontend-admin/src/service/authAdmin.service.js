@@ -43,3 +43,19 @@ export const checkAdminAuth = async () => {
         return { isAuthenticated: false };
     }
 };
+
+// ✅ Cập nhật mật khẩu Admin
+export const updateAdminPassword = async (passwordData) => {
+    try {
+        const response = await axiosInstance.put(
+            "/admin/auth/update-password",
+            passwordData,
+            { withCredentials: true }
+        );
+
+        return response.data;
+    } catch (error) {
+        console.error("🚨 Lỗi cập nhật mật khẩu:", error.response?.data?.message || error.message);
+        throw error;
+    }
+};
