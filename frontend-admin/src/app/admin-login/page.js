@@ -55,7 +55,7 @@ const Page = () => {
                 <Card className="w-[400px] max-w-lg border border-blue-500 shadow-lg p-6">
                     <CardHeader className="text-center">
                         <CardTitle>
-                            <img src="/images/logo.png" alt="Admin Panel" className="w-24 mx-auto" />
+                            <img src="/logo.png" alt="Admin Panel" className="w-24 mx-auto" />
                         </CardTitle>
                         <CardDescription className="text-center text-[#1CA2C1] text-[16px]">
                             Đăng nhập vào hệ thống quản trị
@@ -86,9 +86,16 @@ const Page = () => {
                                     />
                                     {errors.password && <p className="text-red-500">{errors.password.message}</p>}
                                 </div>
-                                <Button className="w-full bg-[#23CAF1] text-white mt-5" type="submit" disabled={loading}>
+                                <Button
+                                    className="w-full bg-[#23CAF1] text-white mt-5"
+                                    type="submit"
+                                    disabled={loading}
+                                    onClick={() => router.push("/admin/dashboard")}
+                                >
                                     {loading ? "Đang đăng nhập..." : <><LogIn className="mr-2 w-4 h-4" /> Đăng nhập</>}
                                 </Button>
+
+
                             </div>
                         </form>
                     </CardContent>

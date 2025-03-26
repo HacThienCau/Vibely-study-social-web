@@ -1,0 +1,7 @@
+openai:
+    api_key: "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"
+weaviate:
+    url: "https://zqrky2anqfcgik6bqpvznq.c0.asia-southeast1.gcp.weaviate.cloud"
+    api_key: "VjKouiVK14YFaCNeTFFgbesxd72xReZP8kur"
+mongodb:
+    url: "mongodb+srv://vonhatphuongahihi:13032004@cluster0.0dh0h.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
