@@ -23,8 +23,9 @@ import * as yup from "yup";
 
 const Page = () => {
   const router = useRouter();
+  const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  
+
   const registerSchema = yup.object().shape({
     username: yup.string().required("Tên không được để trống"),
     email: yup
@@ -68,49 +69,52 @@ const Page = () => {
     formState: { errors: errorsSignUp },
   } = useForm({
     resolver: yupResolver(registerSchema),
-    defaultValues: { gender: "male" }, 
+    defaultValues: { gender: "male" },
   });
-  
-  const onSubmitRegister = async(data) =>{
+
+  const onSubmitRegister = async (data) => {
     try {
       const result = await registerUser(data)
-      if(result.status === 'success'){
+      if (result.status === 'success') {
         router.push('/')
       }
       toast.success('Đăng ký tài khoản thành công')
     } catch (error) {
       console.error(error);
       toast.error('Email đã tồn tại')
-    }finally{
+    } finally {
       setIsLoading(false);
     }
   }
 
 
-  useEffect(() =>{
-     resetLoginForm();
-     resetSignUpForm()
-  },[resetLoginForm,resetSignUpForm])
+  useEffect(() => {
+    resetLoginForm();
+    resetSignUpForm()
+  }, [resetLoginForm, resetSignUpForm])
 
 
-  const onSubmitLogin = async(data) =>{
+  const onSubmitLogin = async (data) => {
     try {
-       const result = await loginUser(data)
-        if(result.status === 'success'){
-          router.push('/')
+      const result = await loginUser(data)
+      if (result.status === 'success') {
+        if (rememberMe) {
+          localStorage.setItem('authToken', result.token);
         }
-        toast.success('Đăng nhập tài khoản thành công')
+        router.push('/')
+      }
+      toast.success('Đăng nhập tài khoản thành công')
     } catch (error) {
       console.error(error);
       toast.error('Email hoặc mật khẩu không chính xác')
-    }finally{
+    } finally {
       setIsLoading(false);
     }
   }
 
 
-  const handleGoogleLogin = () =>{
-    window.location.href= `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/google`
+  const handleGoogleLogin = () => {
+    window.location.href = `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/google`
   }
   return (
     <div className="min-h-screen bg-[#F9FDFF] flex items-center justify-center p-4">
@@ -180,6 +184,27 @@ const Page = () => {
                           {errorsLogin.password.message}
                         </p>
                       )}
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        {/* Toggle Switch */}
+                        <div
+                          className={`w-12 h-6 flex items-center rounded-full p-1 cursor-pointer transition ${rememberMe ? "bg-[#23CAF1]" : "bg-gray-300"
+                            }`}
+                          onClick={() => setRememberMe(!rememberMe)}
+                        >
+                          <div
+                            className={`bg-white w-5 h-5 rounded-full shadow-md transform transition ${rememberMe ? "translate-x-6" : "translate-x-0"
+                              }`}
+                          ></div>
+                        </div>
+                        <span className="text-sm text-black cursor-pointer" onClick={() => setRememberMe(!rememberMe)}>
+                          Ghi nhớ
+                        </span>
+                      </div>
+                      <div className="text-sm text-[#086280] hover:text-[#1AA3C8] transition-colors duration-200 font-bold">
+                        <a href="/forgot-password">Quên mật khẩu?</a>
+                      </div>
                     </div>
                     <Button
                       className="w-full bg-[#23CAF1] text-white"

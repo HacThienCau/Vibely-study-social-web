@@ -118,6 +118,7 @@ const Header = () => {
 
   const { toggleSidebar } = useSidebarStore();
   const router = useRouter();
+  if (router.pathname === "/forgot-password") return null;
   const { user, clearUser } = userStore();
 
   const userPlaceholder = user?.username
@@ -130,17 +131,26 @@ const Header = () => {
   };
   const handleLogout = async () => {
     try {
+      // Gọi API đăng xuất
       const result = await logout();
-      if (result?.status == "success") {
-        router.push("/user-login");
+
+      if (result?.status === "success") {
         clearUser();
+
+        if (router.pathname !== "/user-login") {
+          await router.push("/user-login");
+        }
+
+        toast.success("Đăng xuất thành công");
+      } else {
+        toast.error("Đăng xuất thất bại, vui lòng thử lại!");
       }
-      toast.success("Đăng xuất thành công");
     } catch (error) {
-      console.log(error);
+      console.error("Lỗi khi đăng xuất:", error);
       toast.error("Đăng xuất thất bại");
     }
   };
+
 
   return (
     <header className="bg-background_header text-foreground shadow-md h-14 fixed top-0 left-0 z-50 w-full">
