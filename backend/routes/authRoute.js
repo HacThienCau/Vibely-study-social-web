@@ -1,5 +1,6 @@
 const express = require('express');
-const { registerUser, loginUser, logoutUser } = require('../controllers/authController');
+const authMiddleware = require('../middleware/authMiddleware');
+const { registerUser, loginUser, logoutUser, deleteAccount } = require('../controllers/authController');
 const passport = require('passport');
 const {generateToken} = require('../utils/generateToken');
 const router = express.Router();
@@ -7,6 +8,7 @@ const router = express.Router();
 router.post('/register', registerUser);
 router.post('/login', loginUser);
 router.get('/logout', logoutUser);
+router.delete('/deleteAccount', authMiddleware ,deleteAccount);
 
 //Google oauth routes
 router.get('/google',passport.authenticate('google',{

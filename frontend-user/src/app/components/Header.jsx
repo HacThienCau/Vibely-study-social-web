@@ -23,7 +23,7 @@ import {
 
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { SettingsMenu } from './SettingsMenu';
@@ -32,7 +32,7 @@ import NotificationIcon from "./Notification/NotificationIcon";
 
 const Header = () => {
   const [isSearchOpen, setIsSearchOpen] = React.useState(false);
-
+  const pathname = usePathname();
   const [searchQuery, setSearchQuery] = useState("");
   const [userList, setUserList] = useState([]);
   const [filterUsers, setFilterUsers] = useState([]);
@@ -43,7 +43,9 @@ const Header = () => {
   const handleBackToMainMenu = () => {
     setIsSettingsOpen(false); // Quay lại menu chính
   };
+  useEffect(()=>{
 
+  })
 
 
   const navItems = [
@@ -237,7 +239,8 @@ const Header = () => {
               <img
                 src={icon}
                 alt="nav-icon"
-                className="w-6 h-6 filter brightness-50 contrast-200 transition-all duration-200 hover:invert-[40%] hover:sepia-[50%] hover:saturate-[300%] hover:hue-rotate-[160deg]"
+                className={`${pathname === path ? "" : "brightness-0 invert-[70%]"}
+                  w-6 h-6 filter brightness-50 contrast-200 transition-all duration-200 hover:invert-[40%] hover:sepia-[50%] hover:saturate-[300%] hover:hue-rotate-[160deg]`}
               />
             </Link>
           ))}
@@ -322,20 +325,20 @@ const Header = () => {
                       setIsSettingsOpen(true);
                     }}
                   >
-                    <img src="images/setting_dropdown.png" alt="setting" className="mr-0" />
+                    <img src="/images/setting_dropdown.png" alt="setting" className="mr-0" />
                     <span className="ml-2 font-semibold">Cài đặt</span>
                     <ChevronRight className="absolute right-2 text-[#54C8FD]" />
                   </DropdownMenuItem>
                   <DropdownMenuItem className="cursor-pointer mb-3" onClick={() => handleNavigation(`/help_center`)}>
-                    <img src="images/help_dropdown.png" alt="help" className="mr-0" />
+                    <img src="/images/help_dropdown.png" alt="help" className="mr-0" />
                     <span className="ml-2 font-semibold">Trung tâm trợ giúp</span>
                   </DropdownMenuItem>
                   <DropdownMenuItem className="cursor-pointer mb-3" onClick={() => handleNavigation(`/support`)}>
-                    <img src="images/faqs_dropdown.png" alt="support" className="mr-0" />
+                    <img src="/images/faqs_dropdown.png" alt="support" className="mr-0" />
                     <span className="ml-2 font-semibold">Hộp thư hỗ trợ</span>
                   </DropdownMenuItem>
                   <DropdownMenuItem className="cursor-pointer mb-3" onClick={handleLogout}>
-                    <img src="images/logout_dropdown.png" alt="logout" className="mr-0" />
+                    <img src="/images/logout_dropdown.png" alt="logout" className="mr-0" />
                     <span className="ml-2 font-semibold">Đăng xuất</span>
                   </DropdownMenuItem>
                 </>

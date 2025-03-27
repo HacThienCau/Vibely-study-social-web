@@ -85,7 +85,22 @@ const logoutUser = async (req, res) => {
         return response(res, 500, 'Đăng xuất thất bại', error.message);
     }
 }
-module.exports = { registerUser, loginUser, logoutUser };
+
+const deleteAccount = async (req, res) => { 
+    try {
+        const userId = req.user.userId;
+        const deletedUser = await User.findByIdAndDelete(userId);
+        if (!deletedUser) {
+            return res.status(404).json({ message: "Người dùng không tồn tại" });
+        }
+        return response(res, 200, 'Xóa tài khoản thành công');
+    }
+    catch (error) {
+        return response(res, 500, 'Xóa tài khoản thất bại', error.message);
+    }
+}
+
+module.exports = { registerUser, loginUser, logoutUser, deleteAccount };
 
 
 
