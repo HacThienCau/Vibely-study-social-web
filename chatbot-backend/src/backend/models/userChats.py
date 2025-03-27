@@ -4,7 +4,7 @@ from datetime import datetime
 
 # 🌟 Đại diện cho một cuộc trò chuyện
 class ChatSummary(BaseModel):
-    chat_id: str  # ObjectId của Chatbot
+    _id: str  # ObjectId của Chatbot
     title: str
     created_at: datetime = Field(default_factory=datetime.utcnow)
 

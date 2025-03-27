@@ -107,12 +107,12 @@ def get_user_info(user_id: str) -> dict:
     Returns:
         dict: Thông tin người dùng dưới dạng JSON, chỉ bao gồm các trường có giá trị.
     """
-    user = user_collection.find_one({"clerkUserId": user_id})
+    user = user_collection.find_one({"email": "vonhatphuong.2k4@gmail.com"})
     if not user:
         return {}
 
     # Extract and format only fields with values
-    fields = ["username", "gender", "gender", "dateOfBirth", "email", "bio"]
+    fields = ["username", "gender", "dateOfBirth", "email", "bio", "postsCount", "followerCount", "followingCount"]
     formatted_user_info = {field: user[field] for field in fields if field in user and user[field]}
     return formatted_user_info
 
@@ -157,11 +157,12 @@ def get_schedule(
     query = {
         "user": user_id,
         "$or": [
-            {"StartTime": {"$gte": start_datetime, "$lte": end_datetime}},  # Bắt đầu trong khoảng thời gian lọc
-            {"EndTime": {"$gte": start_datetime, "$lte": end_datetime}},    # Kết thúc trong khoảng thời gian lọc
-            {"StartTime": {"$lte": start_datetime}, "EndTime": {"$gte": end_datetime}}  # Bao phủ toàn bộ khoảng thời gian lọc
+            {"startTime": {"$gte": start_datetime, "$lte": end_datetime}},  # Bắt đầu trong khoảng thời gian lọc
+            {"endTime": {"$gte": start_datetime, "$lte": end_datetime}},    # Kết thúc trong khoảng thời gian lọc
+            {"startTime": {"$lte": start_datetime}, "endTime": {"$gte": end_datetime}}  # Bao phủ toàn bộ khoảng thời gian lọc
         ]
     }
+
     # Truy vấn MongoDB để lấy các hoạt động
     events = schedule_collection.find(query)
 
