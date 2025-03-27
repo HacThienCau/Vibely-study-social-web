@@ -6,6 +6,7 @@ exports.getAllUsers = async (req, res) => {
     try {
         const users = await User.find({}, '-password')
             .populate('posts', '_id')
+            .populate('followers', 'username profilePicture')
             .sort({ createdAt: -1 });
 
         res.status(200).json({
