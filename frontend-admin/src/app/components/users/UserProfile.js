@@ -3,28 +3,33 @@
 import React from 'react'
 import Image from 'next/image'
 import { FiMail, FiPhone } from 'react-icons/fi'
-
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 const UserProfile = ({ user }) => {
     if (!user) return null;
 
     return (
         <div className="bg-white rounded-lg shadow-sm p-6">
             <div className="flex flex-col items-center">
-                {/* User Avatar */}
-                <div className="relative mb-4">
-                    <div className="h-40 w-40 rounded-full overflow-hidden border-4 border-yellow-400">
-                        <Image
-                            src={user.avatar}
-                            alt={user.username}
-                            width={160}
-                            height={160}
-                            className="h-full w-full object-cover"
-                        />
-                    </div>
-                    <div className="absolute top-0 right-0 bg-[#086280] text-white text-xs rounded-full px-2 py-1">
-                        {user.id}
-                    </div>
-                </div>
+            <div className="relative mb-4 h-40 w-40 rounded-full overflow-hidden border-4 border-yellow-400">
+    <Avatar className="w-full h-full">
+        {user?.profilePicture ? (
+            <AvatarImage
+                src={user?.profilePicture}
+                alt={user?.username}
+                className="w-full h-full object-cover"
+            />
+        ) : (
+           <AvatarImage
+                                             src='/images/avatar.png'
+                                             alt={user?.username}
+                                             className="w-full h-full object-cover"
+                                           />
+        )}
+    </Avatar>
+    <div className="absolute top-0 right-0 bg-[#086280] text-white text-xs rounded-full px-2 py-1">
+        {user.id}
+    </div>
+</div>
 
                 {/* User Name */}
                 <h2 className="text-xl font-semibold text-gray-800 mb-4">{user.username}</h2>
@@ -61,16 +66,16 @@ const UserProfile = ({ user }) => {
                 </div>
 
                 {/* Friends */}
-                <div className="w-full mb-6">
+                {/* <div className="w-full mb-6">
                     <h3 className="text-sm font-medium text-gray-700 mb-2">Bạn bè</h3>
                     <div className="flex -space-x-2">
                         {[1, 2, 3, 4, 5].map((_, i) => (
                             <div key={i} className="h-8 w-8 rounded-full overflow-hidden border-2 border-white">
-                                <Image src={user.avatar} alt="Friend" width={32} height={32} className="h-full w-full object-cover" />
+                                <Image src={user.profilePicture} alt="Friend" width={32} height={32} className="h-full w-full object-cover" />
                             </div>
                         ))}
                     </div>
-                </div>
+                </div> */}
 
                 {/* Followers/Following */}
                 <div className="w-full grid grid-cols-2 gap-4">
