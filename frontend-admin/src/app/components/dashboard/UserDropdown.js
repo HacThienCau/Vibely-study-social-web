@@ -54,20 +54,12 @@ const UserDropdown = ({ userName = "Như Quỳnh", userEmail = "ngonhuquynh@gmai
 
                     {/* Menu Items */}
                     <div className="py-2">
-                        <Link href="/admin/settings" className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100">
-                            <FiSettings className="mr-3 text-gray-500" />
-                            <span>Settings</span>
-                        </Link>
-                        <Link href="/admin/account" className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100">
-                            <FiUser className="mr-3 text-gray-500" />
-                            <span>Profile</span>
-                        </Link>
                         <button
                             onClick={() => console.log('Sign out')}
                             className="flex items-center w-full text-left px-4 py-3 text-gray-700 hover:bg-gray-100"
                         >
                             <FiLogOut className="mr-3 text-gray-500" />
-                            <span>Sign out</span>
+                            <span>Đăng xuất</span>
                         </button>
                     </div>
                 </div>

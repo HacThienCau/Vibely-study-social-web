@@ -19,7 +19,7 @@ const inquiryRoute = require('./routes/inquiryRoute');
 const adminAuthRoute = require('./routes/adminAuthRoute');
 const adminDashboardRoute = require('./routes/adminDashboardRoute');
 const adminPostRoute = require('./routes/adminPostRoute')
-
+const adminInformationRoute = require('./routes/adminInformationRoute');
 const YAML = require('yamljs');
 
 const swaggerDocument = YAML.load('./API/swagger.yaml');
@@ -55,6 +55,8 @@ app.use("/documents", documentRoute);
 app.use('/inquiry', inquiryRoute);
 app.use('/admin/auth', adminAuthRoute);
 app.use('/admin', adminDashboardRoute);
+app.use('/admin', adminInformationRoute);
+
 app.use('/admin/posts', adminPostRoute);
 
 // ✅ API lấy danh ngôn ngẫu nhiên

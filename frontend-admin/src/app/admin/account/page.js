@@ -1,26 +1,51 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Sidebar from '../../components/sidebar/Sidebar'
 import UserDropdown from '../../components/dashboard/UserDropdown'
 import ProfilePictureSection from '../../components/account/ProfilePictureSection'
 import ProfileDetailsSection from '../../components/account/ProfileDetailsSection'
-
-const userInfo = {
-    id: '1',
-    firstname: 'Như',
-    lastname: 'Quỳnh',
-    email: 'nhuquynh@gmail.com',
-    phone: '0909090909',
-    address: 'Hà Nội',
-    country: 'Việt Nam',
-    city: 'Hà Nội',
-    avatar: '/images/dashboard/quynh1.jpg',
-    state: 'Hà Nội'
-}
+import { getAdminById, updateAdminInfo } from '@/service/accountAdmin.service'
 
 const AccountPage = () => {
-    const [userData, setUserData] = useState(userInfo);
+    const [userData, setUserData] = useState(null);
+    const adminId = "67d52f779c79c05e5f9766df"
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            if (!adminId) {
+                console.error("Không tìm thấy adminId");
+                return;
+            }
+
+            try {
+                const data = await getAdminById(adminId);
+                console.log("Fetched data:", data);
+                if (data) {
+                    setUserData(data?.admin || {});
+                    localStorage.setItem("adminData", JSON.stringify(data));
+                } else {
+                    console.error("Không tìm thấy dữ liệu cho adminId:", adminId);
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        const storedData = localStorage.getItem("adminData");
+        if (storedData) {
+            try {
+                const parsedData = JSON.parse(storedData);
+                setUserData(parsedData);
+            } catch (e) {
+                console.error("Error parsing stored data:", e);
+            }
+        }
+
+        fetchUserData();
+    }, [adminId]);
+
+
 
     // Hàm xử lý thay đổi input
     const handleInputChange = (e) => {
@@ -32,22 +57,35 @@ const AccountPage = () => {
     };
 
     // Hàm xử lý khi submit form
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log('Submitting updated data:', userData);
+        try {
+            await updateAdminInfo(adminId, userData);
+            alert("Cập nhật thành công!");
+
+            // Gọi lại API để cập nhật dữ liệu mới nhất
+            const updatedData = await getAdminById(adminId);
+            setUserData(updatedData);
+            localStorage.setItem("adminData", JSON.stringify(updatedData));
+        } catch (error) {
+            alert("Cập nhật thất bại!");
+            console.error(error);
+        }
     };
 
+
     // Hàm xử lý khi cập nhật ảnh
-    const handlePictureUpdate = (file) => {
-        // Tạo URL tạm thời để hiển thị ảnh được chọn
+    const handlePictureUpdate = async (file) => {
         const imageUrl = URL.createObjectURL(file);
+        setUserData(prev => ({ ...prev, avatar: imageUrl }));
 
-        setUserData(prev => ({
-            ...prev,
-            avatar: imageUrl
-        }));
-
-        console.log('File selected:', file);
+        try {
+            await updateAdminInfo(adminId, { ...userData, avatar: imageUrl });
+            alert("Cập nhật ảnh thành công!");
+        } catch (error) {
+            alert("Lỗi khi cập nhật ảnh!");
+            console.error(error);
+        }
     };
 
     return (
@@ -55,7 +93,7 @@ const AccountPage = () => {
             <div className="w-1/5 flex-shrink-0">
                 <Sidebar />
             </div>
-            <div className="w-4/5 flex flex-col">
+            <div className="w-4/5 ml-[-50px] flex flex-col">
                 {/* Header Row */}
                 <div className="w-full ml-[-20px] py-6 px-6 mb-[-15px] flex justify-between items-center">
                     <h1 className="text-2xl font-semibold text-[#333]">Tài khoản</h1>
@@ -74,17 +112,16 @@ const AccountPage = () => {
                     <div className="max-w-6xl mx-auto">
                         <div className="flex flex-col md:flex-row gap-6">
                             {/* Profile Picture Section */}
-                            <ProfilePictureSection
-                                userData={userData}
-                                onPictureUpdate={handlePictureUpdate}
-                            />
-
-                            {/* Profile Details Section */}
-                            <ProfileDetailsSection
-                                userData={userData}
-                                handleInputChange={handleInputChange}
-                                handleSubmit={handleSubmit}
-                            />
+                            {userData && (
+                                <ProfilePictureSection userData={userData} onPictureUpdate={handlePictureUpdate} />
+                            )}
+                            {userData && (
+                                <ProfileDetailsSection
+                                    userData={userData}
+                                    handleInputChange={handleInputChange}
+                                    handleSubmit={handleSubmit}
+                                />
+                            )}
                         </div>
                     </div>
                 </div>
