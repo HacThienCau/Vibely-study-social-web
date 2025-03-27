@@ -19,14 +19,14 @@ export const SettingsMenu = ({ onBack }) => {
                 className="cursor-pointer mb-2"
                 onSelect={(event) => event.preventDefault()}
             >
-                <img src="images/change_password_dropdown.png" alt="help" className="mr-0" />
+                <img src="/images/change_password_dropdown.png" alt="help" className="mr-0" />
                 <span className="font-semibold ml-2">Đổi mật khẩu</span>
             </DropdownMenuItem>
             <DropdownMenuItem
                 className="cursor-pointer mb-2"
                 onSelect={(event) => event.preventDefault()}
             >
-                <img src="images/delete_dropdown.png" alt="help" className="mr-0" />
+                <img src="/images/delete_dropdown.png" alt="help" className="mr-0" />
 
                 <span className="font-semibold ml-2">Xóa tài khoản</span>
             </DropdownMenuItem>
