@@ -35,6 +35,15 @@ export const logout = async()=>{
     }
 }
 
+export const deleteAccount = async()=>{
+    try {
+        const response= await axiosInstance.delete('/auth/deleteAccount');
+        return response.data
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 // Kiểm tra xem người dùng đã đăng nhập chưa
 export const checkUserAuth = async() =>{
     try {
