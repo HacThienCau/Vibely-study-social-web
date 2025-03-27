@@ -1,21 +1,54 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import axios from 'axios';
 
 export default function ResetPassword() {
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
+    const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [email, setEmail] = useState("");
+    const [code, setCode] = useState("");
     const router = useRouter();
 
-    const handleSubmit = (e) => {
+    useEffect(() => {
+        // Lấy email và code từ localStorage khi component mount
+        const savedEmail = localStorage.getItem('resetPasswordEmail');
+        const savedCode = localStorage.getItem('resetPasswordCode');
+        if (!savedEmail || !savedCode) {
+            router.push('/forgot-password');
+        } else {
+            setEmail(savedEmail);
+            setCode(savedCode);
+        }
+    }, [router]);
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
         if (password !== confirmPassword) {
-            alert("Mật khẩu nhập lại không khớp!");
+            setError("Mật khẩu xác nhận không khớp!");
             return;
         }
-        console.log("Mật khẩu mới:", password);
-        router.push("/user-login"); // Điều hướng về trang đăng nhập
+        setLoading(true);
+        setError("");
+        try {
+            await axios.post('http://localhost:8080/forgot-password/reset-password', {
+                email,
+                code,
+                newPassword: password
+            });
+            // Xóa dữ liệu đã lưu
+            localStorage.removeItem('resetPasswordEmail');
+            localStorage.removeItem('resetPasswordCode');
+            alert('Đặt lại mật khẩu thành công!');
+            router.push("/user-login");
+        } catch (error) {
+            setError(error.response?.data?.message || 'Có lỗi xảy ra');
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -27,6 +60,9 @@ export default function ResetPassword() {
                 <p className="text-sm text-center mb-4 text-[#1CA2C1]">
                     Cùng học tập và kết bạn ở khắp mọi nơi trên thế giới trên Vibely
                 </p>
+                {error && (
+                    <p className="text-red-500 text-sm mb-4">{error}</p>
+                )}
                 <div className="w-full">
                     <label className="block text-left text-sm font-bold text-[#086280] mb-1">Nhập mật khẩu mới</label>
                     <input
@@ -47,9 +83,10 @@ export default function ResetPassword() {
                 </div>
                 <button
                     type="submit"
-                    className="w-full bg-[#23CAF1] text-white text-sm py-3 rounded-lg hover:bg-[#1AA3C8] transition duration-200 font-bold"
+                    disabled={loading}
+                    className="w-full bg-[#23CAF1] text-white text-sm py-3 rounded-lg hover:bg-[#1AA3C8] transition duration-200 font-bold disabled:opacity-50"
                 >
-                    Đăng nhập
+                    {loading ? 'Đang xử lý...' : 'Đặt lại mật khẩu'}
                 </button>
             </form>
         </div>

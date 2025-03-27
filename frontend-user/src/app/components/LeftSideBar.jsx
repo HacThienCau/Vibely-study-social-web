@@ -107,6 +107,7 @@ const LeftSideBar = () => {
               variant="ghost"
               className="full justify-start"
               onClick={() => handleNavigation("/game")}
+              // onClick={() => handleNavigation("/forgot-password")}
             >
               <img src="images/game_sidebar.png" alt="game" className="mr-0" /> 
               Củng cố kiến thức
