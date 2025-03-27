@@ -39,7 +39,7 @@ const Page = () => {
     dateOfBirth: yup.date().required("Ngày sinh không được để trống"),
     gender: yup
       .string()
-      .oneOf(["male", "female", "other"], "Vui lòng chọn giới tính")
+      .oneOf(["Nam", "Nữ", "Khác"], "Vui lòng chọn giới tính")
       .required("Giới tính không được để trống"),
   });
   const loginSchema = yup.object().shape({
@@ -69,7 +69,7 @@ const Page = () => {
     formState: { errors: errorsSignUp },
   } = useForm({
     resolver: yupResolver(registerSchema),
-    defaultValues: { gender: "male" },
+    defaultValues: { gender: "Nữ" },
   });
 
   const onSubmitRegister = async (data) => {
@@ -349,15 +349,15 @@ const Page = () => {
                             onValueChange={field.onChange}  // Bắt sự kiện thay đổi giá trị
                           >
                             <div className="flex items-center space-x-2">
-                              <RadioGroupItem value="male" id="male" />
+                              <RadioGroupItem value="Nam" id="male" />
                               <Label htmlFor="male">Nam</Label>
                             </div>
                             <div className="flex items-center space-x-2">
-                              <RadioGroupItem value="female" id="female" />
+                              <RadioGroupItem value="Nữ" id="female" />
                               <Label htmlFor="female">Nữ</Label>
                             </div>
                             <div className="flex items-center space-x-2">
-                              <RadioGroupItem value="other" id="other" />
+                              <RadioGroupItem value="Khác" id="other" />
                               <Label htmlFor="other">Khác</Label>
                             </div>
                           </RadioGroup>
