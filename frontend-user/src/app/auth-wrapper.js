@@ -56,13 +56,13 @@ export default function AuthWrapper({ children }) {
         }
     }, [isLoginPage, isForgotPasswordPage, router, setUser, clearUser]);
 
-    if (loading) {
-        return <Loader />
-    }
+    // if (loading) {
+    //     return <Loader />
+    // }
 
-    if (!isAuthenticated && !isLoginPage) {
-        return <Loader />
-    }
+    // if (!isAuthenticated && !isLoginPage) {
+    //     return <Loader />
+    // }
 
     return (
         <>
