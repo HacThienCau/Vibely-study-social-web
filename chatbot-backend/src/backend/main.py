@@ -47,4 +47,4 @@ app.add_middleware(
 )
 
 # Thêm router chat vào ứng dụng
-app.include_router(chat_router, prefix="/chats", tags=["chat"])  
+app.include_router(chat_router, prefix="/chatbot", tags=["chat"])  

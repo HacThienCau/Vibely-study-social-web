@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import axios from "axios";
-
+import { Canvas, useThree } from "@react-three/fiber";
+import Model from "./Model";
+import './rightsidebar.css';
 const RightSideBar = () => {
   const [countdown, setCountdown] = useState(300);
   const [quote, setQuote] = useState("Đang tải...");
@@ -43,13 +45,17 @@ const RightSideBar = () => {
         <p className="text-xs text-gray-500 mt-1">{quote} - {author}</p>
       </div>
 
-      {/* Card Thống Kê */}
-      <div className="p-4 bg-white shadow-md rounded-xl">
-        <div className="text-lg font-semibold flex items-center">
-          <span className="text-blue-500 mr-1">📊</span> Thống kê
-        </div>
-        <div className="h-72 bg-gray-100 rounded-lg shadow-inner mt-3"></div>
+      <div className="p-4 bg-white shadow-md rounded-xl w-full h-[500px] relative">
+        <Canvas>
+          <directionalLight position={[-5, -5, 5]} intensity={4} />
+          <Suspense fallback={null}>
+            <Model />
+          </Suspense>
+        </Canvas>
+
       </div>
+
+
     </aside>
   );
 };
