@@ -53,7 +53,7 @@ const SettingsPage = () => {
             <div className="w-1/5 flex-shrink-0">
                 <Sidebar />
             </div>
-            <div className="w-4/5 flex flex-col">
+            <div className="w-4/5 ml-[-40px] flex flex-col">
                 {/* Header Row */}
                 <div className="w-full ml-[-20px] py-6 px-6 mb-[-15px] flex justify-between items-center">
                     <h1 className="text-2xl font-semibold text-[#333]">Cài đặt</h1>

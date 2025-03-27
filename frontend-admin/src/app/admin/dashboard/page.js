@@ -51,9 +51,6 @@ const Dashboard = () => {
                 count: item.count
             }));
 
-            console.log("Formatted user stats:", formattedUserData);
-            console.log("Formatted post stats:", formattedPostData);
-
             setUserStats(formattedUserData);
             setPostStats(formattedPostData);
         } catch (error) {
@@ -70,7 +67,7 @@ const Dashboard = () => {
             <div className="w-1/5 flex-shrink-0">
                 <Sidebar />
             </div>
-            <div className="w-4/5 ml-[-20px] py-6 overflow-y-auto">
+            <div className="w-4/5 ml-[-70px] py-6 overflow-y-auto">
                 <div className="flex justify-between items-center mb-6 px-6">
                     <h1 className="text-2xl font-semibold text-[#333]">Dashboard</h1>
                     <div className="flex items-center space-x-4">

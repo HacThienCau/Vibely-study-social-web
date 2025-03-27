@@ -22,12 +22,14 @@ const ProfileDetailsSection = ({ userData, handleInputChange, handleSubmit }) =>
                                 </label>
                                 <input
                                     type="text"
-                                    name="firstname"
+                                    name="firstName"
+                                    autoComplete="off"
                                     className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                                    value={userData.firstname}
+                                    value={userData?.firstName || ""}
                                     onChange={handleInputChange}
                                     required
                                 />
+
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -35,9 +37,10 @@ const ProfileDetailsSection = ({ userData, handleInputChange, handleSubmit }) =>
                                 </label>
                                 <input
                                     type="text"
-                                    name="lastname"
+                                    name="lastName"
+                                    autoComplete="off"
                                     className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                                    value={userData.lastname}
+                                    value={userData?.lastName || ""}
                                     onChange={handleInputChange}
                                     required
                                 />
@@ -49,8 +52,9 @@ const ProfileDetailsSection = ({ userData, handleInputChange, handleSubmit }) =>
                                 <input
                                     type="email"
                                     name="email"
+                                    autoComplete="off"
                                     className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                                    value={userData.email}
+                                    value={userData?.email || ""}
                                     onChange={handleInputChange}
                                     required
                                 />
@@ -62,9 +66,10 @@ const ProfileDetailsSection = ({ userData, handleInputChange, handleSubmit }) =>
                                 <input
                                     type="text"
                                     name="phone"
+                                    autoComplete="off"
                                     className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                                    placeholder="Phone number"
-                                    value={userData.phone}
+                                    placeholder="Số điện thoại"
+                                    value={userData?.phone || ""}
                                     onChange={handleInputChange}
                                 />
                             </div>
@@ -73,9 +78,9 @@ const ProfileDetailsSection = ({ userData, handleInputChange, handleSubmit }) =>
                                     Quốc tịch
                                 </label>
                                 <select
-                                    name="state"
-                                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 appearance-none bg-white"
-                                    value={userData.state}
+                                    name="nationality"
+                                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white"
+                                    value={userData?.nationality || ""}
                                     onChange={handleInputChange}
                                 >
                                     <option value="">Chọn quốc tịch</option>
@@ -91,9 +96,10 @@ const ProfileDetailsSection = ({ userData, handleInputChange, handleSubmit }) =>
                                 <input
                                     type="text"
                                     name="city"
+                                    autoComplete="off"
                                     className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                     placeholder="Thành phố"
-                                    value={userData.city}
+                                    value={userData?.city || ""}
                                     onChange={handleInputChange}
                                 />
                             </div>
@@ -104,9 +110,9 @@ const ProfileDetailsSection = ({ userData, handleInputChange, handleSubmit }) =>
                     <div className="p-6 flex justify-end">
                         <button
                             type="submit"
-                            className="px-6 py-3 bg-[#086280] text-white font-medium rounded-lg"
+                            className="px-6 py-3 bg-[#086280] text-white font-medium rounded-lg cursor-pointer hover:bg-[#0a6b8c] transition duration-200 ease-in-out"
                         >
-                            Save details
+                            Lưu thay đổi
                         </button>
                     </div>
                 </div>
@@ -115,4 +121,4 @@ const ProfileDetailsSection = ({ userData, handleInputChange, handleSubmit }) =>
     )
 }
 
-export default ProfileDetailsSection 
+export default ProfileDetailsSection
