@@ -1,190 +1,293 @@
-'use client'
+"use client";
 
-import React, { useState } from 'react'
-import Image from 'next/image'
-import Sidebar from '../../components/sidebar/Sidebar'
-import { FiSearch } from 'react-icons/fi'
-import { FaTrash } from 'react-icons/fa'
-import UserProfile from '../../components/users/UserProfile'
-import DeleteInquiryPopup from '../../components/users/DeleteInquiryPopup'
+import React, { useState, useEffect } from "react";
+import Image from "next/image";
+import Sidebar from "../../components/sidebar/Sidebar";
+import { FiSearch } from "react-icons/fi";
+import { FaTrash } from "react-icons/fa";
+import UserProfile from "../../components/users/UserProfile";
+import DeleteInquiryPopup from "../../components/users/DeleteInquiryPopup";
+import {
+  getAllUsers,
+  deleteUser,
+  searchUsers,
+} from "@/service/userAdmin.service";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const UsersPage = () => {
-    const users = [
-        { id: '001', username: 'Võ Nhất Phương', email: 'vonhatphuongahihi@gmail.com', joinDate: '01/01/2024', posts: 3, avatar: '/images/p.jpg' },
-        { id: '002', username: 'Võ Nhất Phương', email: 'vonhatphuongahihi@gmail.com', joinDate: '01/01/2024', posts: 3, avatar: '/images/p.jpg' },
-        { id: '003', username: 'Võ Nhất Phương', email: 'vonhatphuongahihi@gmail.com', joinDate: '01/01/2024', posts: 3, avatar: '/images/p.jpg' },
-        { id: '004', username: 'Võ Nhất Phương', email: 'vonhatphuongahihi@gmail.com', joinDate: '01/01/2024', posts: 3, avatar: '/images/p.jpg' },
-        { id: '005', username: 'Võ Nhất Phương', email: 'vonhatphuongahihi@gmail.com', joinDate: '01/01/2024', posts: 3, avatar: '/images/p.jpg' },
-        { id: '006', username: 'Võ Nhất Phương', email: 'vonhatphuongahihi@gmail.com', joinDate: '01/01/2024', posts: 3, avatar: '/images/p.jpg' },
-        { id: '007', username: 'Võ Nhất Phương', email: 'vonhatphuongahihi@gmail.com', joinDate: '01/01/2024', posts: 3, avatar: '/images/p.jpg' },
-        { id: '008', username: 'Võ Nhất Phương', email: 'vonhatphuongahihi@gmail.com', joinDate: '01/01/2024', posts: 3, avatar: '/images/p.jpg' },
-        { id: '009', username: 'Võ Nhất Phương', email: 'vonhatphuongahihi@gmail.com', joinDate: '01/01/2024', posts: 3, avatar: '/images/p.jpg' },
-        { id: '010', username: 'Võ Nhất Phương', email: 'vonhatphuongahihi@gmail.com', joinDate: '01/01/2024', posts: 3, avatar: '/images/p.jpg' },
-        { id: '011', username: 'Võ Nhất Phương', email: 'vonhatphuongahihi@gmail.com', joinDate: '01/01/2024', posts: 3, avatar: '/images/p.jpg' },
-        { id: '012', username: 'Võ Nhất Phương', email: 'vonhatphuongahihi@gmail.com', joinDate: '01/01/2024', posts: 3, avatar: '/images/p.jpg' },
-    ];
+  // State để theo dõi người dùng được chọn
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [usersList, setUsersList] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-    // State để theo dõi người dùng được chọn
-    const [selectedUser, setSelectedUser] = useState(users[0]);
-    const [searchQuery, setSearchQuery] = useState('');
-    const [usersList, setUsersList] = useState(users);
+  // State cho popup xóa
+  const [isDeletePopupOpen, setIsDeletePopupOpen] = useState(false);
+  const [userToDelete, setUserToDelete] = useState(null);
 
-    // State cho popup xóa
-    const [isDeletePopupOpen, setIsDeletePopupOpen] = useState(false);
-    const [userToDelete, setUserToDelete] = useState(null);
+  // Fetch users khi component mount
+  useEffect(() => {
+    fetchUsers();
+  }, []);
 
-    // Xử lý khi click vào người dùng
-    const handleUserClick = (user) => {
-        setSelectedUser(user);
-    };
+  // Hàm lấy danh sách users
+  const fetchUsers = async () => {
+    try {
+      setLoading(true);
+      const users = await getAllUsers();
+      console.log("Danh sách người dùng:", users);
+      setUsersList(users);
+      if (users.length > 0) {
+        setSelectedUser(users[0]);
+      }
+    } catch (error) {
+      setError("Không thể tải danh sách người dùng");
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    // Xử lý khi tìm kiếm
-    const handleSearch = (e) => {
-        e.preventDefault();
-        // Implement search logic here
-        console.log('Searching for:', searchQuery);
-    };
+  // Xử lý khi click vào người dùng
+  const handleUserClick = (user) => {
+    setSelectedUser(user);
+  };
 
-    // Mở popup xác nhận xóa
-    const openDeletePopup = (user, e) => {
-        e.stopPropagation(); // Ngăn không cho click vào hàng kích hoạt handleUserClick
-        setUserToDelete(user);
-        setIsDeletePopupOpen(true);
-    };
+  // Xử lý khi tìm kiếm
+  const handleSearch = async (e) => {
+    e.preventDefault();
+    if (!searchQuery.trim()) {
+      fetchUsers();
+      return;
+    }
 
-    // Đóng popup xác nhận xóa
-    const closeDeletePopup = () => {
-        setIsDeletePopupOpen(false);
-        setUserToDelete(null);
-    };
+    try {
+      setLoading(true);
+      const results = await searchUsers(searchQuery);
+      setUsersList(results);
+      if (results.length > 0) {
+        setSelectedUser(results[0]);
+      } else {
+        setSelectedUser(null);
+      }
+    } catch (error) {
+      setError("Không thể tìm kiếm người dùng");
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    // Xử lý khi xác nhận xóa người dùng
-    const handleConfirmDelete = () => {
-        if (userToDelete) {
-            // Lọc ra danh sách người dùng mới không bao gồm người dùng bị xóa
-            const updatedUsers = usersList.filter(user => user.id !== userToDelete.id);
+  // Mở popup xác nhận xóa
+  const openDeletePopup = (user, e) => {
+    e.stopPropagation(); // Ngăn không cho click vào hàng kích hoạt handleUserClick
+    setUserToDelete(user);
+    setIsDeletePopupOpen(true);
+  };
 
-            // Cập nhật danh sách người dùng
-            setUsersList(updatedUsers);
+  // Đóng popup xác nhận xóa
+  const closeDeletePopup = () => {
+    setIsDeletePopupOpen(false);
+    setUserToDelete(null);
+  };
 
-            // Nếu người dùng đang được chọn là người dùng bị xóa, chọn người dùng khác
-            if (selectedUser && selectedUser.id === userToDelete.id) {
-                setSelectedUser(updatedUsers.length > 0 ? updatedUsers[0] : null);
-            }
+  // Xử lý khi xác nhận xóa người dùng
+  const handleConfirmDelete = async () => {
+    if (userToDelete) {
+      try {
+        await deleteUser(userToDelete._id);
+        // Cập nhật danh sách sau khi xóa
+        const updatedUsers = usersList.filter(
+          (user) => user._id !== userToDelete._id
+        );
+        setUsersList(updatedUsers);
 
-            console.log(`Đã xóa người dùng có ID: ${userToDelete.id}`);
-
-            closeDeletePopup();
+        // Nếu người dùng đang được chọn là người dùng bị xóa, chọn người dùng khác
+        if (selectedUser && selectedUser._id === userToDelete._id) {
+          setSelectedUser(updatedUsers.length > 0 ? updatedUsers[0] : null);
         }
-    };
 
+        closeDeletePopup();
+      } catch (error) {
+        setError("Không thể xóa người dùng");
+        console.error(error);
+      }
+    }
+  };
+
+  if (loading) {
     return (
-        <div className="flex w-full flex-row min-h-screen bg-[#F4F7FE]">
-            {/* Sidebar */}
-            <div className="w-1/5 flex-shrink-0">
-                <Sidebar />
-            </div>
-
-            {/* Main Container */}
-            <div className="w-4/5 ml-[-40px] flex flex-col">
-                {/* Header Row */}
-                <div className="w-full ml-[-20px] py-6 px-6 mb-[-15px] flex justify-between items-center">
-                    <h1 className="text-2xl font-semibold text-[#333]">Quản lý người dùng</h1>
-                    <div className="flex items-center space-x-4">
-                    </div>
-                </div>
-
-                {/* Content Area */}
-                <div className="py-6 px-6 ml-[-20px] overflow-y-auto flex">
-                    {/* User List Section */}
-                    <div className="w-4/5 pr-6">
-                        {/* Search Bar */}
-                        <div className="mb-6">
-                            <form onSubmit={handleSearch} className="flex">
-                                <div className="relative flex-grow">
-                                    <input
-                                        type="text"
-                                        placeholder="Tìm kiếm..."
-                                        className="w-full p-2 pl-4 pr-10 border border-gray-300 rounded-lg focus:outline-none"
-                                        value={searchQuery}
-                                        onChange={(e) => setSearchQuery(e.target.value)}
-                                    />
-                                </div>
-                                <button
-                                    type="submit"
-                                    className="ml-2 px-6 py-2 bg-[#086280] text-white rounded-lg hover:bg-blue-700 transition duration-200"
-                                >
-                                    <div className="flex items-center">
-                                        <FiSearch className="mr-1" />
-                                        <span>Tìm</span>
-                                    </div>
-                                </button>
-                            </form>
-                        </div>
-
-                        {/* Users Table */}
-                        <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-                            <table className="min-w-full">
-                                <thead>
-                                    <tr className="bg-gray-50 text-left">
-                                        <th className="px-4 py-3 text-gray-600 font-medium">ID</th>
-                                        <th className="px-4 py-3 text-gray-600 font-medium">USERNAME</th>
-                                        <th className="px-4 py-3 text-gray-600 font-medium">EMAIL</th>
-                                        <th className="px-4 py-3 text-gray-600 font-medium">NGÀY THAM GIA</th>
-                                        <th className="px-4 py-3 text-gray-600 font-medium text-center">SỐ BÀI VIẾT</th>
-                                        <th className="px-4 py-3"></th>
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-gray-200">
-                                    {usersList.map((user, index) => (
-                                        <tr
-                                            key={index}
-                                            className={`hover:bg-gray-50 cursor-pointer ${selectedUser && selectedUser.id === user.id ? 'bg-blue-50' : ''}`}
-                                            onClick={() => handleUserClick(user)}
-                                        >
-                                            <td className="px-4 py-3 text-gray-800">{user.id}</td>
-                                            <td className="px-4 py-3">
-                                                <div className="flex items-center">
-                                                    <div className="h-8 w-8 rounded-full overflow-hidden mr-3">
-                                                        <Image src={user.avatar} alt={user.username} width={32} height={32} className="h-full w-full object-cover" />
-                                                    </div>
-                                                    <span className="text-gray-800">{user.username}</span>
-                                                </div>
-                                            </td>
-                                            <td className="px-4 py-3 text-gray-600">{user.email}</td>
-                                            <td className="px-4 py-3 text-gray-600">{user.joinDate}</td>
-                                            <td className="px-4 py-3 text-gray-600 text-center">{user.posts}</td>
-                                            <td className="px-4 py-3 text-right">
-                                                <button
-                                                    className="text-red-400 hover:text-red-600 transition-colors duration-200"
-                                                    onClick={(e) => openDeletePopup(user, e)}
-                                                >
-                                                    <FaTrash />
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    {/* User Profile Section */}
-                    <div className="w-1/5 mr-5">
-                        <UserProfile user={selectedUser} />
-                    </div>
-                </div>
-            </div>
-
-            {/* Delete Confirmation Popup */}
-            <DeleteInquiryPopup
-                isOpen={isDeletePopupOpen}
-                onClose={closeDeletePopup}
-                onConfirm={handleConfirmDelete}
-                userName={userToDelete ? userToDelete.username : ''}
-            />
+      <div className="flex w-full flex-row min-h-screen bg-[#F4F7FE]">
+        <div className="w-1/5 flex-shrink-0">
+          <Sidebar />
         </div>
+        <div className="w-4/5 ml-[-40px] flex items-center justify-center">
+          <div className="text-xl">Đang tải...</div>
+        </div>
+      </div>
     );
-}
+  }
+
+  if (error) {
+    return (
+      <div className="flex w-full flex-row min-h-screen bg-[#F4F7FE]">
+        <div className="w-1/5 flex-shrink-0">
+          <Sidebar />
+        </div>
+        <div className="w-4/5 ml-[-40px] flex items-center justify-center">
+          <div className="text-xl text-red-500">{error}</div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex w-full flex-row min-h-screen bg-[#F4F7FE]">
+      {/* Sidebar */}
+      <div className="w-1/5 flex-shrink-0">
+        <Sidebar />
+      </div>
+
+      {/* Main Container */}
+      <div className="w-4/5 ml-[-40px] flex flex-col">
+        {/* Header Row */}
+        <div className="w-full ml-[-20px] py-6 px-6 mb-[-15px] flex justify-between items-center">
+          <h1 className="text-2xl font-semibold text-[#333]">
+            Quản lý người dùng
+          </h1>
+          <div className="flex items-center space-x-4"></div>
+        </div>
+
+        {/* Content Area */}
+        <div className="py-6 px-6 ml-[-20px] overflow-y-auto flex">
+          {/* User List Section */}
+          <div className="w-4/5 pr-6">
+            {/* Search Bar */}
+            <div className="mb-6">
+              <form onSubmit={handleSearch} className="flex">
+                <div className="relative flex-1">
+                  <input
+                    type="text"
+                    placeholder="Tìm kiếm..."
+                    className="w-full p-2 pl-4 pr-10 border border-gray-300 rounded-lg focus:outline-none"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                </div>
+                <button
+                  type="submit"
+                  className="ml-2 px-6 py-2 bg-[#086280] text-white rounded-lg hover:bg-blue-700 transition duration-200"
+                >
+                  <div className="flex items-center">
+                    <FiSearch className="mr-1" />
+                    <span>Tìm</span>
+                  </div>
+                </button>
+              </form>
+            </div>
+
+            {/* Users Table */}
+            <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+              <table className="min-w-full">
+                <thead>
+                  <tr className="bg-gray-50 text-left">
+                    <th className="px-4 py-3 text-gray-600 font-medium">ID</th>
+                    <th className="px-4 py-3 text-gray-600 font-medium">
+                      USERNAME
+                    </th>
+                    <th className="px-4 py-3 text-gray-600 font-medium">
+                      EMAIL
+                    </th>
+                    <th className="px-4 py-3 text-gray-600 font-medium">
+                      NGÀY THAM GIA
+                    </th>
+                    <th className="px-4 py-3 text-gray-600 font-medium text-center">
+                      SỐ BÀI VIẾT
+                    </th>
+                    <th className="px-4 py-3"></th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200">
+                  {usersList.map((user) => (
+                    <tr
+                      key={user._id}
+                      className={`hover:bg-gray-50 cursor-pointer ${
+                        selectedUser && selectedUser._id === user._id
+                          ? "bg-blue-50"
+                          : ""
+                      }`}
+                      onClick={() => handleUserClick(user)}
+                    >
+                      <td className="px-4 py-3 text-gray-800">{user._id}</td>
+                      <td className="px-4 py-3">
+                        <div className="flex items-center">
+                          <div className="h-8 w-8 rounded-full overflow-hidden mr-3">
+                            {/* <Image 
+                                                            src={user.avatar || '/images/default-avatar.png'} 
+                                                            alt={user.username} 
+                                                            width={32} 
+                                                            height={32} 
+                                                            className="h-full w-full object-cover" 
+                                                        /> */}
+                            <Avatar>
+                              {user?.profilePicture ? (
+                                <AvatarImage
+                                  src={user?.profilePicture}
+                                  alt={user?.username}
+                                />
+                              ) : (
+                                <AvatarFallback className="bg-gray-300">
+                                  {user?.username
+                                    ?.split(" ")
+                                    .map((name) => name[0])
+                                    .join("")}
+                                </AvatarFallback>
+                                
+                              )}
+                            </Avatar>
+                          </div>
+                          <span>{user.username}</span>
+                        </div>
+                      </td>
+                      <td className="px-4 py-3 text-gray-600">{user.email}</td>
+                      <td className="px-4 py-3 text-gray-600">
+                        {new Date(user.createdAt).toLocaleDateString("vi-VN")}
+                      </td>
+                      <td className="px-4 py-3 text-gray-600 text-center">
+                        {user.posts?.length || 0}
+                      </td>
+                      <td className="px-4 py-3 text-right">
+                        <button
+                          className="text-red-400 hover:text-red-600 transition-colors duration-200"
+                          onClick={(e) => openDeletePopup(user, e)}
+                        >
+                          <FaTrash />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* User Profile Section */}
+          <div className="w-1/5 mr-5">
+            <UserProfile user={selectedUser} />
+          </div>
+        </div>
+      </div>
+
+      {/* Delete Confirmation Popup */}
+      <DeleteInquiryPopup
+        isOpen={isDeletePopupOpen}
+        onClose={closeDeletePopup}
+        onConfirm={handleConfirmDelete}
+        userName={userToDelete ? userToDelete.username : ""}
+      />
+    </div>
+  );
+};
 
 export default UsersPage;

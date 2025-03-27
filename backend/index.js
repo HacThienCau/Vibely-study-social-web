@@ -19,6 +19,7 @@ const inquiryRoute = require('./routes/inquiryRoute');
 const adminAuthRoute = require('./routes/adminAuthRoute');
 const adminDashboardRoute = require('./routes/adminDashboardRoute');
 const adminPostRoute = require('./routes/adminPostRoute')
+const adminUserRoute = require('./routes/adminUserRoute')
 const adminInformationRoute = require('./routes/adminInformationRoute');
 const forgotPasswordRoute = require('./routes/forgotPassword');
 const YAML = require('yamljs');
@@ -58,6 +59,7 @@ app.use('/admin/auth', adminAuthRoute);
 app.use('/admin', adminDashboardRoute);
 app.use('/admin', adminInformationRoute);
 app.use('/admin/posts', adminPostRoute);
+app.use('/admin/users', adminUserRoute);
 app.use('/forgot-password', forgotPasswordRoute);
 
 // ✅ API lấy danh ngôn ngẫu nhiên
