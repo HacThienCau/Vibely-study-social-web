@@ -118,3 +118,36 @@ export const getAllUsers = async() =>{
         throw error;   
     }
 }
+
+// Lấy danh sách tài liệu đã lưu của người dùng
+export const getSavedDocuments = async() =>{
+    try {
+        const response = await axiosInstance.get('/users/saved')
+        return response?.data?.data;
+    } catch (error) {
+        console.log(error);
+        throw error;   
+    }
+}
+
+// Lấy tài liệu đã lưu theo id
+export const getSavedDocumentById = async(documentId) =>{
+    try {
+        const response = await axiosInstance.get(`/users/saved/${documentId}`)
+        return response?.data?.data;
+    } catch (error) {
+        console.log(error);
+        throw error;   
+    }
+}
+
+// Bỏ lưu tài liệu
+export const unsaveDocument = async(documentId) =>{
+    try {
+        const response = await axiosInstance.delete(`/users/saved/${documentId}`)
+        return response?.data?.data;
+    } catch (error) {
+        console.log(error);
+        throw error;   
+    }
+}

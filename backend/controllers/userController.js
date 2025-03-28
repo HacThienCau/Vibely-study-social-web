@@ -302,6 +302,91 @@ const getUsersByIds = async (req, res) => {
     }
 };
 
+// Lấy danh sách tài liệu đã lưu của người dùng
+const getSavedDocuments = async (req, res) => {
+    try {
+        const userId = req.user.userId;
+        const { query, level, subject } = req.query;
+
+        let filter = {};
+        if (query) filter.title = { $regex: query, $options: "i" };
+        if (level) filter.level = level;
+        if (subject) filter.subject = subject;
+
+        const user = await User.findById(userId).populate({
+            path: 'savedDocuments',
+            match: filter,
+            populate: [
+                { path: 'level', select: 'name' },
+                { path: 'subject', select: 'name' }
+            ]
+        });
+
+        return response(res, 200, 'Lấy danh sách tài liệu đã lưu thành công', user?.savedDocuments || []);
+    } catch (error) {
+        return response(res, 500, 'Lỗi máy chủ nội bộ', error.message);
+    }
+};
+
+
+// Lấy thông tin tài liệu đã lưu theo ID
+const getSavedDocumentById = async (req, res) => {
+    try {
+        const userId = req.user.userId;
+        const documentId = req.params.id;
+
+        // Tìm user có tài liệu cần lấy
+        const user = await User.findOne(
+            { _id: userId, savedDocuments: documentId },
+            { "savedDocuments.$": 1 }
+        ).populate({
+            path: "savedDocuments",
+            populate: [
+                { path: "level", select: "name" },
+                { path: "subject", select: "name" }
+            ]
+        });
+
+        // Kiểm tra nếu không có user hoặc tài liệu
+        if (!user || !user.savedDocuments.length) {
+            return response(res, 404, "Tài liệu không tồn tại trong danh sách đã lưu");
+        }
+
+        return response(res, 200, "Lấy thông tin tài liệu đã lưu thành công", user.savedDocuments[0]);
+    } catch (error) {
+        return response(res, 500, "Lỗi máy chủ nội bộ", error.message);
+    }
+};
+
+
+// Bỏ lưu tài liệu
+const unsaveDocument = async (req, res) => {
+    try {
+        const userId = req.user.userId;
+        const documentId = req.params.id;
+
+        // Tìm người dùng theo ID
+        const user = await User.findById(userId);
+        if (!user) {
+            return response(res, 404, 'Người dùng không tồn tại');
+        }
+
+        // Kiểm tra tài liệu có trong danh sách đã lưu không
+        const documentIndex = user.savedDocuments.findIndex(doc => doc.toString() === documentId);
+        if (documentIndex === -1) {
+            return response(res, 404, 'Tài liệu không tồn tại trong danh sách đã lưu');
+        }
+
+        // Xóa tài liệu khỏi danh sách đã lưu
+        user.savedDocuments.splice(documentIndex, 1);
+        await user.save();
+
+        return response(res, 200, 'Bỏ lưu tài liệu thành công');
+    } catch (error) {
+        return response(res, 500, 'Lỗi máy chủ nội bộ', error.message);
+    }
+};
+
 
   
 module.exports = {
@@ -315,5 +400,8 @@ module.exports = {
     checkUserAuth,
     getUserProfile,
     getUsersByIds,
-    getUserMutualFriends
+    getUserMutualFriends,
+    getSavedDocuments,
+    getSavedDocumentById,
+    unsaveDocument
 }

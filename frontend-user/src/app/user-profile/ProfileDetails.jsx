@@ -1,19 +1,18 @@
-import React, { useEffect, useState } from "react";
-import { PostsContent } from "./profileContent/PostsContent";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { createOrUpdateUserBio } from "@/service/user.service";
+import { usePostStore } from "@/store/usePostStore";
+import { motion } from "framer-motion";
 import {
   Briefcase,
   GraduationCap,
   Home,
-  MapPin,
-  Pencil,
-  SaveOff,
+  MapPin
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import { MutualFriends } from "./profileContent/MutualFriends";
-import { usePostStore } from "@/store/usePostStore";
-import { createOrUpdateUserBio } from "@/service/user.service";
+import { PostsContent } from "./profileContent/PostsContent";
+import { SavedDocuments } from "./profileContent/SavedDocuments";
 
 export const ProfileDetails = ({
   activeTab,
@@ -104,57 +103,6 @@ export const ProfileDetails = ({
       );
     }
   };
-
-  const userFiles = [
-    {
-      id: 1,
-      title: "Tổng hợp 100 câu ngữ pháp từ đề thi Chuyên A...",
-      pages: 7,
-      level: "Trung học phổ thông",
-      subject: "Tiếng Anh",
-      type: "pdf",
-    },
-    {
-      id: 2,
-      title: "Tổng hợp 100 câu ngữ pháp từ đề thi Chuyên A...",
-      pages: 12,
-      level: "Trung học phổ thông",
-      subject: "Toán",
-      type: "docx",
-    },
-    {
-      id: 3,
-      title: "Tổng hợp 100 câu ngữ pháp từ đề thi Chuyên A...",
-      pages: 52,
-      level: "Trung học phổ thông",
-      subject: "Toán",
-      type: "pdf",
-    },
-    {
-      id: 4,
-      title: "Tổng hợp 100 câu ngữ pháp từ đề thi Chuyên A...",
-      pages: 10,
-      level: "Trung học phổ thông",
-      subject: "Ngữ Văn",
-      type: "docx",
-    },
-    {
-      id: 5,
-      title: "Tổng hợp 100 câu ngữ pháp từ đề thi Chuyên A...",
-      pages: 37,
-      level: "Trung học phổ thông",
-      subject: "Toán",
-      type: "pdf",
-    },
-    {
-      id: 6,
-      title: "Tổng hợp 100 câu ngữ pháp từ đề thi Chuyên A...",
-      pages: 5,
-      level: "Trung học phổ thông",
-      subject: "Vật Lý",
-      type: "pdf",
-    },
-  ];
 
   const userVideos = [
     {
@@ -399,58 +347,7 @@ export const ProfileDetails = ({
         </Card>
       </motion.div>
     ),
-    files: (
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="mb-4"
-      >
-        <Card className="bg-white shadow-md rounded-lg border border-gray-200">
-          <CardContent className="p-6">
-            <h2 className="text-xl font-semibold mb-4 dark:text-gray-300">
-              Tài liệu
-            </h2>
-
-            <div className="grid grid-cols-3 gap-4">
-              {userFiles.map((file) => (
-                <div
-                  key={file.id}
-                  className="relative flex flex-col p-4 border border-gray-200 rounded-lg shadow-md bg-white"
-                >
-                  {/* Icon File */}
-                  <div className="flex justify-center mb-2">
-                    {file.type === "pdf" ? (
-                      <img src="/images/pdf.png" alt="PDF" className="h-25" />
-                    ) : (
-                      <img src="/images/docx.png" alt="DOCX" className="h-25" />
-                    )}
-                  </div>
-
-                  {/* Thông tin tài liệu */}
-                  <p className="text-sm font-semibold line-clamp-2">
-                    {file.title}
-                  </p>
-                  <p className="text-xs text-gray-800 font-semibold">
-                    {file.pages} trang
-                  </p>
-                  {/* Level và Subject trên cùng một hàng */}
-                  <div className="flex justify-between text-sm text-gray-500 font-semibold italic mt-4">
-                    <span>{file.level}</span>
-                    <span>{file.subject}</span>
-                  </div>
-
-                  {/* Nút Hành Động */}
-                  <button className="absolute top-2 right-2 bg-gray-200 p-2 rounded-full">
-                    <SaveOff />
-                  </button>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      </motion.div>
-    ),
+    files: <SavedDocuments />,
   };
   return <div>{tabContent[activeTab] || null}</div>;
 };
