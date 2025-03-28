@@ -1,6 +1,20 @@
 const express = require('express');
 const authMiddleware = require('../middleware/authMiddleware');
-const { followUser, unfollowUser, deleteUserFromRequest, getAllFriendsRequest, getAllUserForRequest, getAllMutualFriends, getAllUser, getUserProfile, checkUserAuth, getUsersByIds, getUserMutualFriends} = require('../controllers/userController');
+const { followUser,
+        unfollowUser,
+        deleteUserFromRequest,
+        getAllFriendsRequest,
+        getAllUserForRequest,
+        getAllMutualFriends,
+        getAllUser,
+        getUserProfile,
+        checkUserAuth,
+        getUsersByIds,
+        getUserMutualFriends,
+        getSavedDocuments,
+        getSavedDocumentById,
+        unsaveDocument
+    } = require('../controllers/userController');
 const { createOrUpdateUserBio, updateCoverPicture, updateUserProfile } = require('../controllers/createOrUpdateController');
 const { multerMiddleware } = require('../config/cloudinary');
 const router = express.Router();
@@ -47,5 +61,13 @@ router.post("/get-users", authMiddleware, getUsersByIds);
 
 // Route lấy tất cả bạn chung của một người dùng cụ thể
 router.get('/mutual-friends/:userId', authMiddleware, getUserMutualFriends);
+
+// Route lấy tài liệu đã lưu của người dùng
+router.get('/saved', authMiddleware, getSavedDocuments);
+
+// Route lấy tài liệu cụ thể và bỏ lưu tài liệu
+router.route("/saved/:id")
+    .get(authMiddleware, getSavedDocumentById)
+    .delete(authMiddleware, unsaveDocument);
 
 module.exports = router;
