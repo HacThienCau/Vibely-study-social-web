@@ -43,7 +43,7 @@ const Header = () => {
   const handleBackToMainMenu = () => {
     setIsSettingsOpen(false); // Quay lại menu chính
   };
-  useEffect(()=>{
+  useEffect(() => {
 
   })
 
@@ -53,7 +53,7 @@ const Header = () => {
     { icon: "/images/video_navbar.svg", path: "/video-feed" },
     { icon: "/images/document_navbar.svg", path: "/document" },
     { icon: "/images/calendar_navbar.svg", path: "/calendar" },
-    { icon: "/images/game_navbar.svg", path: "/game" },
+    { icon: "/images/game_navbar.svg", path: "/quiz" },
   ];
 
   useEffect(() => {

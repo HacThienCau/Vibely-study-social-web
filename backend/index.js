@@ -22,6 +22,7 @@ const adminPostRoute = require('./routes/adminPostRoute')
 const adminUserRoute = require('./routes/adminUserRoute')
 const adminInformationRoute = require('./routes/adminInformationRoute');
 const forgotPasswordRoute = require('./routes/forgotPassword');
+const quizRoute = require('./routes/quizRoute');
 const YAML = require('yamljs');
 
 const swaggerDocument = YAML.load('./API/swagger.yaml');
@@ -55,6 +56,7 @@ app.use('/schedules', scheduleRoute);
 app.use('/chats', chatbotRoute);
 app.use("/documents", documentRoute);
 app.use('/inquiry', inquiryRoute);
+app.use('/quizzes', quizRoute);
 app.use('/admin/auth', adminAuthRoute);
 app.use('/admin', adminDashboardRoute);
 app.use('/admin', adminInformationRoute);
