@@ -16,23 +16,45 @@ function QuizStartQuestions({ quizData, onUpdateTime }) {
     const [currentQuiz, setCurrentQuiz] = useState(quizData);
 
     const [timer, setTimer] = useState(time);
-    let interval;
+    // Use useRef for interval to persist between renders
+    const intervalRef = React.useRef(null);
 
-    function startTimer() {
-        clearInterval(interval);
+    // Separate effect for timer updates
+    useEffect(() => {
+        // Update parent timer whenever our timer changes
+        onUpdateTime(timer);
+    }, [timer, onUpdateTime]);
+
+    // Effect for managing the interval
+    useEffect(() => {
+        // Clear any existing interval
+        if (intervalRef.current) {
+            clearInterval(intervalRef.current);
+        }
+
+        // Reset timer
         setTimer(time);
 
-        interval = setInterval(() => {
+        // Set up new interval
+        intervalRef.current = setInterval(() => {
             setTimer((currentTime) => {
-                onUpdateTime(currentTime);
                 if (currentTime === 0) {
-                    clearInterval(interval);
+                    clearInterval(intervalRef.current);
                     return 0;
                 }
                 return currentTime - 1;
             });
         }, 1000);
-    }
+
+        // Cleanup function
+        return () => {
+            if (intervalRef.current) {
+                clearInterval(intervalRef.current);
+            }
+        };
+    }, [currentQuestionIndex]);
+
+
 
     async function saveDataIntoDB() {
         try {
@@ -52,13 +74,6 @@ function QuizStartQuestions({ quizData, onUpdateTime }) {
     }
 
     useEffect(() => {
-        startTimer();
-        return () => {
-            clearInterval(interval);
-        };
-    }, [currentQuestionIndex]);
-
-    useEffect(() => {
         if (timer === 0 && !isQuizEnded) {
             // Updating the quiz questions
             const updatedQuiz = { ...currentQuiz };
@@ -73,10 +88,10 @@ function QuizStartQuestions({ quizData, onUpdateTime }) {
                 }, 1000);
             } else {
                 setIsQuizEnded(true);
-                clearInterval(interval);
+                clearInterval(intervalRef.current);
             }
         }
-    }, [timer]);
+    }, [timer, isQuizEnded, currentQuestionIndex, quizQuestions.length, currentQuiz]);
 
     useEffect(() => {
         if (isQuizEnded) {
@@ -124,7 +139,7 @@ function QuizStartQuestions({ quizData, onUpdateTime }) {
                 }, 1200);
             } else {
                 setTimer(0);
-                clearInterval(interval);
+                clearInterval(intervalRef.current);
                 setIsQuizEnded(true);
             }
             return;
@@ -143,7 +158,7 @@ function QuizStartQuestions({ quizData, onUpdateTime }) {
             updatedQuiz.quizQuestions[currentQuestionIndex].correctAnswer
         ) {
             setTimer(0);
-            clearInterval(interval);
+            clearInterval(intervalRef.current);
             setIsQuizEnded(true);
             return;
         }
