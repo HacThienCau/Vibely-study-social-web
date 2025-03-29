@@ -45,7 +45,16 @@ const RightSideBar = () => {
         <p className="text-xs text-gray-500 mt-1">{quote} - {author}</p>
       </div>
 
-      <div className="p-4 bg-white shadow-md rounded-xl w-full h-[500px] relative">
+      <div className="p-4 bg-white shadow-md rounded-xl w-full h-[170px] relative">
+        <iframe
+          src="https://indify.co/widgets/live/weather/qgBDva0RhZAMXiGHqmmy"
+          style={{ width: "100%", height: "100%", border: "none" }}
+          title="Weather Widget"
+          className="absolute top-0 left-0 w-full h-full rounded-xl"
+        />
+
+      </div>
+      <div className="p-4 bg-white shadow-md rounded-xl w-full h-[280px] relative">
         <Canvas>
           <directionalLight position={[-5, -5, 5]} intensity={4} />
           <Suspense fallback={null}>
