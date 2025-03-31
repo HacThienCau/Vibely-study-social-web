@@ -4,11 +4,11 @@
 const User = require('../model/User');
 const { generateToken } = require('../utils/generateToken');
 const response = require('../utils/responseHandler');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const registerUser = async (req, res) => {
     try {
         const { username, email, password, gender, dateOfBirth } = req.body;
-        const existingUser = await User.findOne({ email});
+        const existingUser = await User.findOne({ email });
         if (existingUser) {
             return response(res, 400, 'Email đã tồn tại');
         }
@@ -19,14 +19,14 @@ const registerUser = async (req, res) => {
             password: hashedPassword,
             gender,
             dateOfBirth,
-            profilePicture: null,   
-            coverPicture: null,     
-            status: "active",       
-            postsCount: 0,          
-            followerCount: 0,       
-            followingCount: 0,      
-            bio: null,                
-            role: "user",           
+            profilePicture: null,
+            coverPicture: null,
+            status: "active",
+            postsCount: 0,
+            followerCount: 0,
+            followingCount: 0,
+            bio: null,
+            role: "user",
         });
         await newUser.save();
         const accessToken = generateToken(newUser);
@@ -48,7 +48,7 @@ const loginUser = async (req, res) => {
     try {
         const { email, password } = req.body;
         // Kiểm tra email
-        const user = await User.findOne({ email});
+        const user = await User.findOne({ email });
         if (!user) {
             return response(res, 400, 'Email không tồn tại');
         }
@@ -73,7 +73,7 @@ const loginUser = async (req, res) => {
         return response(res, 500, 'Đăng nhập thất bại', error.message);
     }
 }
-const logoutUser = async (req, res) => { 
+const logoutUser = async (req, res) => {
     try {
         res.cookie("auth_token", "", {
             httpOnly: true, //Cookie chỉ có thể được truy cập bởi máy chủ (bảo mật hơn, không thể bị JavaScript đọc)
@@ -86,7 +86,7 @@ const logoutUser = async (req, res) => {
     }
 }
 
-const deleteAccount = async (req, res) => { 
+const deleteAccount = async (req, res) => {
     try {
         const userId = req.user.userId;
         const deletedUser = await User.findByIdAndDelete(userId);

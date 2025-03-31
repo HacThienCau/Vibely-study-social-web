@@ -1,18 +1,35 @@
 openapi: 3.0.0
 info:
   title: Vibely API
-  description: API dành cho mạng xã hội học tập Vibely
+  description: API documentation for Vibely Learning Social Network
   version: 1.0.0
+  contact:
+    email: your-email@vibely.com
 
 servers:
   - url: http://localhost:8080
-    description: Local server
+    description: Local Development Server
+  - url: https://api.vibely.com
+    description: Production Server
+
+tags:
+  - name: Authentication
+    description: Authentication and authorization endpoints
+  - name: Users
+    description: User management operations
+  - name: Posts
+    description: Social posts operations
+  - name: Stories
+    description: Story operations
+  - name: Quiz
+    description: Quiz management
 
 paths:
+  # Authentication Routes
   /auth/login:
     post:
-      summary: "Đăng nhập"
-      description: "API dùng để đăng nhập"
+      tags: [Authentication]
+      summary: User login
       requestBody:
         required: true
         content:
@@ -22,47 +39,66 @@ paths:
               properties:
                 email:
                   type: string
+                  format: email
                 password:
                   type: string
+                  format: password
       responses:
-        "200":
-          description: "Đăng nhập thành công"
-        "400":
-          description: "Lỗi dữ liệu đầu vào"
+        200:
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                  user:
+                    $ref: '#/components/schemas/User'
+        401:
+          description: Invalid credentials
 
   /auth/register:
     post:
-      summary: "Đăng ký tài khoản"
-      description: "API dùng để đăng ký tài khoản"
+      tags: [Authentication]
+      summary: Register new user
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
+              required:
+                - username
+                - email
+                - password
+                - gender
+                - dateOfBirth
               properties:
                 username:
                   type: string
                 email:
                   type: string
+                  format: email
                 password:
                   type: string
+                  format: password
+                gender:
+                  type: string
+                  enum: [male, female, other]  # Giới hạn giá trị hợp lệ
+                dateOfBirth:
+                  type: string
+                  format: date  # YYYY-MM-DD
       responses:
-        "200":
-          description: "Đăng ký thành công"
-        "400":
-          description: "Lỗi dữ liệu đầu vào"
+        201:
+          description: User created successfully
+        400:
+          description: Invalid input data
 
-  /posts:
-    get:
-      summary: "Lấy danh sách bài viết"
-      description: "API trả về danh sách bài viết"
-      responses:
-        "200":
-          description: "Danh sách bài viết"
+  /auth/forgot-password:
     post:
-      summary: "Tạo bài viết mới"
-      description: "API dùng để tạo bài viết mới"
+      tags: [Authentication]
+      summary: Request password reset
       requestBody:
         required: true
         content:
@@ -70,48 +106,223 @@ paths:
             schema:
               type: object
               properties:
-                title:
+                email:
                   type: string
-                content:
-                  type: string
+                  format: email
       responses:
-        "201":
-          description: "Bài viết đã được tạo"
-
-  /stories:
-    get:
-      summary: "Lấy danh sách stories"
-      description: "API trả về danh sách stories"
-      responses:
-        "200":
-          description: "Danh sách stories"
+        200:
+          description: Reset email sent
+        404:
+          description: User not found
+    /auth/update-password:
     post:
-      summary: "Tạo story mới"
-      description: "API dùng để tạo story mới"
+      tags: [Authentication]
+      summary: Update user password
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
+              required:
+                - token
+                - newPassword
               properties:
-                imageUrl:
+                token:
                   type: string
+                  description: Token received from password reset email
+                newPassword:
+                  type: string
+                  format: password
+                  description: New password for the user
       responses:
-        "201":
-          description: "Story đã được tạo thành công"
-          
-  /posts/reacts/{postId}:
-    post:
-      summary: "Bày tỏ cảm xúc với bài viết"
-      description: "API cho phép người dùng thích, yêu thích, hoặc phản ứng với bài viết"
+        200:
+          description: Password updated successfully
+        400:
+          description: Invalid token or password
+        404:
+          description: User not found
+
+  /auth/logout:
+      post:
+        tags: [Authentication]
+        summary: Logout user
+        security:
+          - bearerAuth: []
+        responses:
+          200:
+            description: User logged out successfully
+          401:
+            description: Unauthorized
+
+  # User Routes
+  /users:
+    get:
+      tags: [Users]
+      summary: Get all users
+      security:
+        - BearerAuth: []
       parameters:
-        - name: postId
-          in: path
+        - in: query
+          name: page
+          schema:
+            type: integer
+        - in: query
+          name: limit
+          schema:
+            type: integer
+      responses:
+        200:
+          description: List of users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+
+  /users/{userId}:
+    get:
+      tags: [Users]
+      summary: Get user by ID
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: userId
           required: true
           schema:
             type: string
-          description: "ID của bài viết"
+      responses:
+        200:
+          description: User details
+        404:
+          description: User not found
+
+  /users/profile:
+    put:
+      tags: [Users]
+      summary: Update user profile
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                avatar:
+                  type: string
+                  format: binary
+                username:
+                  type: string
+                bio:
+                  type: string
+      responses:
+        200:
+          description: Profile updated successfully
+
+  # Post Routes
+  /users/posts:
+    get:
+      tags: [Posts]
+      summary: Get all posts
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: List of posts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Post'
+    post:
+      tags: [Posts]
+      summary: Create new post
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+                images:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+      responses:
+        201:
+          description: Post created successfully
+
+  /posts/{postId}:
+    get:
+      tags: [Posts]
+      summary: Get post by ID
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: postId
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Post details
+        404:
+          description: Post not found
+
+  # Quiz Routes
+  /quizzes:
+    get:
+      tags: [Quiz]
+      summary: Get all quizzes
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: List of quizzes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Quiz'
+    post:
+      tags: [Quiz]
+      summary: Create new quiz
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Quiz'
+      responses:
+        201:
+          description: Quiz created successfully
+
+  /quizzes/{quizId}/submit:
+    post:
+      tags: [Quiz]
+      summary: Submit quiz answers
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: quizId
+          required: true
+          schema:
+            type: string
       requestBody:
         required: true
         content:
@@ -119,14 +330,246 @@ paths:
             schema:
               type: object
               properties:
+                answers:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      questionId:
+                        type: string
+                      selectedOption:
+                        type: integer
+      responses:
+        200:
+          description: Quiz submitted successfully
+
+  # Story Routes
+  /stories:
+    get:
+      tags: [Stories]
+      summary: Get all stories
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: List of stories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Story'
+    post:
+      tags: [Stories]
+      summary: Create new story
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                media:
+                  type: string
+                  format: binary
                 type:
                   type: string
-                  enum: ["like", "love", "haha", "wow", "sad", "angry"]
-                  description: "Loại cảm xúc"
+                  enum: [image, video]
       responses:
-        "200":
-          description: "Cảm xúc đã được cập nhật"
-        "400":
-          description: "Dữ liệu không hợp lệ"
-        "404":
-          description: "Không tìm thấy bài viết"
+        201:
+          description: Story created successfully
+
+  /stories/{storyId}:
+    delete:
+      tags: [Stories]
+      summary: Delete story
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: storyId
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Story deleted successfully
+        404:
+          description: Story not found
+
+components:
+  schemas:
+    User:
+      type: object
+      required:
+        - id
+        - username
+        - email
+        - password
+        - gender
+        - dateOfBirth
+        - profilePicture
+        - coverPicture
+        - followers
+        - followings
+        - status
+        - followerCount
+        - followingCount
+        - bio
+        - role
+      properties:
+        id:
+          type: string
+          description: Unique identifier of the user (MongoDB ObjectId)
+          example: "67c4fdc08014cf4f8bb70cd4"
+        username:
+          type: string
+          description: Name of the user
+          example: "Yoo Jae Yi"
+        email:
+          type: string
+          format: email
+          description: User's email address
+          example: "vonhatphuong.2k4@gmail.com"
+        password:
+          type: string
+          format: password
+          description: Hashed password of the user
+          example: "$2b$10$ZZ7pDkU8PPlnM2R2r5ajaeVkOGrRImTuN4CJXkYSeF.xz1eKddUb2"
+        gender:
+          type: string
+          enum: [Nam, Nữ, Khác]
+          description: Gender of the user
+          example: "Nữ"
+        dateOfBirth:
+          type: string
+          format: date-time
+          description: User's date of birth (ISO 8601)
+          example: "2004-03-12T00:00:00.000+00:00"
+        profilePicture:
+          type: string
+          format: uri
+          description: URL to the user's profile picture
+          example: "https://res.cloudinary.com/dfts9mh62/image/upload/v1741707564/m9buk8eq..."
+        coverPicture:
+          type: string
+          format: uri
+          description: URL to the user's cover picture
+          example: "https://res.cloudinary.com/dfts9mh62/image/upload/v1741707540/owbtbg79..."
+        followers:
+          type: array
+          description: List of user IDs who follow this user
+          items:
+            type: string
+            example: "67d058b691dcd1f4b718b662"
+        followings:
+          type: array
+          description: List of user IDs whom this user follows
+          items:
+            type: string
+            example: "67d058b691dcd1f4b718b662"
+        status:
+          type: string
+          enum: [active, inactive, banned]
+          description: Account status
+          example: "active"
+        followerCount:
+          type: integer
+          description: Number of followers
+          example: 3
+        followingCount:
+          type: integer
+          description: Number of users this user is following
+          example: 7
+        bio:
+          type: string
+          description: ID of the user's biography
+          example: "67d058b691dcd1f4b718b662"
+        role:
+          type: string
+          enum: [user, admin, moderator]
+          description: User's role in the system
+          example: "user"
+
+    Post:
+      type: object
+      properties:
+        id:
+          type: string
+        content:
+          type: string
+        images:
+          type: array
+          items:
+            type: string
+        author:
+          $ref: '#/components/schemas/User'
+        likes:
+          type: number
+        comments:
+          type: number
+        createdAt:
+          type: string
+          format: date-time
+
+    Quiz:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        questions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Question'
+        author:
+          $ref: '#/components/schemas/User'
+        createdAt:
+          type: string
+          format: date-time
+
+    Question:
+      type: object
+      properties:
+        id:
+          type: string
+        content:
+          type: string
+        options:
+          type: array
+          items:
+            type: string
+        correctAnswer:
+          type: integer
+
+    Story:
+      type: object
+      properties:
+        id:
+          type: string
+        mediaUrl:
+          type: string
+        type:
+          type: string
+          enum: [image, video]
+        author:
+          $ref: '#/components/schemas/User'
+        viewCount:
+          type: number
+        createdAt:
+          type: string
+          format: date-time
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+  - BearerAuth: []
