@@ -43,17 +43,17 @@ const SearchBar = ({ onSearch, initialQuery = "", initialStatus = "" }) => {
     return (
         <div className="flex flex-col space-y-4">
             {/* Ô tìm kiếm */}
-            <div className="flex items-center gap-x-5 mb-6">
+            <div className="flex items-center gap-x-5 mb-6 ml-1">
                 <input
                     type="text"
                     value={query}
                     onChange={handleChange}
                     placeholder="Tìm kiếm..."
-                    className="border px-4 py-2 bg-white rounded-md w-1/2 focus:outline-none focus:ring-2 focus:ring-blue-400 border-gray-300"
+                    className="border px-4 py-2 bg-white rounded-md w-1/2 focus:outline-none focus:ring-2 focus:ring-blue-400 border-gray-300 italic"
                     onKeyDown={(e) => e.key === "Enter" && handleSearch()}
                 />
-                <Button 
-                    className="bg-[#086280] text-white hover:bg-[#044053] h-10 w-21 rounded-full cursor-pointer"
+                <Button
+                    className="w-24 h-10 cursor-pointer ml-2 px-6 py-2 bg-[#086280] text-white rounded-lg hover:bg-gray-700 transition duration-200"
                     onClick={handleSearch}
                 >
                     <Search size={20} />

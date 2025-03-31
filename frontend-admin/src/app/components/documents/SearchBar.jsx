@@ -4,15 +4,15 @@ import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
 import { useEffect, useState } from "react";
 
-const SearchBar = ({ 
-    onSearch, 
-    initialQuery = "", 
-    levels = [], 
-    subjects = [], 
-    selectedLevelId, 
-    setSelectedLevelId, 
-    selectedSubjectId, 
-    setSelectedSubjectId 
+const SearchBar = ({
+    onSearch,
+    initialQuery = "",
+    levels = [],
+    subjects = [],
+    selectedLevelId,
+    setSelectedLevelId,
+    selectedSubjectId,
+    setSelectedSubjectId
 }) => {
     const [query, setQuery] = useState(initialQuery);
 
@@ -41,16 +41,17 @@ const SearchBar = ({
     return (
         <div className="flex flex-col space-y-4">
             {/* Ô tìm kiếm */}
-            <div className="flex items-center gap-x-5 mb-6">
+            <div className="flex items-center gap-x-5 mb-6 ml-1">
                 <input
                     type="text"
                     value={query}
                     onChange={handleChange}
                     placeholder="Tìm kiếm..."
-                    className="border px-4 py-2 bg-white rounded-md w-1/2 focus:outline-none focus:ring-2 focus:ring-blue-400 border-gray-300"
+                    className="border px-4 py-2 bg-white rounded-md w-1/2 focus:outline-none italic focus:ring-2 focus:ring-blue-400 border-gray-300"
                     onKeyDown={(e) => e.key === "Enter" && handleSearch()}
                 />
-                <Button className="bg-[#086280] text-white hover:bg-[#044053] h-10 w-21 rounded-full cursor-pointer" onClick={handleSearch}>
+                <Button className="w-24 h-10 cursor-pointer ml-2 px-6 py-2 bg-[#086280] text-white rounded-lg hover:bg-gray-700 transition duration-200"
+                    onClick={handleSearch}>
                     <Search size={20} />
                     <span className="text-[16px]">Tìm</span>
                 </Button>
@@ -60,7 +61,7 @@ const SearchBar = ({
             <div className="flex space-x-6">
                 <div className="flex flex-col">
                     <label className="font-semibold mb-2">Cấp học</label>
-                    <select 
+                    <select
                         className="border py-2 px-4 w-full bg-white rounded-md border-gray-300 focus:outline-none focus:ring-1 focus:ring-gray-400"
                         value={selectedLevelId || ""}
                         onChange={(e) => {
@@ -75,7 +76,7 @@ const SearchBar = ({
                             - Chọn cấp học -
                         </option>
                         {levels.map((level) => (
-                            <option 
+                            <option
                                 key={level._id}
                                 value={level._id}
                             >

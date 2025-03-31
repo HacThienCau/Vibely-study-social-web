@@ -170,14 +170,14 @@ const UsersPage = () => {
                   <input
                     type="text"
                     placeholder="Tìm kiếm..."
-                    className="w-full p-2 pl-4 pr-10 border border-gray-300 rounded-lg focus:outline-none"
+                    className="w-full border px-4 py-2 bg-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 border-gray-300 italic"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                   />
                 </div>
                 <button
                   type="submit"
-                  className="ml-2 px-6 py-2 bg-[#086280] text-white rounded-lg hover:bg-blue-700 transition duration-200"
+                  className="w-24 h-10 cursor-pointer ml-2 px-6 py-2 bg-[#086280] text-white rounded-lg hover:bg-gray-700 transition duration-200"
                 >
                   <div className="flex items-center">
                     <FiSearch className="mr-1" />
@@ -212,11 +212,10 @@ const UsersPage = () => {
                   {usersList.map((user) => (
                     <tr
                       key={user._id}
-                      className={`hover:bg-gray-50 cursor-pointer ${
-                        selectedUser && selectedUser._id === user._id
-                          ? "bg-blue-50"
-                          : ""
-                      }`}
+                      className={`hover:bg-gray-50 cursor-pointer ${selectedUser && selectedUser._id === user._id
+                        ? "bg-blue-50"
+                        : ""
+                        }`}
                       onClick={() => handleUserClick(user)}
                     >
                       <td className="px-4 py-3 text-gray-800">{user._id}</td>
@@ -243,7 +242,7 @@ const UsersPage = () => {
                                     .map((name) => name[0])
                                     .join("")}
                                 </AvatarFallback>
-                                
+
                               )}
                             </Avatar>
                           </div>

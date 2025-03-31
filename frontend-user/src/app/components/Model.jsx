@@ -11,8 +11,8 @@ export default function Model() {
     const { actions } = useAnimations(animations, group);
     const { camera, gl } = useThree();
 
-    const [scale, setScale] = useState(1.5);
-    const [position, setPosition] = useState([0, 0, 0]);
+    const [scale, setScale] = useState(1.7);
+    const [position, setPosition] = useState([0, -1, 0]);
 
     useEffect(() => {
         if (actions && animations.length > 0) {
