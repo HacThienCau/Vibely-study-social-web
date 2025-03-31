@@ -3,12 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { createOrUpdateUserBio } from "@/service/user.service";
 import { usePostStore } from "@/store/usePostStore";
 import { motion } from "framer-motion";
-import {
-  Briefcase,
-  GraduationCap,
-  Home,
-  MapPin
-} from "lucide-react";
+import { Briefcase, GraduationCap, Home, MapPin } from "lucide-react";
 import { useEffect, useState } from "react";
 import { MutualFriends } from "./profileContent/MutualFriends";
 import { PostsContent } from "./profileContent/PostsContent";
@@ -37,17 +32,16 @@ export const ProfileDetails = ({
         alert("Tiểu sử không được để trống!");
         return;
       }
-  
+
       // Gửi API cập nhật
       const updatedBio = await createOrUpdateUserBio(id, { bioText: tempBio });
 
-  
       // Cập nhật dữ liệu mới vào state
       setProfileData((prev) => ({
         ...prev,
         bio: { ...prev.bio, bioText: tempBio }, // Cập nhật motto mới
       }));
-  
+
       // Đóng modal chỉnh sửa
       setIsEditBioModal(false);
     } catch (error) {
@@ -184,7 +178,7 @@ export const ProfileDetails = ({
                   </p>
                   {isOwner && (
                     <Button
-                      className="w-full bg-[#A6A7AA] text-white mb-4"
+                      className="w-full bg-[#086280] text-white mb-4"
                       onClick={() => setIsEditBioModal(true)}
                     >
                       Chỉnh sửa tiểu sử
@@ -193,45 +187,50 @@ export const ProfileDetails = ({
                 </>
               )}
               <div className="space-y-2 mb-4 dark:text-gray-300">
-                <div className="flex items-center">
-                  <GraduationCap className="w-5 h-5 mr-2 text-[#086280]" />
-                  <p>
-                    Đã học tại{" "}
-                    <span className="font-semibold">
-                      {profileData?.bio?.education}
-                    </span>{" "}
-                  </p>
-                </div>
-
-                <div className="flex items-center">
-                  <Briefcase className="w-5 h-5 mr-2 text-[#086280]" />
-                  <p>
-                    Làm việc tại{" "}
-                    <span className="font-semibold">
-                      {profileData?.bio?.workplace}
-                    </span>
-                  </p>
-                </div>
-
-                <div className="flex items-center">
-                  <Home className="w-5 h-5 mr-2 text-[#086280]" />
-                  <p>
-                    Sống tại{" "}
-                    <span className="font-semibold">
-                      {profileData?.bio?.liveIn}
-                    </span>{" "}
-                  </p>
-                </div>
-
-                <div className="flex items-center">
-                  <MapPin className="w-5 h-5 mr-2 text-[#086280]" />
-                  <p>
-                    Đến từ{" "}
-                    <span className="font-semibold">
-                      {profileData?.bio?.hometown}
-                    </span>{" "}
-                  </p>
-                </div>
+                {profileData?.bio?.education && (
+                  <div className="flex items-center">
+                    <GraduationCap className="w-5 h-5 mr-2 text-[#086280]" />
+                    <p>
+                      Đã học tại{" "}
+                      <span className="font-semibold">
+                        {profileData?.bio?.education}
+                      </span>
+                    </p>
+                  </div>
+                )}
+                {profileData?.bio?.workplace && (
+                  <div className="flex items-center">
+                    <Briefcase className="w-5 h-5 mr-2 text-[#086280]" />
+                    <p>
+                      Làm việc tại{" "}
+                      <span className="font-semibold">
+                        {profileData?.bio?.workplace}
+                      </span>
+                    </p>
+                  </div>
+                )}
+                {profileData?.bio?.liveIn && (
+                  <div className="flex items-center">
+                    <Home className="w-5 h-5 mr-2 text-[#086280]" />
+                    <p>
+                      Sống tại{" "}
+                      <span className="font-semibold">
+                        {profileData?.bio?.liveIn}
+                      </span>
+                    </p>
+                  </div>
+                )}
+                {profileData?.bio?.hometown && (
+                  <div className="flex items-center">
+                    <MapPin className="w-5 h-5 mr-2 text-[#086280]" />
+                    <p>
+                      Đến từ{" "}
+                      <span className="font-semibold">
+                        {profileData?.bio?.hometown}
+                      </span>
+                    </p>
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>
@@ -273,7 +272,6 @@ export const ProfileDetails = ({
               <h2 className="text-xl font-semibold mb-4 dark:text-gray-300">
                 Video
               </h2>
-              
             </div>
             {/* Grid hiển thị video */}
             {/* <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
@@ -291,26 +289,26 @@ export const ProfileDetails = ({
                 </div>
               ))}
             </div> */}
-             {userPosts?.some(
-          (post) => post?.mediaType === "video/mp4" && post?.mediaUrl
-        ) ? (
-          <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-            {userPosts
-              ?.filter(
-                (post) => post?.mediaType === "video/mp4" && post?.mediaUrl
-              )
-              .map((post) => (
-                <img
-                  key={post?._id}
-                  src={post?.mediaUrl}
-                  alt="user_video"
-                  className="w-[200px] h-[150px] object-cover rounded-lg"
-                />
-              ))}
-          </div>
-        ) : (
-          <p className="text-center text-gray-500">Chưa có video</p>
-        )}
+            {userPosts?.some(
+              (post) => post?.mediaType === "video/mp4" && post?.mediaUrl
+            ) ? (
+              <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                {userPosts
+                  ?.filter(
+                    (post) => post?.mediaType === "video/mp4" && post?.mediaUrl
+                  )
+                  .map((post) => (
+                    <img
+                      key={post?._id}
+                      src={post?.mediaUrl}
+                      alt="user_video"
+                      className="w-[200px] h-[150px] object-cover rounded-lg"
+                    />
+                  ))}
+              </div>
+            ) : (
+              <p className="text-center text-gray-500">Chưa có video</p>
+            )}
           </CardContent>
         </Card>
       </motion.div>

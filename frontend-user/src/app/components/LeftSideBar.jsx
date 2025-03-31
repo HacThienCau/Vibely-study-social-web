@@ -22,7 +22,7 @@ const LeftSideBar = () => {
   return (
     <aside
 
-      className={`fixed top-14 left-0 h-full w-64  transform transition-transform duration-200 ease-in-out md:translate-x-0 flex flex-col z-50 md:z-0 ${isSidebarOpen
+      className={`fixed top-14 left-0 h-full w-64 transform transition-transform duration-200 ease-in-out md:translate-x-0 flex flex-col z-50 md:z-0 ${isSidebarOpen
           ? "translate-x-0 shadow-lg  "
           : " -translate-x-full"
 
@@ -30,7 +30,7 @@ const LeftSideBar = () => {
     >
       <div className="flex flex-col h-full overflow-y-auto bg-[#f0fcff] p-4 ">
         {/* navigation menu yaha pr */}
-        <nav className="space-y-5 flex-grow">
+        <nav className="space-y-8 flex-grow">
           <div className="flex items-center space-x-2 cursor-pointer pb-2 " onClick={() => handleNavigation(`/user-profile/${user?._id}`)}>
             <Avatar className="h-10 w-10 ml-2">
               {user?.profilePicture ? (
@@ -96,14 +96,14 @@ const LeftSideBar = () => {
             <img src="images/pomodoro_sidebar.png" alt="pomodoro" className="mr-0" />
             Chế độ Pomodoro
           </Button>
-          <Button
+          {/* <Button
             variant="ghost"
             className="full justify-start"
             onClick={() => handleNavigation("/forgot-password")}
           >
             <img src="images/bookshop_sidebar.png" alt="bookshop" className="mr-0" />
             Mua sách
-          </Button>
+          </Button> */}
           <Button
             variant="ghost"
             className="full justify-start"
