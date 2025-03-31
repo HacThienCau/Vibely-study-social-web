@@ -273,9 +273,7 @@ export const ProfileDetails = ({
               <h2 className="text-xl font-semibold mb-4 dark:text-gray-300">
                 Video
               </h2>
-              <h3 className="text-[#086280] font-semibold cursor-pointer">
-                Thêm video
-              </h3>
+              
             </div>
             {/* Grid hiển thị video */}
             {/* <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
@@ -293,20 +291,26 @@ export const ProfileDetails = ({
                 </div>
               ))}
             </div> */}
-            <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-              {userPosts
-                ?.filter(
-                  (post) => post?.mediaType === "video/mp4" && post?.mediaUrl
-                )
-                .map((post) => (
-                  <img
-                    key={post?._id}
-                    src={post?.mediaUrl}
-                    alt="user_all_photos"
-                    className="w-[200px] h-[150px] object-cover rounded-lg"
-                  />
-                ))}
-            </div>
+             {userPosts?.some(
+          (post) => post?.mediaType === "video/mp4" && post?.mediaUrl
+        ) ? (
+          <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            {userPosts
+              ?.filter(
+                (post) => post?.mediaType === "video/mp4" && post?.mediaUrl
+              )
+              .map((post) => (
+                <img
+                  key={post?._id}
+                  src={post?.mediaUrl}
+                  alt="user_video"
+                  className="w-[200px] h-[150px] object-cover rounded-lg"
+                />
+              ))}
+          </div>
+        ) : (
+          <p className="text-center text-gray-500">Chưa có video</p>
+        )}
           </CardContent>
         </Card>
       </motion.div>

@@ -23,7 +23,7 @@ const Homepage = () => {
 
   return (
     <div className="flex flex-col min-h-screen text-foreground">
-      <main className="pt-16 flex flex-1">
+      <main className="flex flex-1">
         <LeftSideBar />
         <div className="flex-1 px-4 py-6 md:ml-64 lg:mr-64 lg:max-w-2xl xl:max-w-3xl mxx-auto">
           <div className="lg:ml-2 xl:ml-28">

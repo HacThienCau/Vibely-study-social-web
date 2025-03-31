@@ -1,92 +1,131 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from '@/components/ui/button';
-import { MessageCircle, MoreHorizontal, Share2, ThumbsUp } from 'lucide-react';
-import { Separator } from '@/components/ui/separator';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import PostComments from '@/app/posts/PostComments';
-import { PiShareFatBold } from 'react-icons/pi';
-import { formatedDate } from '@/lib/utils';
-import { FaFacebook, FaLinkedin, FaXTwitter } from 'react-icons/fa6';
-import { AiOutlineCopy } from 'react-icons/ai';
-import { QRCodeCanvas } from 'qrcode.react';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import { Separator } from '@/components/ui/separator'
+import { AnimatePresence, motion } from 'framer-motion'
+import { MessageCircle, MoreHorizontal, ThumbsUp} from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
+import { PiShareFatBold } from "react-icons/pi"
+import { FaXTwitter } from "react-icons/fa6";
+import { FaFacebook, FaLinkedin } from "react-icons/fa";
+import { AiOutlineCopy, AiOutlineDelete } from "react-icons/ai";
+import { QRCodeCanvas } from "qrcode.react";
+
+import { formatedDate } from '@/lib/utils'
 import Image from 'next/image'
-import userStore from '@/store/userStore';
+import { useRouter } from 'next/navigation'
+import userStore from '@/store/userStore'
+import PostComments from '@/app/posts/PostComments'
 
-export const PostsContent = ({post, onReact, onComment, onShare}) => {
-  const [showComments,setShowComments] = useState(false)
-  const [isShareDialogOpen,setIsShareDialogOpen] = useState(false)
+export const PostsContent = ({post, onReact, onComment, onShare, onDelete}) => {
+  const [isShareDialogOpen, setIsShareDialogOpen] = useState(false)
+  const [showComments, setShowComments] = useState(false)
+  const [showReactionChooser, setShowReactionChooser] = useState(false)
+  const [isChoosing, setIsChoosing] = useState(false)
+  const totalReact = post?.reactionStats?.like+post?.reactionStats?.love+post?.reactionStats?.haha+post?.reactionStats?.wow+post?.reactionStats?.sad+post?.reactionStats?.angry
+  const commentInputRef = useRef(null)
+const router= useRouter()
 
+const {user} = userStore()
+const [reaction,setReaction] = useState(null) 
 
-    const [showReactionChooser, setShowReactionChooser] = useState(false)
-    const [isChoosing, setIsChoosing] = useState(false)
-    const totalReact = post?.reactionStats?.like+post?.reactionStats?.love+post?.reactionStats?.haha+post?.reactionStats?.wow+post?.reactionStats?.sad+post?.reactionStats?.angry
-    const commentInputRef = useRef(null)
-    const {user} =userStore()
-    const [reaction,setReaction] = useState(null) 
-
-  
-    const handleCommentClick = () =>{
-      setShowComments(!showComments)
-      setTimeout(()=>{
-        commentInputRef?.current?.focus();
-      },0)
+const [dropdownOpen, setDropdownOpen] = useState(false);
+const [popupOpen, setPopupOpen] = useState(false);
+const dropdownRef = useRef(null);
+const popupRef = useRef(null);
+// Đóng dropdown khi click ra ngoài
+useEffect(() => {
+  function handleClickOutside(event) {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      setDropdownOpen(false);
     }
-    const userPostPlaceholder = post?.user?.username?.split(" ").map((name) => name[0]).join(""); // tên người đăng bài viết tắt
-    const [topReactions, setTopReactions] = useState([]);
-    useEffect(() => {
-      setReaction(post?.reactions?.find(react=>react?.user == user?._id)?post?.reactions?.find(react=>react?.user == user?._id).type:null)
-      //đảm bảo object hợp lệ
-        if (!post?.reactionStats || typeof post?.reactionStats !== "object") {
-        setTopReactions([]);
-        return;
-    }
-      // cập nhật danh sách top reactions
-      const filteredReactions = Object.entries(post?.reactionStats)
-          .filter(([key, value]) => value > 0) // loại bỏ reaction có số lượng = 0
-          .sort((a, b) => b[1] - a[1]) // sắp xếp giảm dần theo số lượng
-          .slice(0, 3); // lấy 3 reaction nhiều nhất
-      
-      setTopReactions(filteredReactions);
-  }, [post?.reactionStats]); // Chạy lại khi reactionStats thay đổi
+  }
+  document.addEventListener("mousedown", handleClickOutside);
+  return () => document.removeEventListener("mousedown", handleClickOutside);
+}, []);
 
-  const handleReaction = (reaction) => {
-    console.log("(PostCard.jsx/handleReaction) Reaction in post that has id", post?._id,":", reaction)
-    setIsChoosing(false)  //đã chọn được 'cảm xúc'
-    onReact(reaction);
-    setShowReactionChooser(false); // Ẩn thanh reaction sau khi chọn
-  };
+// Đóng popup khi click ra ngoài
+useEffect(() => {
+  function handleClickOutside(event) {
+    if (popupRef.current && !popupRef.current.contains(event.target)) {
+      setPopupOpen(false);
+    }
+  }
+  document.addEventListener("mousedown", handleClickOutside);
+  return () => document.removeEventListener("mousedown", handleClickOutside);
+}, []);
+
+const handleUserProfile = ()  => {
+  router.push(`/user-profile/${post?.user?._id}`)
+}
+
+const handleSinglePost = ()  => {
+  router.push(`/posts/${post?._id}`)
+}
+
+  const handleCommentClick = () =>{
+    setShowComments(!showComments)
+    setTimeout(()=>{
+      commentInputRef?.current?.focus();
+    },0)
+  }
+  const userPostPlaceholder = post?.user?.username?.split(" ").map((name) => name[0]).join(""); // tên người đăng bài viết tắt
+  const [topReactions, setTopReactions] = useState([]);
+  useEffect(() => {
+    setReaction(post?.reactions?.find(react=>react?.user == user?._id)?post?.reactions?.find(react=>react?.user == user?._id).type:null)
+    //đảm bảo object hợp lệ
+      if (!post?.reactionStats || typeof post?.reactionStats !== "object") {
+      setTopReactions([]);
+      return;
+  }
+    // cập nhật danh sách top reactions
+    const filteredReactions = Object.entries(post?.reactionStats)
+        .filter(([key, value]) => value > 0) // loại bỏ reaction có số lượng = 0
+        .sort((a, b) => b[1] - a[1]) // sắp xếp giảm dần theo số lượng
+        .slice(0, 3); // lấy 3 reaction nhiều nhất
+    
+    setTopReactions(filteredReactions);
+}, [post?.reactionStats]); // Chạy lại khi reactionStats thay đổi
 
   const generateSharedLink = () => {
-    return `http://localhost:3000/${post?.id}`;
+    return `http://localhost:3000/posts/${post?._id}`; //sau khi deploy thì đổi lại + tạo trang bài viết đi!!!!
   };
   const handleShare = (platform) => {
     const url = generateSharedLink();
     let shareUrl;
     switch (platform) {
       case "facebook":
-        shareUrl = `https://www.facebook.com/sharer/sharer.php?u=}`;
+        shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
         break;
       case "x":
-        shareUrl = `https://twitter.com/intent/tweet?url=}`;
+        shareUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}`;
         break;
       case "linkedin":
-        shareUrl = `https://www.linkedin.com/shareArticle?mini=true&url=}`;
+        shareUrl = `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(url)}`;
         break;
       case "copy":
         navigator.clipboard.writeText(url);
         setIsShareDialogOpen(false);
+        onShare()
         return;
       default:
         return;
     }
     window.open(shareUrl, "_blank");
+    onShare()
     setIsShareDialogOpen(false);
   };
+  const handleReaction = (reaction) => {
+    console.log("(PostCard.jsx/handleReaction) Reaction in post that has id", post?._id,":", reaction)
+    setIsChoosing(false)  //đã chọn được 'cảm xúc'
+    onReact(reaction);
+    setShowReactionChooser(false); // Ẩn thanh reaction sau khi chọn
+  };
+  const handleDeletePost = () =>{
+    onDelete();
+  }
 
-  
   return (
     <motion.div
       key={post?._id}
@@ -94,9 +133,9 @@ export const PostsContent = ({post, onReact, onComment, onShare}) => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      {/* <Card className="bg-white shadow-md rounded-lg border border-gray-200">
+      <Card className="bg-white shadow-md rounded-lg border border-gray-200">
         <CardContent className="p-4">
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-4 relative">
             <div className="flex items-center space-x-3 cursor-pointer">
               <Avatar>
               {post?.user?.profilePicture ? (
@@ -106,152 +145,59 @@ export const PostsContent = ({post, onReact, onComment, onShare}) => {
               )}
               </Avatar>
               <div>
-                <p className="font-semibold">
-                {post?.user?.username}
-                </p>
-                <p className="font-sm text-gray-500 text-xs">
-                  {formatedDate(post?.createdAt)}
-                </p>
-              </div>
-            </div>
-            <Button variant="ghost" className="hover:bg-gray-100">
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </div>
-          <p className="mb-4">{post?.content}</p>
-          {post?.mediaUrl && post.mediaType === "image" && (
-            <img
-              src={post?.mediaUrl}
-              alt="post_image"
-              className="w-full h-auto rounded-lg mb-2"
-            />
-          )}
-          {post?.mediaUrl && post.mediaType === "video" && (
-            <video controls className="w-full h-[500px] rounded-lg mb-3">
-              <source src={post?.mediaUrl} type="video/mp4" />
-              Trình duyệt của bạn không hỗ trợ thẻ video.
-            </video>
-          )}
-          <div className="flex justify-between items-center mb-2">
-            <span className="text-[15px] text-gray-500 hover:underline border-gray-400 cursor-pointer">
-              2 lượt thích
-            </span>
-            <div className="flex gap-3">
-              <span
-                className="text-[15px] text-gray-500 hover:underline border-gray-400 cursor-pointer"
-                onClick={() => setShowComments(!showComments)}
-              >
-                3 bình luận
-              </span>
-              <span className="text-[15px] text-gray-500 hover:underline border-gray-400 cursor-pointer">
-                4 lượt chia sẻ
-              </span>
-            </div>
-          </div>
-          <Separator className="mb-1 border-b border-gray-300"/>
-          <div className="flex justify-between mb-1">
-            <Button
-              variant="ghost"
-              className={`flex-1 hover:bg-gray-100 text-gray-500 hover:text-gray-500 text-[15px] h-8`}
-            >
-              <ThumbsUp style={{ width: "20px", height: "20px" }} /> Thích
-            </Button>
-            <Button
-              variant="ghost"
-              className={`flex-1 hover:bg-gray-100 text-gray-500 hover:text-gray-500 text-[15px] h-8`}
-            >
-              <MessageCircle style={{ width: "20px", height: "20px" }} /> Bình luận
-            </Button>
-            <Dialog
-              open={isShareDialogOpen}
-              onOpenChange={setIsShareDialogOpen}
-            >
-              <DialogTrigger asChild>
-                <Button
-                  variant="ghost"
-                  className="flex-1 hover:bg-gray-100 text-gray-500 hover:text-gray-500 text-[15px] h-8"
-                >
-                  <PiShareFatBold style={{ width: "20px", height: "20px" }} /> Chia sẻ
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Chia sẻ bài viết này</DialogTitle>
-                  <DialogDescription>
-                    Chọn cách bạn muốn chia sẻ bài viết này
-                  </DialogDescription>
-                </DialogHeader>
-                <div className="flex flex-col space-y-4 ">
-                  <Button
-                    className="bg-gray-300 hover:bg-gray-200"
-                    onClick={() => handleShare("facebook")}
-                  >
-                    Chia sẻ trên Facebook
-                  </Button>
-                  <Button 
-                    className="bg-gray-300 hover:bg-gray-200"
-                    onClick={() => handleShare("x")}
-                  >
-                    Chia sẻ trên X
-                  </Button>
-                  <Button 
-                    className="bg-gray-300 hover:bg-gray-200"
-                    onClick={() => handleShare("linkedin")}
-                  >
-                    Chia sẻ trên Linkedin
-                  </Button>
-                  <Button 
-                    className="bg-gray-300 hover:bg-gray-200"
-                    onClick={() => handleShare("copy")}
-                  >
-                    Sao chép liên kết
-                  </Button>
-                </div>
-              </DialogContent>
-            </Dialog>
-          </div>
-          <Separator className="border-b border-gray-300" />
-          <AnimatePresence>
-            {showComments && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={{ opacity: 0, height: 0 }}
-                transition={{ duration: 0.3 }}
-              >
-                <PostComments
-                  post={post}
-                />
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </CardContent>
-      </Card> */}
-
-<Card className="bg-white shadow-md rounded-lg border border-gray-200">
-        <CardContent className="p-4">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center space-x-3 cursor-pointer">
-              <Avatar>
-              {post?.user?.profilePicture ? (
-                <AvatarImage src={post?.user?.profilePicture} alt={post?.user?.username}/>
-                ):(
-                <AvatarFallback>{userPostPlaceholder}</AvatarFallback>
-              )}
-              </Avatar>
-              <div>
-                <p className="font-semibold">
+                <p className="font-semibold" onClick={handleUserProfile}>
                   {post?.user?.username} {/*tên người đăng bài*/}
                 </p>
-                <p className="font-sm text-gray-500 text-xs">
+                <p className="font-sm text-gray-500 text-xs" onClick={handleSinglePost}>
                   {formatedDate(post?.createdAt)} {/*thời gian đăng bài*/}
                 </p>
               </div>
             </div>
-            <Button variant="ghost" className="hover:bg-gray-100">
+            <Button onClick={() => setDropdownOpen(!dropdownOpen)} variant="ghost" 
+            className={`hover:bg-gray-100 ${post?.user?._id===user?._id?"flex":"hidden"}`}  //chủ bài viết mới có option này
+            >
               <MoreHorizontal className="h-4 w-4" />
             </Button>
+            {dropdownOpen && (
+            <div className="absolute top-10 right-4 w-40 bg-white border border-gray-300 rounded-md shadow-lg" ref={dropdownRef}>
+              <button className="block w-full px-4 py-2 text-left text-red-600 hover:bg-gray-200 flex items-center gap-2"
+              onClick={()=>{
+                setDropdownOpen(false)
+                setPopupOpen(true)
+              }}
+              >
+                <AiOutlineDelete style={{ width: "20px", height: "20px" }}/>
+                Xóa bài viết
+              </button>
+            </div>
+            )}
           </div>
+          
+          {popupOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-80 z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg" ref={popupRef}>
+            <h2 className="text-lg font-bold mb-4">Bạn có chắc chắn muốn xóa?</h2>
+            <p className="text-md mb-4">Hành động này không thể hoàn tác và toàn bộ nội dung của bài viết sẽ bị xóa bỏ.</p>
+            <div className="flex justify-end space-x-4">
+              <button
+                onClick={() => setPopupOpen(false)}
+                className="px-4 py-2 bg-gray-300 rounded-md hover:bg-gray-400"
+              >
+                Hủy
+              </button>
+              <button
+                onClick={() => {
+                  setPopupOpen(false);
+                  handleDeletePost();
+                }}
+                className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+              >
+                Xác nhận
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
           <p className="mb-4">{post?.content}</p>
           {post?.mediaUrl && post.mediaType === "image" && (
             <img

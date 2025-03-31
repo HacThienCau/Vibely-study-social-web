@@ -6,17 +6,15 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Header from "./components/Header";
 
-
 export default function AuthWrapper({ children }) {
     const { setUser, clearUser } = userStore();
-    const router = useRouter()
-    const pathname = usePathname()
-    const [loading, setLoading] = useState(true)
-    const [isAuthenticated, setIsAuthenticated] = useState(false)
+    const router = useRouter();
+    const pathname = usePathname();
+    const [loading, setLoading] = useState(true);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-
-    const isLoginPage = pathname === '/user-login'
-    const isForgotPasswordPage = pathname === '/forgot-password';
+    const publicPages = ["/user-login", "/forgot-password", "/reset-password"];
+    const isPublicPage = publicPages.includes(pathname);
 
     useEffect(() => {
         const checkAuth = async () => {
@@ -29,7 +27,7 @@ export default function AuthWrapper({ children }) {
                     await handleLogout();
                 }
             } catch (error) {
-                console.error('Đăng nhập thất bại', error);
+                console.error("Đăng nhập thất bại", error);
                 await handleLogout();
             } finally {
                 setLoading(false);
@@ -42,32 +40,28 @@ export default function AuthWrapper({ children }) {
             try {
                 await logout();
             } catch (error) {
-                console.log('Đăng xuất thất bại. Vui lòng thử lại sau', error);
+                console.log("Đăng xuất thất bại. Vui lòng thử lại sau", error);
             }
-            if (!isLoginPage && !isForgotPasswordPage) {
-                router.push('/user-login');
+            if (!isPublicPage) {
+                router.push("/user-login");
             }
         };
 
-        if (!isLoginPage && !isForgotPasswordPage) {
+        if (!isPublicPage) {
             checkAuth();
         } else {
             setLoading(false);
         }
-    }, [isLoginPage, isForgotPasswordPage, router, setUser, clearUser]);
+    }, [isPublicPage, router, setUser, clearUser]);
 
-    // if (loading) {
-    //     return <Loader />
-    // }
-
-    // if (!isAuthenticated && !isLoginPage) {
-    //     return <Loader />
-    // }
+    if (loading) {
+        return <Loader />;
+    }
 
     return (
         <>
-            {!isLoginPage && isAuthenticated && <Header />}
-            {(isAuthenticated || isLoginPage) && children}
+            {isAuthenticated && !isPublicPage && <Header />}
+            {children}
         </>
-    )
+    );
 }

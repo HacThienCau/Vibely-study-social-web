@@ -1,11 +1,10 @@
 "use client";
-import React, {useEffect, useState, useRef} from "react";
-import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import StoryCard from "./StoryCard";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import { usePostStore } from "@/store/usePostStore";
-import toast from "react-hot-toast";
+import { motion } from "framer-motion";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import StoryCard from "./StoryCard";
 
 
 const StorySection = () => {
@@ -48,7 +47,7 @@ const StorySection = () => {
       <div
         ref={containerRef}
         onScroll={handleScroll}
-        className='flex space-x-2 overflow-x-hidden py-4'
+        className='flex space-x-2 overflow-x-hidden py-4 md:py-0'
         style={{scrollbarWidth: "none", msOverflowStyle: "none"}}
       >
        <motion.div
@@ -73,9 +72,9 @@ const StorySection = () => {
         {/* left side scrollbutton  */}
         {scrollPosition > 0 && (
           <Button
-            variant="outline"
             size="icon"
-            className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white dark:bg-gray-800 roudned-full shadow-lg transition-opacity duration-300 ease-in-out"
+            className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white 
+            rounded-full shadow-lg transition-opacity duration-300 ease-in-out border border-[#000]/50 hover:bg-gray-200"
             onClick={() => scroll("left")}
           >
             <ChevronLeft className="h-4 w-4" />
@@ -86,9 +85,9 @@ const StorySection = () => {
 
         {scrollPosition < maxScroll && (
           <Button
-            variant="outline"
             size="icon"
-            className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white dark:bg-gray-800 roudned-full shadow-lg transition-opacity duration-300 ease-in-out"
+            className="absolute right-3 top-1/2 transform -translate-y-1/2 bg-white
+            rounded-full shadow-lg transition-opacity duration-300 ease-in-out border border-[#000]/50 hover:bg-gray-200"
             onClick={() => scroll("right")}
           >
             <ChevronRight className="h-4 w-4" />

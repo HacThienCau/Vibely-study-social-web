@@ -51,11 +51,11 @@ function Posts() {
     if (searchQuery) {
       const filterPost = postList.filter((post) =>
         post._id.toString() === searchQuery //tìm theo id
-    || post?.user?.username?.toLowerCase().includes(searchQuery.toLowerCase()) //tìm theo tên người đăng
-    || post?.content?.toLowerCase().includes(searchQuery.toLowerCase()) //tìm theo nội dung bài viết
-    ? post : null
+          || post?.user?.username?.toLowerCase().includes(searchQuery.toLowerCase()) //tìm theo tên người đăng
+          || post?.content?.toLowerCase().includes(searchQuery.toLowerCase()) //tìm theo nội dung bài viết
+          ? post : null
       );
-      if(filterPost.length<1) toast.error("Không tìm thấy kết quả")
+      if (filterPost.length < 1) toast.error("Không tìm thấy kết quả")
       setFilterPosts(filterPost);
     } else {
       setFilterPosts([]);
@@ -66,49 +66,49 @@ function Posts() {
   const handleModeChooser = (mode) => {
     setFilterMode(mode);
     if (filterPosts.length > 0) {
-        if (mode === "Mới nhất") {
-            filterPosts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-          } else if (mode === "Lượt react") {
-            filterPosts.sort((a, b) => {
-              const totalReactsA = Object.values(a.reactionStats).reduce(
-                (acc, val) => acc + val,
-                0
-              );
-              const totalReactsB = Object.values(b.reactionStats).reduce(
-                (acc, val) => acc + val,
-                0
-              );
-              return totalReactsB - totalReactsA;
-            });
-          } else if (mode === "Lượt bình luận") {
-            filterPosts.sort((a, b) => b.commentCount - a.commentCount);
-          } else {
-            filterPosts.sort((a, b) => b.shareCount - a.shareCount);
-          }
+      if (mode === "Mới nhất") {
+        filterPosts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      } else if (mode === "Lượt react") {
+        filterPosts.sort((a, b) => {
+          const totalReactsA = Object.values(a.reactionStats).reduce(
+            (acc, val) => acc + val,
+            0
+          );
+          const totalReactsB = Object.values(b.reactionStats).reduce(
+            (acc, val) => acc + val,
+            0
+          );
+          return totalReactsB - totalReactsA;
+        });
+      } else if (mode === "Lượt bình luận") {
+        filterPosts.sort((a, b) => b.commentCount - a.commentCount);
+      } else {
+        filterPosts.sort((a, b) => b.shareCount - a.shareCount);
+      }
     } else {
-        if (mode === "Mới nhất") {
-            postList.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-          } else if (mode === "Lượt react") {
-            postList.sort((a, b) => {
-              const totalReactsA = Object.values(a.reactionStats).reduce(
-                (acc, val) => acc + val,
-                0
-              );
-              const totalReactsB = Object.values(b.reactionStats).reduce(
-                (acc, val) => acc + val,
-                0
-              );
-              return totalReactsB - totalReactsA;
-            });
-          } else if (mode === "Lượt bình luận") {
-            postList.sort((a, b) => b.commentCount - a.commentCount);
-          } else {
-            postList.sort((a, b) => b.shareCount - a.shareCount);
-          }
+      if (mode === "Mới nhất") {
+        postList.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      } else if (mode === "Lượt react") {
+        postList.sort((a, b) => {
+          const totalReactsA = Object.values(a.reactionStats).reduce(
+            (acc, val) => acc + val,
+            0
+          );
+          const totalReactsB = Object.values(b.reactionStats).reduce(
+            (acc, val) => acc + val,
+            0
+          );
+          return totalReactsB - totalReactsA;
+        });
+      } else if (mode === "Lượt bình luận") {
+        postList.sort((a, b) => b.commentCount - a.commentCount);
+      } else {
+        postList.sort((a, b) => b.shareCount - a.shareCount);
+      }
     }
   };
 
-  const handleDelete = async(postId) =>{
+  const handleDelete = async (postId) => {
     await deletePost(postId)
     await fetchPosts()
     toast.success("Xóa bài viết thành công.")
@@ -145,7 +145,7 @@ function Posts() {
           <p className="mb-4">{post?.content}</p>
           {!post?.content && (
             <div className="h-10 italic text-gray-800">
-                Không có tiêu đề
+              Không có tiêu đề
             </div>
           )}
           {post?.mediaUrl && post.mediaType === "image" && (
@@ -166,7 +166,7 @@ function Posts() {
           )}
           {!post?.mediaUrl && (
             <div className="h-[250px] italic text-gray-800">
-                Không có file phương tiện
+              Không có file phương tiện
             </div>
           )}
         </div>
@@ -174,33 +174,33 @@ function Posts() {
         <div className="flex flex-col space-x-3 w-1/2 absolute right-0 mt-5 self-center">
           <div className="flex mb-3">
             <p className="font-['Roboto_Condensed'] text-lg md:text-xl">Số lượt bày tỏ cảm xúc: &nbsp;</p>
-            <p className="font-bold font-['Roboto_Condensed'] text-lg md:text-xl">{Object.values(post.reactionStats).reduce((acc, val) => acc + val,0)}</p>
+            <p className="font-bold font-['Roboto_Condensed'] text-lg md:text-xl">{Object.values(post.reactionStats).reduce((acc, val) => acc + val, 0)}</p>
           </div>
           <div className="flex items-center gap-10 mb-7">
-          <div className="flex items-center gap-2">
-            <Image src={"/like.png"} alt="like"  width={30} height={30}/> 
-            <p>{post?.reactionStats?.like}</p>
-          </div>
-          <div className="flex items-center gap-2">
-            <Image src={"/love.png"} alt="love"  width={30} height={30}/> 
-            <p>{post?.reactionStats?.love}</p>
-          </div>
-          <div className="flex items-center gap-2">
-            <Image src={"/haha.png"} alt="haha"  width={30} height={30}/> 
-            <p>{post?.reactionStats?.haha}</p>
-          </div>
-          <div className="flex items-center gap-2">
-            <Image src={"/wow.png"} alt="wow"  width={30} height={30}/> 
-            <p>{post?.reactionStats?.wow}</p>
-          </div>
-          <div className="flex items-center gap-2">
-            <Image src={"/sad.png"} alt="sad"  width={30} height={30}/> 
-            <p>{post?.reactionStats?.sad}</p>
-          </div>
-          <div className="flex items-center gap-2">
-            <Image src={"/angry.png"} alt="angry"  width={30} height={30}/> 
-            <p>{post?.reactionStats?.angry}</p>
-          </div>
+            <div className="flex items-center gap-2">
+              <Image src={"/like.png"} alt="like" width={30} height={30} />
+              <p>{post?.reactionStats?.like}</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <Image src={"/love.png"} alt="love" width={30} height={30} />
+              <p>{post?.reactionStats?.love}</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <Image src={"/haha.png"} alt="haha" width={30} height={30} />
+              <p>{post?.reactionStats?.haha}</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <Image src={"/wow.png"} alt="wow" width={30} height={30} />
+              <p>{post?.reactionStats?.wow}</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <Image src={"/sad.png"} alt="sad" width={30} height={30} />
+              <p>{post?.reactionStats?.sad}</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <Image src={"/angry.png"} alt="angry" width={30} height={30} />
+              <p>{post?.reactionStats?.angry}</p>
+            </div>
           </div>
           <div className="flex mb-7">
             <p className="font-['Roboto_Condensed'] text-lg md:text-xl">Số lượt bình luận: &nbsp;</p>
@@ -217,10 +217,10 @@ function Posts() {
                 handleDelete(post?._id)
               }}
             >
-                <MdDelete className="w-10 h-10"/>
-                Xóa bài viết
+              <MdDelete className="w-10 h-10" />
+              Xóa bài viết
             </Button>
-        </div>
+          </div>
         </div>
       </div>
     );
@@ -240,12 +240,14 @@ function Posts() {
             <Input
               type="text"
               placeholder="Tìm kiếm"
-              className="w-xl h-10 font-['Roboto_Condensed'] font-thin italic text-black text-2xl bg-white rounded-[10px]"
+              className="w-xl border px-4 py-2 bg-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 border-gray-300 italic"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
+
+
             <Button
-              className="w-24 h-10 cursor-pointer hover:bg-gray-700 text-white text-[20px] bg-[#07617f] font-['Roboto_Condensed'] font-bold rounded-[25px] overflow-hidden"
+              className="w-24 h-10 cursor-pointer ml-2 px-6 py-2 bg-[#086280] text-white rounded-lg hover:bg-gray-700 transition duration-200"
               onClick={() => {
                 handleSearch();
               }}
@@ -315,11 +317,11 @@ function Posts() {
         {postList &&
           (filterPosts.length > 0 //nếu đang search thì hiện danh sách lọc
             ? filterPosts.map((post) => {
-                return <PostCard key={post?._id} post={post} />;
-              })
+              return <PostCard key={post?._id} post={post} />;
+            })
             : postList.map((post) => {
-                return <PostCard key={post?._id} post={post} />;
-              }))}
+              return <PostCard key={post?._id} post={post} />;
+            }))}
       </div>
     </div>
   );

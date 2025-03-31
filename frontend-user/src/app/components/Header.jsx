@@ -233,14 +233,17 @@ const Header = () => {
         </div>
 
         {/* Thanh điều hướng */}
-        <nav className="hidden md:flex justify-around w-[40%] max-w-md">
+        <nav className="hidden md:flex justify-around w-[40%] max-w-md ml-[-100px] -translate-x-1/5 space-x-20">
           {navItems.map(({ icon, path }) => (
             <Link key={path} href={path} className="flex items-center">
               <img
                 src={icon}
                 alt="nav-icon"
-                className={`${pathname === path ? "" : "brightness-0 invert-[70%]"}
-                  w-6 h-6 filter brightness-50 contrast-200 transition-all duration-200 hover:invert-[40%] hover:sepia-[50%] hover:saturate-[300%] hover:hue-rotate-[160deg]`}
+                className={`transition-all duration-200 ${pathname === path
+                  ? ""
+                  : "brightness-0 invert-[70%] hover:invert-[40%] hover:sepia-[50%] hover:saturate-[300%] hover:hue-rotate-[160deg]"
+                  }`}
+
               />
             </Link>
           ))}
