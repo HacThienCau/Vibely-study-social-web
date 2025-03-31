@@ -1,4 +1,4 @@
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 const inputPassword = "Nhatphuong";
 const storedHash = "$2b$10$LW9fINNhed5BcAzz/4y7xe.rkDVOHfQBnodsKG89yHMcaJybvTiUu";
