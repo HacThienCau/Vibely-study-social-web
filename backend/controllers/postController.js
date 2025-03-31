@@ -378,5 +378,35 @@ const getSinglePost = async(req,res) =>{
         return response(res, 500, "Xóa phản hồi thất bại", error.message);
     }
 }
+const likeComment = async(req,res) =>{
+    const { postId } = req.params;
+    const userId = req.user.userId;
+    const { commentId } = req.body;
+    try {
+        const post = await Post.findById(postId);
+        if (!post) return response(res, 404, "Không tìm thấy bài viết");
 
-module.exports = { createPost, getAllPosts, getPostByUserId, reactPost, addCommentToPost, addReplyToPost, sharePost, createStory, getAllStories, reactStory, deletePost, deleteComment, deleteReply, getSinglePost };
+        const comment = post?.comments?.find(cmt => cmt._id.toString() === commentId);
+        if (!comment) return response(res, 404, "Không tìm thấy bình luận");
+        
+        const existingReactionIndex = comment.reactions.findIndex(r => r.user.toString() === userId);
+
+        if (existingReactionIndex !== -1) {
+            // Nếu user đã tym => bỏ tym
+            comment.reactions.splice(existingReactionIndex, 1);
+            action = "Đã thích bình luận";
+        } else {
+            // Nếu chưa tym => thêm tym
+            comment.reactions.push({ user: userId });
+            action = "Bỏ thích bình luận";
+        }
+
+        await post.save();
+        return response(res, 201, "Thích bình luận thành công", post);
+    } catch (error) {
+        console.error("Lỗi khi thích bình luận:", error);
+        return response(res, 500, "Thích bình luận thất bại", error.message);
+    }
+}
+
+module.exports = { createPost, getAllPosts, getPostByUserId, reactPost, addCommentToPost, addReplyToPost, sharePost, createStory, getAllStories, reactStory, deletePost, deleteComment, deleteReply, getSinglePost, likeComment };

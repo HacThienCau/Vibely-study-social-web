@@ -95,7 +95,6 @@ const handleSinglePost = ()  => {
     const sortedReactions = Object.entries(reactionGroups)
         .sort((a, b) => b[1].length - a[1].length) // Sắp xếp theo số lượng user
         .slice(0, 3); // Lấy top 3 reactions
-    console.log(reactionGroups)
         setTopReactions(sortedReactions.map(([reaction]) => reaction));
         setReactionUserGroups(reactionGroups);
 }, [post?.reactionStats]); // Chạy lại khi reactionStats thay đổi
@@ -129,7 +128,6 @@ const handleSinglePost = ()  => {
     setIsShareDialogOpen(false);
   };
   const handleReaction = (reaction) => {
-    console.log("(PostCard.jsx/handleReaction) Reaction in post that has id", post?._id,":", reaction)
     setIsChoosing(false)  //đã chọn được 'cảm xúc'
     onReact(reaction);
     setShowReactionChooser(false); // Ẩn thanh reaction sau khi chọn

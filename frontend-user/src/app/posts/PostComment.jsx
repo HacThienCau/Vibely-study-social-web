@@ -7,7 +7,7 @@ import { ChevronDown, ChevronUp, MoreHorizontal, Send } from "lucide-react";
 import { AiOutlineDelete } from "react-icons/ai";
 import { useEffect, useRef, useState } from "react";
 
-function PostComment({ comment, onReply, onDeleteComment, onDeleteReply }) {
+function PostComment({ comment, onReply, onDeleteComment, onDeleteReply , likeComment }) {
   const [showAllReplies, setShowAllReplies] = useState(false); //xem tất cả/2 cái đầu
   const [showReplies, setShowReplies] = useState(false); //mở xem replies
   const [replyText, setReplyText] = useState("");
@@ -54,6 +54,10 @@ function PostComment({ comment, onReply, onDeleteComment, onDeleteReply }) {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  const handleLikeComment = () =>{
+    likeComment()
+  }
 
   return (
     <div className="flex flex-col w-full">
@@ -150,8 +154,8 @@ function PostComment({ comment, onReply, onDeleteComment, onDeleteReply }) {
             <Button
               variant="ghost"
               size="sm"
-              className="px-2 hover:underline"
-              onClick={() => {}}
+              className={`px-2 hover:underline ${comment?.reactions?.find((react=>react?.user.toString() == user?._id))?"text-[#54C8FD]":""}`}
+              onClick={() => {handleLikeComment()}}
             >
               Thích
             </Button>
@@ -246,14 +250,6 @@ function PostComment({ comment, onReply, onDeleteComment, onDeleteReply }) {
                   </div>
                 </div>
                 <div className="flex items-center text-xs text-gray-500">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="px-2 hover:underline"
-                    onClick={() => {}}
-                  >
-                    Thích
-                  </Button>
                   <Button
                     variant="ghost"
                     size="sm"
