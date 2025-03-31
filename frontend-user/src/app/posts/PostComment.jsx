@@ -6,6 +6,7 @@ import userStore from "@/store/userStore";
 import { ChevronDown, ChevronUp, MoreHorizontal, Send } from "lucide-react";
 import { AiOutlineDelete } from "react-icons/ai";
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 
 function PostComment({ comment, onReply, onDeleteComment, onDeleteReply , likeComment }) {
   const [showAllReplies, setShowAllReplies] = useState(false); //xem tất cả/2 cái đầu
@@ -86,6 +87,14 @@ function PostComment({ comment, onReply, onDeleteComment, onDeleteReply , likeCo
               </p>
               <p className="text-[15px]">{comment?.text}</p>
             </div>
+            {comment?.reactions?.length > 0 && (
+            <div className="flex self-end p-1 bg-white drop-shadow-xl rounded-lg gap-2 -translate-x-1/3">
+              <Image src={"/like.png"} alt="haha"  width={16} height={14} unoptimized/>
+              <p className="font-semibold text-[13px]">
+                {comment?.reactions?.length}
+              </p>
+            </div>
+            )}            
             <div className="relative">
               <Button
                 onClick={() => setDropdownOpen(!dropdownOpen)}
