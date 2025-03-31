@@ -101,6 +101,10 @@ const getAllPosts = async (req, res) => {
             path: 'comments.replies.user',
             select: 'username profilePicture'
         })
+        .populate({
+            path: 'reactions.user',
+            select: 'username profilePicture'
+        })
         return response(res, 200, "Lấy tất cả bài viết thành công", posts);
     } catch (error) {
         console.error("Lỗi khi lấy tất cả bài viết:", error);
@@ -114,6 +118,10 @@ const getAllStories = async (req, res) => {
         const stories = await Story.find()
         .sort({ createdAt: -1 })
         .populate("user", "_id username profilePicture email")
+        .populate({
+            path: 'reactions.user',
+            select: 'username profilePicture'
+        })
         return response(res, 200, "Lấy tất cả story thành công", stories);
     } catch (error) {
         console.error("Lỗi khi lấy tất cả story:", error);
