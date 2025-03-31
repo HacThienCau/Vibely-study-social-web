@@ -20,17 +20,28 @@ services:
     depends_on:
       - backend
 
-  frontend:
-    build: ./frontend
+  frontend-user:
+    build: ./frontend-user
     ports:
       - "3000:3000"
     volumes:
-      - ./frontend:/app
+      - ./frontend-user:/app
       - /app/node_modules
     stdin_open: true
     tty: true
     depends_on:
       - backend
 
+  frontend-admin:
+    build: ./frontend-admin
+    ports:
+      - "3001:3000"
+    volumes:
+      - ./frontend-admin:/app
+      - /app/node_modules
+    stdin_open: true
+    tty: true
+    depends_on:
+      - backend
 volumes:
   logs:

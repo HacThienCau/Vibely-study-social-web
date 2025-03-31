@@ -1,6 +1,7 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
+const path = require('path');
 const { connect } = require('mongoose');
 const connectDb = require('./config/db');
 require('dotenv').config();
@@ -25,7 +26,14 @@ const forgotPasswordRoute = require('./routes/forgotPassword');
 const quizRoute = require('./routes/quizRoute');
 const YAML = require('yamljs');
 
-const swaggerDocument = YAML.load('./API/swagger.yaml');
+const swaggerDocument = YAML.load(path.join(__dirname, 'API/swagger.yaml'));
+
+const options = {
+    explorer: true,
+    swaggerOptions: {
+        persistAuthorization: true
+    }
+};
 
 const app = express();
 app.use(express.json());
@@ -48,7 +56,8 @@ app.use(passport.initialize())
 //API Route
 app.use('/auth', authRoute);
 app.use('/users', postRoute);
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.use('/api-docs', swaggerUi.serve);
+app.get('/api-docs', swaggerUi.setup(swaggerDocument, options));
 app.use('/conversation', conversationRoute);
 app.use('/message', messageRoute);
 app.use('/users', userRoute);
@@ -79,6 +88,11 @@ app.get('/quotations/random', async (req, res) => {
     }
 });
 
+// Error handling middleware
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({ message: 'Something went wrong!' });
+});
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
