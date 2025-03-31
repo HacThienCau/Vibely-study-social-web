@@ -26,14 +26,38 @@ Table of Contents
 * * * * *
 Features
 --------
-> 
+
+### **User Features**:
+-   Sign up, log in, log out, reset password
+-   Create, view and like stories
+-   Create, view and interact with posts and videos (react, comment, share)
+-   Send and accept friend requests
+-   View, save and share study materials
+-   Countdown timer for university entrance exams
+-   View weather forecasts
+-   Pomodoro mode for focused study sessions
+-   Take quizzes to test knowledge
+-   Plan study schedules
+-   Chat with friends
+-   View notifications
+-   Manage account and profile settings
+-   Help center and submit inquiries
+
+### **Admin Features**:
+-   View statistical reports
+-   Manage users
+-   Manage posts
+-   Manage study materials
+-   Manage inquiries
+-   Change password
+-   Admin account management
 * * * * *
 
 Tech Stack
 ----------
 
--   **Frontend**: 
--   **Backend**: 
+-   **Frontend**: Next.js, React.js, Zustand
+-   **Backend**: Node.js, Express.js, JWT (for authentication), Swagger (for API documentation)
 -   **Package Manager**: npm (for frontend and backend dependencies), pip (for chatbot backend dependencies)
 -   **Database**: MongoDB
 
