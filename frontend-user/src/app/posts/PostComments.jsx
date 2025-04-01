@@ -14,7 +14,7 @@ const PostComments = ({post, onComment, commentInputRef}) => {
     const {user} = userStore();
     const visibleComments = showAllComments ? post?.comments : post?.comments?.slice(0, 2);
     const userPlaceholder = user?.username?.split(" ").map((name) => name[0]).join(""); // tên người dùng viết tắt
-    const {fetchPosts,handleReplyComment, handleDeleteComment, handleDeleteReply} = usePostStore()
+    const {fetchPosts,handleReplyComment, handleDeleteComment, handleDeleteReply, handleLikeComment} = usePostStore()
     const handleCommentSubmit = async() =>{
         if(commentText.trim()){
             //console.log("handleCommentSubmit: ",commentText)
@@ -39,6 +39,10 @@ const PostComments = ({post, onComment, commentInputRef}) => {
                     }}
                     onDeleteReply={async(replyId)=>{
                         await handleDeleteReply(post?._id,comment?._id,replyId)
+                        await fetchPosts()
+                    }}
+                    likeComment={async()=>{
+                        await handleLikeComment(post?._id,comment?._id)
                         await fetchPosts()
                     }}
                     />

@@ -151,3 +151,14 @@ export const deleteReply = async (postId, commentId, replyId) => {
         throw error
     }
 }
+
+export const likeComment = async (postId, commentId) => {
+    try {
+        console.log("service:",postId,commentId)
+        const result = await axiosInstance.post(`/users/posts/reactComment/${postId}`, { commentId })
+        return result?.data
+    } catch (error) {
+        console.error(error)
+        throw error
+    }
+}

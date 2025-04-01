@@ -101,6 +101,10 @@ const getAllPosts = async (req, res) => {
             path: 'comments.replies.user',
             select: 'username profilePicture'
         })
+        .populate({
+            path: 'reactions.user',
+            select: 'username profilePicture'
+        })
         return response(res, 200, "Lấy tất cả bài viết thành công", posts);
     } catch (error) {
         console.error("Lỗi khi lấy tất cả bài viết:", error);
@@ -114,6 +118,10 @@ const getAllStories = async (req, res) => {
         const stories = await Story.find()
         .sort({ createdAt: -1 })
         .populate("user", "_id username profilePicture email")
+        .populate({
+            path: 'reactions.user',
+            select: 'username profilePicture'
+        })
         return response(res, 200, "Lấy tất cả story thành công", stories);
     } catch (error) {
         console.error("Lỗi khi lấy tất cả story:", error);
@@ -214,12 +222,12 @@ const reactStory = async (req, res) =>
         if (existingReactionIndex !== -1) {
             // Nếu user đã tym => bỏ tym
             story.reactions.splice(existingReactionIndex, 1);
-            story.reactionStats.tym = Math.max(0, story.reactionStats.tym - 1);
+            story.reactionStats.tym = Math.max(0, (story.reactionStats.tym || 0) - 1);
             action = "Đã thích story";
         } else {
             // Nếu chưa tym => thêm tym
             story.reactions.push({ user: userId });
-            story.reactionStats.tym += 1;
+            story.reactionStats.tym = (story.reactionStats.tym || 0) + 1;
             action = "Bỏ thích story";
         }
 
@@ -370,5 +378,35 @@ const getSinglePost = async(req,res) =>{
         return response(res, 500, "Xóa phản hồi thất bại", error.message);
     }
 }
+const likeComment = async(req,res) =>{
+    const { postId } = req.params;
+    const userId = req.user.userId;
+    const { commentId } = req.body;
+    try {
+        const post = await Post.findById(postId);
+        if (!post) return response(res, 404, "Không tìm thấy bài viết");
 
-module.exports = { createPost, getAllPosts, getPostByUserId, reactPost, addCommentToPost, addReplyToPost, sharePost, createStory, getAllStories, reactStory, deletePost, deleteComment, deleteReply, getSinglePost };
+        const comment = post?.comments?.find(cmt => cmt._id.toString() === commentId);
+        if (!comment) return response(res, 404, "Không tìm thấy bình luận");
+        
+        const existingReactionIndex = comment.reactions.findIndex(r => r.user.toString() === userId);
+
+        if (existingReactionIndex !== -1) {
+            // Nếu user đã tym => bỏ tym
+            comment.reactions.splice(existingReactionIndex, 1);
+            action = "Đã thích bình luận";
+        } else {
+            // Nếu chưa tym => thêm tym
+            comment.reactions.push({ user: userId });
+            action = "Bỏ thích bình luận";
+        }
+
+        await post.save();
+        return response(res, 201, "Thích bình luận thành công", post);
+    } catch (error) {
+        console.error("Lỗi khi thích bình luận:", error);
+        return response(res, 500, "Thích bình luận thất bại", error.message);
+    }
+}
+
+module.exports = { createPost, getAllPosts, getPostByUserId, reactPost, addCommentToPost, addReplyToPost, sharePost, createStory, getAllStories, reactStory, deletePost, deleteComment, deleteReply, getSinglePost, likeComment };
