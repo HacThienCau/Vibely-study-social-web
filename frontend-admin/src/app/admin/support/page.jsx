@@ -33,22 +33,22 @@ const Support = () => {
     useEffect(() => {
         const fetchInquiries = async () => {
             if (!token) return;
-    
-            let url = "http://localhost:8080/inquiry?";
+
+            let url = "https://vibely-study-social-web.onrender.com/inquiry?";
             if (query) url += `query=${query}&`;
             if (status) url += `status=${status}`;
-    
+
             try {
                 const res = await axios.get(url, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
-    
+
                 setInquiries(res.data.data);
             } catch (err) {
                 console.error("Lỗi khi lọc thắc mắc", err);
             }
         };
-    
+
         fetchInquiries();
     }, [query, status, token]);
 
@@ -62,7 +62,7 @@ const Support = () => {
         if (!selectedInquiry?._id) return;
 
         try {
-            const res = await axios.delete(`http://localhost:8080/inquiry/${selectedInquiry._id}`, {
+            const res = await axios.delete(`https://vibely-study-social-web.onrender.com/inquiry/${selectedInquiry._id}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
 
@@ -81,14 +81,14 @@ const Support = () => {
     // Cập nhật thắc mắc
     const updateInquiry = async (inquiry) => {
         try {
-            console.log("inquiry",inquiry.inquiryId);
-            const res = await axios.put(`http://localhost:8080/inquiry/${inquiry.inquiryId}`, {
+            console.log("inquiry", inquiry.inquiryId);
+            const res = await axios.put(`https://vibely-study-social-web.onrender.com/inquiry/${inquiry.inquiryId}`, {
                 status: "Đã phản hồi",
                 response: inquiry.response,
             }
-            , {
-                headers: { Authorization: `Bearer ${token}` },
-            });
+                , {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
 
             if (res.status === 200) {
                 const updatedInquiry = res.data.inquiry;
@@ -102,7 +102,7 @@ const Support = () => {
             console.error("Lỗi khi phản hồi thắc mắc", err);
         }
     }
-            
+
     // Mở và đóng modal
     const openModal = (type) => {
         setModalType(type);
@@ -116,14 +116,14 @@ const Support = () => {
             <div className="w-1/5 flex-shrink-0">
                 <Sidebar />
             </div>
-            
+
             {/* Nội dung chính */}
             <div className="w-4/5 ml-[-20px] py-6 mr-16 overflow-y-auto">
                 <h2 className="font-semibold mb-6 text-2xl text-[#2B3674]">Hỗ trợ</h2>
-                
+
                 {/* Tìm kiếm và lọc */}
                 <SearchBar onSearch={handleSearch} initialQuery={query} initialStatus={status} />
-                
+
                 {/* Document Table */}
                 <SupportTable inquiries={inquiries} openModal={openModal} setSelectedInquiry={setSelectedInquiry} />
             </div>
@@ -131,9 +131,9 @@ const Support = () => {
             {modalType === "responseInquiry" && (
                 <ResponseInquiryPopup isOpen inquiry={selectedInquiry} onUpdate={updateInquiry} onClose={closeModal} />
             )}
-            
+
             {modalType === "deleteInquiry" && (
-                <DeleteInquiryPopup isOpen onConfirm={deleteInquiry} onClose={closeModal}/>
+                <DeleteInquiryPopup isOpen onConfirm={deleteInquiry} onClose={closeModal} />
             )}
         </div>
     );
