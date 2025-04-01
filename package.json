@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "@clerk/nextjs": "^6.12.8"
+    "@clerk/nextjs": "^6.12.8",
+    "scrollreveal": "^4.0.9"
   }
 }
