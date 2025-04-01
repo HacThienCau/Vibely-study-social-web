@@ -34,7 +34,7 @@ export default function ResetPassword() {
         setLoading(true);
         setError("");
         try {
-            await axios.post('http://localhost:8080/forgot-password/reset-password', {
+            await axios.post('https://vibely-study-social-web.onrender.com/forgot-password/reset-password', {
                 email,
                 code,
                 newPassword: password

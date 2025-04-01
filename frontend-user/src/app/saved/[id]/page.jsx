@@ -48,7 +48,7 @@ const SavedDocumentDetail = () => {
                 if (!token) return;
 
                 try {
-                    const result = await axios.get(`http://localhost:8080/users/saved/${id}`, {
+                    const result = await axios.get(`https://vibely-study-social-web.onrender.com/users/saved/${id}`, {
                         headers: { Authorization: `Bearer ${token}` },
                     });
 
@@ -71,7 +71,7 @@ const SavedDocumentDetail = () => {
 
         try {
             const response = await axios.delete(
-                `http://localhost:8080/users/saved/${id}`,
+                `https://vibely-study-social-web.onrender.com/users/saved/${id}`,
                 { headers: { Authorization: `Bearer ${token}` } }
             );
 
@@ -80,7 +80,7 @@ const SavedDocumentDetail = () => {
 
             // Chuyển hướng về trang tài liệu đã lưu
             router.replace("/saved");
-            
+
         } catch (error) {
             toast.error(error.response?.data?.message || error.message);
             console.error("Lỗi khi bỏ lưu tài liệu:", error.response?.data?.message || error.message);
