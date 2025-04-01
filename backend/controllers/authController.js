@@ -34,6 +34,8 @@ const registerUser = async (req, res) => {
         const accessToken = generateToken(newUser);
         res.cookie("auth_token", accessToken, {
             httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "None"
         });
         return response(res, 201, 'Đăng ký thành công',
             {
@@ -62,6 +64,8 @@ const loginUser = async (req, res) => {
         const accessToken = generateToken(user);
         res.cookie("auth_token", accessToken, {
             httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "None"
         });
         return response(res, 200, 'Đăng nhập thành công',
             {
@@ -78,8 +82,10 @@ const loginUser = async (req, res) => {
 const logoutUser = async (req, res) => {
     try {
         res.cookie("auth_token", "", {
-            httpOnly: true, //Cookie chỉ có thể được truy cập bởi máy chủ (bảo mật hơn, không thể bị JavaScript đọc)
-            expires: new Date(0), //Thiết lập thời gian hết hạn về mốc thời gian 0 (01/01/1970), khiến cookie bị xóa ngay lập tức
+            httpOnly: true,
+            expires: new Date(0),
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "None"
         });
         return response(res, 200, 'Đăng xuất thành công');
     }
@@ -173,7 +179,7 @@ const deleteAccount = async (req, res) => {
 
         const deletedUser = await User.findByIdAndDelete(userId);
         if (!deletedUser) {
-            return res.status(404).json({ message: "Người dùng không tồn tại" });
+            return response(res, 404, "Người dùng không tồn tại");
         }
         return response(res, 200, 'Xóa tài khoản thành công');
     }
