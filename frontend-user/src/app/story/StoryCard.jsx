@@ -143,7 +143,7 @@ const StoryCard = ({isAddStory, story, onReact}) => {
             username={isNewStory? user?.username : story?.user?.username} //viet story moi thi username cua minh, nguoc lai dang xem cua ng khac
             avatar={isNewStory? user?.profilePicture : story?.user?.profilePicture}
             isLoading={loading}
-            reaction={story?.reactions?.find(react=>react?.user == user?._id)?"tym":null}
+            reaction={story?.reactions?.find(react=>react?.user?._id.toString() == user?._id)?"tym":null}
             onReact={(reactType) => onReact(reactType)}  // chức năng react
         />
     )}

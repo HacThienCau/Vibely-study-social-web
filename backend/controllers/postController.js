@@ -222,12 +222,12 @@ const reactStory = async (req, res) =>
         if (existingReactionIndex !== -1) {
             // Nếu user đã tym => bỏ tym
             story.reactions.splice(existingReactionIndex, 1);
-            story.reactionStats.tym = Math.max(0, story.reactionStats.tym - 1);
+            story.reactionStats.tym = Math.max(0, (story.reactionStats.tym || 0) - 1);
             action = "Đã thích story";
         } else {
             // Nếu chưa tym => thêm tym
             story.reactions.push({ user: userId });
-            story.reactionStats.tym += 1;
+            story.reactionStats.tym = (story.reactionStats.tym || 0) + 1;
             action = "Bỏ thích story";
         }
 
