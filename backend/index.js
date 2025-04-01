@@ -41,7 +41,7 @@ app.use(cookieParser());
 
 
 const corsOptions = {
-    origin: ["http://localhost:3000", "http://localhost:3001"],
+    origin: ["http://localhost:3000", "http://localhost:3001", "https://vibely-study-social-web.onrender.com"],
     credentials: true,
 };
 
