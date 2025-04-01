@@ -3,6 +3,7 @@ const nextConfig = {
     images: {
         domains: ["res.cloudinary.com"],
     },
+    webpack: (config) => config
 };
 
 export default nextConfig;
