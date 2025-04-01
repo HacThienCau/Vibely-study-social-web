@@ -1,4 +1,4 @@
-import { addCommentToPost, createPost, getAllPosts, getAllStories, getPostByUserId, reactPost, sharePost, createStory, reactStory, getAllUserPosts, addReplyToPost, deletePost, deleteComment, deleteReply } from '@/service/post.service';
+import { addCommentToPost, createPost, getAllPosts, getAllStories, getPostByUserId, reactPost, sharePost, createStory, reactStory, getAllUserPosts, addReplyToPost, deletePost, deleteComment, deleteReply, likeComment } from '@/service/post.service';
 import toast from 'react-hot-toast';
 import { create } from 'zustand';
 //quản lý trạng thái các bài viết và story
@@ -185,6 +185,24 @@ export const usePostStore = create((set)=>({
         } catch (error) {
             set({error, loading:false})
             toast.error("Đã xảy ra lỗi khi xóa phản hồi. Vui lòng thử lại.")
+        }
+    },
+
+    handleLikeComment:async(postId, commentId)=>{
+        set({loading:true})
+        try {
+            const newReply = await likeComment(postId,commentId)
+            set((state)=>({
+                posts: state.posts.map((post)=>
+                post?._id === postId
+                ?newReply?.data
+                :post
+                ),
+                loading:false
+            }))
+        } catch (error) {
+            set({error, loading:false})
+            toast.error("Đã xảy ra lỗi khi thích bình luận. Vui lòng thử lại.")
         }
     },
 }))
