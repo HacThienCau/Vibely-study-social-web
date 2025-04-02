@@ -10,5 +10,6 @@ describe("Test Homepage", () => {
         cy.get('body').should('be.visible');
 
         cy.url({ timeout: 10000 }).should('include', 'http://localhost:3000');
+        cy.scrollTo('bottom', { ensureScrollable: false });
     });
 })

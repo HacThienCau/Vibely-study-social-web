@@ -37,17 +37,17 @@ export const ProfileDetails = ({
         alert("Tiểu sử không được để trống!");
         return;
       }
-  
+
       // Gửi API cập nhật
       const updatedBio = await createOrUpdateUserBio(id, { bioText: tempBio });
 
-  
+
       // Cập nhật dữ liệu mới vào state
       setProfileData((prev) => ({
         ...prev,
         bio: { ...prev.bio, bioText: tempBio }, // Cập nhật motto mới
       }));
-  
+
       // Đóng modal chỉnh sửa
       setIsEditBioModal(false);
     } catch (error) {
@@ -154,7 +154,7 @@ export const ProfileDetails = ({
               {isEditBioModal ? (
                 <div>
                   <textarea
-                    className="w-full p-2 border rounded-md text-gray-700"
+                    className="w-full p-2 border rounded-md text-gray-700 add-bio"
                     value={tempBio}
                     onChange={(e) => setTempBio(e.target.value)}
                     maxLength={101}
@@ -170,7 +170,7 @@ export const ProfileDetails = ({
                       Hủy
                     </Button>
                     <Button
-                      className="bg-[#086280] text-white px-8 py-2 rounded-md"
+                      className="bg-[#086280] text-white px-8 py-2 rounded-md save-bio"
                       onClick={handleSaveBio}
                     >
                       Hoàn tất
@@ -184,7 +184,7 @@ export const ProfileDetails = ({
                   </p>
                   {isOwner && (
                     <Button
-                      className="w-full bg-[#A6A7AA] text-white mb-4"
+                      className="w-full bg-[#A6A7AA] text-white mb-4 edit-bio"
                       onClick={() => setIsEditBioModal(true)}
                     >
                       Chỉnh sửa tiểu sử

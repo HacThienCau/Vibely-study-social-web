@@ -69,7 +69,7 @@ const SupportPage = () => {
                         Vui lòng cung cấp đầy đủ thông tin về vấn đề bạn gặp phải. Chúng tôi sẽ xử lý yêu cầu của bạn nhanh chóng và chính xác hơn.
                     </p>
                     <Textarea
-                        className="w-full p-3 border border-gray-500 placeholder:text-gray-400 rounded-lg md:text-base"
+                        className="w-full p-3 border border-gray-500 placeholder:text-gray-400 rounded-lg md:text-base send-inquiry-textarea"
                         placeholder="Nhập ở đây..."
                         rows={6}
                         value={message}
@@ -80,7 +80,7 @@ const SupportPage = () => {
                         <Button
                             variant="default"
                             size="lg"
-                            className="bg-[#086280] text-white text-md py-2 px-7 rounded-lg hover:bg-[#07556F] transition duration-300"
+                            className="bg-[#086280] text-white text-md py-2 px-7 rounded-lg hover:bg-[#07556F] transition duration-300 send-inquiry-button"
                             onClick={handleSubmit}
                             disabled={loading}
                         >

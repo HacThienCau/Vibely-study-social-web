@@ -10,5 +10,6 @@ describe("Test Friend List", () => {
         cy.get('body').should('be.visible');
 
         cy.url({ timeout: 10000 }).should('eq', 'http://localhost:3000/friends-list');
+        cy.scrollTo('bottom', { ensureScrollable: false });
     });
 })
