@@ -10,5 +10,6 @@ describe("Test Video Feed", () => {
         cy.get('body').should('be.visible');
 
         cy.url({ timeout: 10000 }).should('eq', 'http://localhost:3000/video-feed');
+        cy.scrollTo('bottom', { ensureScrollable: false });
     });
 })

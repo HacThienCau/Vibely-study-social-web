@@ -25,6 +25,8 @@
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 /// <reference types="cypress" />
 import 'cypress-localstorage-commands';
+import 'cypress-file-upload';
+
 Cypress.Commands.add('login', () => {
     cy.request({
         method: "POST",

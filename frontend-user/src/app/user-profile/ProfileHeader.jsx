@@ -55,53 +55,53 @@ const ProfileHeader = ({
   const coverImageInputRef = useRef();
 
 
-const onSubmitProfile = async (data) => {
-  try {
-    setLoading(true);
-    console.log("Dữ liệu gửi lên API:", data);
+  const onSubmitProfile = async (data) => {
+    try {
+      setLoading(true);
+      console.log("Dữ liệu gửi lên API:", data);
 
-    const formData = new FormData();
-    formData.append("dateOfBirth", data.dateOfBirth);
-    formData.append("gender", data.gender);
+      const formData = new FormData();
+      formData.append("dateOfBirth", data.dateOfBirth);
+      formData.append("gender", data.gender);
 
-    if (profilePictureFile) {
-      formData.append("profilePicture", profilePictureFile);
+      if (profilePictureFile) {
+        formData.append("profilePicture", profilePictureFile);
+      }
+
+      // Gửi API cập nhật hồ sơ cá nhân
+      const updateProfile = await updateUserProfile(id, formData);
+
+      // Nếu có ảnh bìa, cập nhật ảnh bìa
+      if (coverPhotoFile) {
+        const coverFormData = new FormData();
+        coverFormData.append("coverPicture", coverPhotoFile);
+        const updateCover = await updateUserCoverPhoto(id, coverFormData);
+        updateProfile.coverPicture = updateCover.coverPicture;
+      }
+
+      // **Gửi API cập nhật Bio**
+      const bioData = {
+        liveIn: data.liveIn,
+        workplace: data.workplace,
+        education: data.education,
+        hometown: data.hometown,
+      };
+      const updatedBio = await createOrUpdateUserBio(id, bioData);
+      console.log("Dữ liệu Bio trả về:", updatedBio);
+
+      // Cập nhật dữ liệu mới vào state
+      setProfileData({ ...profileData, ...updateProfile, bio: updatedBio });
+      setIsEditProfileModel(false);
+      setProfilePicturePreview(null);
+      setCoverPhotoFile(null);
+      setUser(updateProfile);
+      await fetchProfile();
+    } catch (error) {
+      console.error("Lỗi khi cập nhật trang cá nhân", error);
+    } finally {
+      setLoading(false);
     }
-
-    // Gửi API cập nhật hồ sơ cá nhân
-    const updateProfile = await updateUserProfile(id, formData);
-
-    // Nếu có ảnh bìa, cập nhật ảnh bìa
-    if (coverPhotoFile) {
-      const coverFormData = new FormData();
-      coverFormData.append("coverPicture", coverPhotoFile);
-      const updateCover = await updateUserCoverPhoto(id, coverFormData);
-      updateProfile.coverPicture = updateCover.coverPicture;
-    }
-
-    // **Gửi API cập nhật Bio**
-    const bioData = {
-      liveIn: data.liveIn,
-      workplace: data.workplace,
-      education: data.education,
-      hometown: data.hometown,
-    };
-    const updatedBio = await createOrUpdateUserBio(id, bioData);
-    console.log("Dữ liệu Bio trả về:", updatedBio);
-
-    // Cập nhật dữ liệu mới vào state
-    setProfileData({ ...profileData, ...updateProfile, bio: updatedBio });
-    setIsEditProfileModel(false);
-    setProfilePicturePreview(null);
-    setCoverPhotoFile(null);
-    setUser(updateProfile);
-    await fetchProfile();
-  } catch (error) {
-    console.error("Lỗi khi cập nhật trang cá nhân", error);
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
 
   const onSubmitCoverPhoto = async (e) => {
@@ -115,7 +115,7 @@ const onSubmitProfile = async (data) => {
       console.log("📤 Payload gửi lên API:", formData.get("coverPicture"));
 
       const updateProfile = await updateUserCoverPhoto(id, formData);
-      setProfileData({ ...profileData, coverPicture:updateProfile.coverPicture });
+      setProfileData({ ...profileData, coverPicture: updateProfile.coverPicture });
       setIsEditCoverModel(false);
       setCoverPhotoFile(null);
     } catch (error) {
@@ -176,7 +176,7 @@ const onSubmitProfile = async (data) => {
           className="w-full h-full object-cover"
         />
 
-{isOwner && (
+        {isOwner && (
           <Button
             className="absolute bottom-4 right-4 flex items-center"
             variant="secondary"
@@ -206,7 +206,7 @@ const onSubmitProfile = async (data) => {
           <div className="mt-4 mdLmt-0 text-center md:text-left flex-grow">
             <h1 className="text-3xl font-bold">{profileData?.username}</h1>
             <p className="text-gray-400 font-semibold">
-              {profileData?.followerCount} nguời bạn
+              {profileData?.followerCount} người bạn
             </p>
           </div>
           {isOwner && (
@@ -216,7 +216,7 @@ const onSubmitProfile = async (data) => {
                 Thêm tin
               </Button>
               <Button
-                className="mt-4 md:mt-1 font-semibold cursor-pointer"
+                className="mt-4 md:mt-1 font-semibold cursor-pointer edit-profile"
                 onClick={() => setIsEditProfileModel(true)}
               >
                 <PenLine className="w-4 h-4 mr-2" />
@@ -318,7 +318,7 @@ const onSubmitProfile = async (data) => {
                       size="sm"
                       className="text-[#086280] hover:text-gray-500"
                       onClick={() => coverImageInputRef.current?.click()}
-                      
+
                     >
                       <Pencil className="w-4 h-4" />
                     </Button>
@@ -335,7 +335,7 @@ const onSubmitProfile = async (data) => {
                 <ProfileField
                   label="Công việc"
                   field="workplace"
-                  value={profile.workplace} 
+                  value={profile.workplace}
                   isEditingField={isEditingField}
                   onEdit={handleEdit}
                   onSave={handleSave}
@@ -346,7 +346,7 @@ const onSubmitProfile = async (data) => {
                 <ProfileField
                   label="Tỉnh/Thành phố hiện tại"
                   field="liveIn"
-                  value={profile.liveIn} 
+                  value={profile.liveIn}
                   isEditingField={isEditingField}
                   onEdit={handleEdit}
                   onSave={handleSave}
@@ -357,7 +357,7 @@ const onSubmitProfile = async (data) => {
                 <ProfileField
                   label="Quê quán"
                   field="hometown"
-                  value={profile.hometown} 
+                  value={profile.hometown}
                   isEditingField={isEditingField}
                   onEdit={handleEdit}
                   onSave={handleSave}
@@ -368,14 +368,14 @@ const onSubmitProfile = async (data) => {
                 <ProfileField
                   label="Học vấn"
                   field="education"
-                  value={profile.education} 
+                  value={profile.education}
                   isEditingField={isEditingField}
                   onEdit={handleEdit}
                   onSave={handleSave}
                   onCancel={handleCancel}
                 />
 
-               {/* Ngàu sinh */}
+                {/* Ngàu sinh */}
 
                 <div className="space-y-2">
                   <Label htmlFor="dateOfBirth">Ngày sinh</Label>
@@ -419,8 +419,8 @@ const onSubmitProfile = async (data) => {
       </AnimatePresence>
 
 
-       {/* edit cover model */}
-       <AnimatePresence>
+      {/* edit cover model */}
+      <AnimatePresence>
         {isEditCoverModel && (
           <motion.div
             initial={{ opacity: 0 }}
@@ -455,7 +455,7 @@ const onSubmitProfile = async (data) => {
                       className="w-full h-40 object-cover rounded-lg mb-4"
                     />
                   )}
-                  <input type="file" accept="image/*" className="hidden" ref={coverImageInputRef}  onChange={handleCoverPhotoChange}/>
+                  <input type="file" accept="image/*" className="hidden" ref={coverImageInputRef} onChange={handleCoverPhotoChange} />
                   <Button type="button" variant="outline" size="sm" onClick={() => coverImageInputRef.current?.click()}>
                     <Upload className="h-4 w-4 mr-2" />
                     Tải ảnh lên
@@ -465,10 +465,10 @@ const onSubmitProfile = async (data) => {
                 <Button
                   className="w-full bg-blue-600 hover:bg-blue-400 text-white"
                   onClick={onSubmitCoverPhoto}
-                  disabled = {!coverPhotoFile}
+                  disabled={!coverPhotoFile}
                   type="button"
                 >
-                  <Save className="w-4 h-4 mr-2" /> {loading ? "Đang lưu" :"Lưu ảnh bìa mới"}
+                  <Save className="w-4 h-4 mr-2" /> {loading ? "Đang lưu" : "Lưu ảnh bìa mới"}
                 </Button>
               </form>
             </motion.div>
@@ -499,11 +499,10 @@ const ProfileField = ({
           type="button"
           variant="ghost"
           size="icon"
-          className={`${
-            isEditingField === field
-              ? "text-gray-500"
-              : "text-[#086280] hover:text-gray-500"
-          }`}
+          className={`${isEditingField === field
+            ? "text-gray-500"
+            : "text-[#086280] hover:text-gray-500"
+            }`}
           onClick={() => onEdit(field)}
         >
           <Pencil className="w-4 h-4" />

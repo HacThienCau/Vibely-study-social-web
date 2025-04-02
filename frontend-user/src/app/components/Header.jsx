@@ -279,7 +279,7 @@ const Header = () => {
             <DropdownMenuTrigger asChild>
               <Button
                 variant="ghost"
-                className="relative h-8 w-8 rounded-full shadow-lg"
+                className="relative h-8 w-8 rounded-full shadow-lg  profile-button"
               >
                 <Avatar>
                   {user?.profilePicture ? (
@@ -333,7 +333,7 @@ const Header = () => {
                   </DropdownMenuItem>
                   <DropdownMenuItem className="cursor-pointer mb-3" onClick={() => handleNavigation(`/help-center`)}>
                     <img src="/images/help_dropdown.png" alt="help" className="mr-0" />
-                    <span className="ml-2 font-semibold">Trung tâm trợ giúp</span>
+                    <span className="ml-2 font-semibold help-center-dropdown">Trung tâm trợ giúp</span>
                   </DropdownMenuItem>
                   <DropdownMenuItem className="cursor-pointer mb-3" onClick={() => handleNavigation(`/support`)}>
                     <img src="/images/faqs_dropdown.png" alt="support" className="mr-0" />
