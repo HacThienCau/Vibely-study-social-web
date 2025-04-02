@@ -35,8 +35,14 @@ export const usePostStore = create((set)=>({
     fetchStories: async()=> {
         set({loading:true})
         try {
-            const stories = await getAllStories();
-            set({stories,loading:false})
+        const res = await getAllStories();
+        const twentyFourHoursAgo = new Date();
+        twentyFourHoursAgo.setHours(twentyFourHoursAgo.getHours() - 24);
+        //Story chỉ tồn tại trong 24h 
+        const filterStories = res.filter(story => 
+            new Date(story.createdAt) >= twentyFourHoursAgo
+        );
+        set({filterStories,loading:false})
         } catch (error) {
             set({error, loading:false})
         }
