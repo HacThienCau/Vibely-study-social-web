@@ -25,7 +25,7 @@ export default function CodeConfirm() {
         setLoading(true);
         setError("");
         try {
-            await axios.post('http://localhost:8080/forgot-password/send-code', { email });
+            await axios.post('https://vibely-study-social-web.onrender.com/forgot-password/send-code', { email });
             alert('Đã gửi lại mã xác thực');
         } catch (error) {
             setError(error.response?.data?.message || 'Có lỗi xảy ra');
@@ -39,7 +39,7 @@ export default function CodeConfirm() {
         setLoading(true);
         setError("");
         try {
-            await axios.post('http://localhost:8080/forgot-password/verify-code', {
+            await axios.post('https://vibely-study-social-web.onrender.com/forgot-password/verify-code', {
                 email,
                 code
             });

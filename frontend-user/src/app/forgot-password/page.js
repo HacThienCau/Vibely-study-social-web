@@ -15,7 +15,7 @@ export default function ForgotPassword() {
         setLoading(true);
         setError("");
         try {
-            await axios.post('http://localhost:8080/forgot-password/send-code', { email });
+            await axios.post('https://vibely-study-social-web.onrender.com/forgot-password/send-code', { email });
             // Lưu email vào localStorage để sử dụng ở trang code-confirm
             localStorage.setItem('resetPasswordEmail', email);
             router.push("/forgot-password/code-confirm");

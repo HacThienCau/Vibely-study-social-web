@@ -59,8 +59,8 @@ Features
 Tech Stack
 ----------
 
--   **Frontend**: 
--   **Backend**: 
+-   **Frontend**: Next.js, React.js, Zustand
+-   **Backend**: Node.js, Express.js, JWT (for authentication), Swagger (for API documentation)
 -   **Package Manager**: npm (for frontend and backend dependencies), pip (for chatbot backend dependencies)
 -   **Database**: MongoDB
 

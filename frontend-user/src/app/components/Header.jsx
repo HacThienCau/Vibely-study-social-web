@@ -14,7 +14,6 @@ import useSidebarStore from "@/store/sidebarStore";
 import userStore from "@/store/userStore";
 import { DropdownMenu } from "@radix-ui/react-dropdown-menu";
 import {
-  Bell,
   ChevronRight,
   Menu,
   MessageCircle,
@@ -26,8 +25,8 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
-import { SettingsMenu } from './SettingsMenu';
 import NotificationIcon from "./Notification/NotificationIcon";
+import { SettingsMenu } from './SettingsMenu';
 
 
 const Header = () => {
@@ -332,13 +331,17 @@ const Header = () => {
                     <span className="ml-2 font-semibold">Cài đặt</span>
                     <ChevronRight className="absolute right-2 text-[#54C8FD]" />
                   </DropdownMenuItem>
-                  <DropdownMenuItem className="cursor-pointer mb-3" onClick={() => handleNavigation(`/help_center`)}>
+                  <DropdownMenuItem className="cursor-pointer mb-3" onClick={() => handleNavigation(`/help-center`)}>
                     <img src="/images/help_dropdown.png" alt="help" className="mr-0" />
                     <span className="ml-2 font-semibold">Trung tâm trợ giúp</span>
                   </DropdownMenuItem>
                   <DropdownMenuItem className="cursor-pointer mb-3" onClick={() => handleNavigation(`/support`)}>
                     <img src="/images/faqs_dropdown.png" alt="support" className="mr-0" />
                     <span className="ml-2 font-semibold">Hộp thư hỗ trợ</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="cursor-pointer mb-3" onClick={() => handleNavigation(`/about-us`)}>
+                    <img src="images/about_dropdown.png" alt="faqs" className="mr-0" />
+                    <span className="ml-1 font-semibold">Về chúng tôi</span>
                   </DropdownMenuItem>
                   <DropdownMenuItem className="cursor-pointer mb-3" onClick={handleLogout}>
                     <img src="/images/logout_dropdown.png" alt="logout" className="mr-0" />

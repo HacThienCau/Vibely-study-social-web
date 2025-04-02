@@ -7,6 +7,7 @@ const response = require('../utils/responseHandler');
 const bcrypt = require('bcryptjs');
 const Post = require("../model/Post");
 const Story = require("../model/Story");
+
 const registerUser = async (req, res) => {
     try {
         const { username, email, password, gender, dateOfBirth } = req.body;
