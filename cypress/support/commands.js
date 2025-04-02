@@ -23,4 +23,23 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+/// <reference types="cypress" />
 import 'cypress-localstorage-commands';
+Cypress.Commands.add('login', () => {
+    cy.request({
+        method: "POST",
+        url: "https://vibely-study-social-web.onrender.com/auth/login",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: {
+            "email": "vonhatphuong.2k4@gmail.com",
+            "password": "13032004"
+        }
+    }).then((response) => {
+        expect(response.status).to.eq(200);
+        expect(response.body).to.have.property("data");
+        expect(response.body.data).to.have.property("token");
+        Cypress.env('authToken', response.body.data.token);
+    });
+});
