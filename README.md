@@ -30,8 +30,9 @@ Features
 ### **User Features**:
 -   Sign up, log in, log out, reset password
 -   Create, view and like stories
--   Create, view and interact with posts and videos (react, comment, share)
+-   Create, view, edit, delete and interact with posts and videos (react, comment, share)
 -   Send and accept friend requests
+-   Search for other users
 -   View, save and share study materials
 -   Countdown timer for university entrance exams
 -   View weather forecasts
@@ -40,8 +41,10 @@ Features
 -   Plan study schedules
 -   Chat with friends
 -   View notifications
+-   View other users' profiles
 -   Manage account and profile settings
 -   Help center and submit inquiries
+-   Interact with AI Chatbot for study support
 
 ### **Admin Features**:
 -   View statistical reports
