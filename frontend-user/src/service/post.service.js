@@ -162,3 +162,13 @@ export const likeComment = async (postId, commentId) => {
         throw error
     }
 }
+//Phương thức sửa bài viết
+export const editPost = async (postId, postData) => {
+    try {
+        const result = await axiosInstance.put(`/users/posts/edit/${postId}`, postData)
+        return result?.data?.data
+    } catch (error) {
+        console.error(error)
+        throw error
+    }
+}
