@@ -36,13 +36,14 @@ export const usePostStore = create((set)=>({
         set({loading:true})
         try {
         const res = await getAllStories();
-        const twentyFourHoursAgo = new Date();
-        twentyFourHoursAgo.setHours(twentyFourHoursAgo.getHours() - 24);
+        const now = new Date();
+        const last24Hours = new Date(now.getTime() - 24 * 60 * 60 * 1000); // Lùi lại 24 giờ
         //Story chỉ tồn tại trong 24h 
-        const filterStories = res.filter(story => 
-            new Date(story.createdAt) >= twentyFourHoursAgo
-        );
-        set({filterStories,loading:false})
+        const filterStories = res.filter(story => {
+            const storyDate = new Date(story.createdAt);
+            return storyDate >= last24Hours; // Chỉ lấy story có thời gian >= thời gian 24h trước
+        });
+        set({stories:filterStories,loading:false})
         } catch (error) {
             set({error, loading:false})
         }
