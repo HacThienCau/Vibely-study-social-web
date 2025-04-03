@@ -87,6 +87,45 @@ const createStory = async (req, res) => {
     }
 };
 
+const editPost = async(req,res) =>{
+    const {postId} = req.params;
+    const {content, flag} = req.body
+    const file = req.file;
+    let mediaUrl = null;
+    let mediaType = null;
+    try{
+        // Kiểm tra nếu có file thì upload lên Cloudinary
+        if (file) {
+            const uploadResult = await uploadFileToCloudinary(file);
+            if (!uploadResult || !uploadResult.secure_url) {
+                return response(res, 400, "Lỗi khi tải lên tệp.");
+            }
+
+            mediaUrl = uploadResult.secure_url;
+            mediaType = file.mimetype.startsWith("video") ? "video" : "image";
+        }
+        if(flag==0){
+            const updatedPost = await Post.findByIdAndUpdate(
+                postId,
+                { content },
+                {new: true}
+            );
+            return response(res, 201, "Sửa bài viết thành công", updatedPost);
+        }else{  //flag=1 hay -1 đều cập nhật media
+            const updatedPost = await Post.findByIdAndUpdate(
+                postId,
+                { content ,
+                mediaUrl ,
+                mediaType },
+                {new: true}
+            );
+            return response(res, 201, "Sửa bài viết thành công", updatedPost);
+        }
+    }catch(error){
+        console.error("Lỗi khi sửa bài viết:", error);
+        return response(res, 500, "Sửa bài viết thất bại", error.message);
+    }
+}
 //Lấy tất cả bài viết
 const getAllPosts = async (req, res) => {
     try {
@@ -409,4 +448,4 @@ const likeComment = async(req,res) =>{
     }
 }
 
-module.exports = { createPost, getAllPosts, getPostByUserId, reactPost, addCommentToPost, addReplyToPost, sharePost, createStory, getAllStories, reactStory, deletePost, deleteComment, deleteReply, getSinglePost, likeComment };
+module.exports = { createPost, getAllPosts, getPostByUserId, reactPost, addCommentToPost, addReplyToPost, sharePost, createStory, getAllStories, reactStory, deletePost, deleteComment, deleteReply, getSinglePost, likeComment, editPost };
