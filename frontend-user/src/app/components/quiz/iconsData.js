@@ -25,7 +25,10 @@ import {
   faRobot,
   faCoffee,
   faLandmark,
-  faBalanceScale
+  faBalanceScale,
+  faTrophy,
+  faChartLine,
+  faGavel
 } from '@fortawesome/free-solid-svg-icons';
 
 export const iconsData = [
@@ -136,6 +139,18 @@ export const iconsData = [
   },
   {
     faIcon: faBalanceScale,
+    isSelected: false,
+  },
+  {
+    faIcon: faTrophy,
+    isSelected: false,
+  },
+  {
+    faIcon: faChartLine,
+    isSelected: false,
+  },
+  {
+    faIcon: faGavel,
     isSelected: false,
   },
 ];

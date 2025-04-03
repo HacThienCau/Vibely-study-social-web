@@ -26,7 +26,10 @@ import {
     faRobot,
     faCoffee,
     faLandmark,
-    faBalanceScale
+    faBalanceScale,
+    faTrophy,
+    faChartLine,
+    faGavel
 } from '@fortawesome/free-solid-svg-icons';
 
 function convertFromFaToText(icon) {
@@ -91,6 +94,15 @@ function convertFromFaToText(icon) {
     }
     else if (icon === faBalanceScale) {
         return 'faBalanceScale';
+    }
+    else if (icon === faTrophy) {
+        return 'faTrophy';
+    }
+    else if (icon === faChartLine) {
+        return 'faChartLine';
+    }
+    else if (icon === faGavel) {
+        return 'faGavel';
     }
     else {
         return 'faQuestion';
