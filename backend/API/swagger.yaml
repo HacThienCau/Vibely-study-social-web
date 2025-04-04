@@ -1,18 +1,41 @@
 openapi: 3.0.0
 info:
   title: Vibely API
-  description: API dành cho mạng xã hội học tập Vibely
+  description: API documentation for Vibely Learning Social Network
   version: 1.0.0
+  contact:
+    email: your-email@vibely.com
 
 servers:
   - url: http://localhost:8080
-    description: Local server
+    description: Local Development Server
+  - url: https://api.vibely.com
+    description: Production Server
+
+tags:
+  - name: Authentication
+    description: Authentication and authorization endpoints
+  - name: Users
+    description: User management operations
+  - name: Posts
+    description: Social posts operations
+  - name: Comments
+    description: Comment operations
+  - name: Stories
+    description: Story operations
+  - name: Quiz
+    description: Quiz management
+  - name: Study Sets
+    description: Study sets operations
+  - name: Notifications
+    description: Notification management
 
 paths:
+  # 1️⃣ AUTHENTICATION ENDPOINTS
   /auth/login:
     post:
-      summary: "Đăng nhập"
-      description: "API dùng để đăng nhập"
+      tags: [Authentication]
+      summary: User login
       requestBody:
         required: true
         content:
@@ -22,18 +45,29 @@ paths:
               properties:
                 email:
                   type: string
+                  format: email
                 password:
                   type: string
+                  format: password
       responses:
-        "200":
-          description: "Đăng nhập thành công"
-        "400":
-          description: "Lỗi dữ liệu đầu vào"
+        200:
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                  user:
+                    $ref: '#/components/schemas/User'
+        401:
+          description: Invalid credentials
 
   /auth/register:
     post:
-      summary: "Đăng ký tài khoản"
-      description: "API dùng để đăng ký tài khoản"
+      tags: [Authentication]
+      summary: Register new user
       requestBody:
         required: true
         content:
@@ -45,24 +79,20 @@ paths:
                   type: string
                 email:
                   type: string
+                  format: email
                 password:
                   type: string
+                  format: password
       responses:
-        "200":
-          description: "Đăng ký thành công"
-        "400":
-          description: "Lỗi dữ liệu đầu vào"
+        201:
+          description: User created successfully
+        400:
+          description: Invalid input data
 
-  /posts:
-    get:
-      summary: "Lấy danh sách bài viết"
-      description: "API trả về danh sách bài viết"
-      responses:
-        "200":
-          description: "Danh sách bài viết"
+  /auth/forgot-password:
     post:
-      summary: "Tạo bài viết mới"
-      description: "API dùng để tạo bài viết mới"
+      tags: [Authentication]
+      summary: Request password reset
       requestBody:
         required: true
         content:
@@ -70,24 +100,19 @@ paths:
             schema:
               type: object
               properties:
-                title:
+                email:
                   type: string
-                content:
-                  type: string
+                  format: email
       responses:
-        "201":
-          description: "Bài viết đã được tạo"
+        200:
+          description: Reset email sent
+        404:
+          description: User not found
 
-  /stories:
-    get:
-      summary: "Lấy danh sách stories"
-      description: "API trả về danh sách stories"
-      responses:
-        "200":
-          description: "Danh sách stories"
+  /auth/reset-password:
     post:
-      summary: "Tạo story mới"
-      description: "API dùng để tạo story mới"
+      tags: [Authentication]
+      summary: Reset password with token
       requestBody:
         required: true
         content:
@@ -95,38 +120,194 @@ paths:
             schema:
               type: object
               properties:
-                imageUrl:
+                token:
                   type: string
+                newPassword:
+                  type: string
+                  format: password
       responses:
-        "201":
-          description: "Story đã được tạo thành công"
-          
-  /posts/reacts/{postId}:
-    post:
-      summary: "Bày tỏ cảm xúc với bài viết"
-      description: "API cho phép người dùng thích, yêu thích, hoặc phản ứng với bài viết"
+        200:
+          description: Password reset successful
+        400:
+          description: Invalid token
+
+  # 2️⃣ USER ENDPOINTS
+  /users:
+    get:
+      tags: [Users]
+      summary: Get all users
+      security:
+        - BearerAuth: []
       parameters:
-        - name: postId
-          in: path
+        - in: query
+          name: page
+          schema:
+            type: integer
+        - in: query
+          name: limit
+          schema:
+            type: integer
+      responses:
+        200:
+          description: List of users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+
+  /users/{userId}:
+    get:
+      tags: [Users]
+      summary: Get user by ID
+      parameters:
+        - in: path
+          name: userId
           required: true
           schema:
             type: string
-          description: "ID của bài viết"
+      responses:
+        200:
+          description: User details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        404:
+          description: User not found
+
+  # 3️⃣ POST ENDPOINTS
+  /posts:
+    get:
+      tags: [Posts]
+      summary: Get all posts
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+        - in: query
+          name: limit
+          schema:
+            type: integer
+      responses:
+        200:
+          description: List of posts
+    post:
+      tags: [Posts]
+      summary: Create new post
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+                images:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+      responses:
+        201:
+          description: Post created successfully
+
+  # 4️⃣ QUIZ ENDPOINTS
+  /quizzes:
+    get:
+      tags: [Quiz]
+      summary: Get all quizzes
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: List of quizzes
+    post:
+      tags: [Quiz]
+      summary: Create new quiz
+      security:
+        - BearerAuth: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                type:
-                  type: string
-                  enum: ["like", "love", "haha", "wow", "sad", "angry"]
-                  description: "Loại cảm xúc"
+              $ref: '#/components/schemas/Quiz'
       responses:
-        "200":
-          description: "Cảm xúc đã được cập nhật"
-        "400":
-          description: "Dữ liệu không hợp lệ"
-        "404":
-          description: "Không tìm thấy bài viết"
+        201:
+          description: Quiz created successfully
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        username:
+          type: string
+        email:
+          type: string
+        avatar:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+
+    Post:
+      type: object
+      properties:
+        id:
+          type: string
+        content:
+          type: string
+        images:
+          type: array
+          items:
+            type: string
+        author:
+          $ref: '#/components/schemas/User'
+        createdAt:
+          type: string
+          format: date-time
+
+    Quiz:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        questions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Question'
+
+    Question:
+      type: object
+      properties:
+        id:
+          type: string
+        content:
+          type: string
+        options:
+          type: array
+          items:
+            type: string
+        correctAnswer:
+          type: integer
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

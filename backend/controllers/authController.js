@@ -100,7 +100,51 @@ const deleteAccount = async (req, res) => {
     }
 }
 
-module.exports = { registerUser, loginUser, logoutUser, deleteAccount };
+const changePassword = async (req, res) => {
+    try {
+        const { oldPassword, newPassword } = req.body;
+        const userId = req.user.userId;
+
+        // Tìm user trong database
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: 'Không tìm thấy người dùng'
+            });
+        }
+
+        // Kiểm tra mật khẩu cũ
+        const isValidPassword = await bcrypt.compare(oldPassword, user.password);
+        if (!isValidPassword) {
+            return res.status(400).json({
+                success: false,
+                message: 'Mật khẩu cũ không chính xác'
+            });
+        }
+
+        // Hash mật khẩu mới
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+        // Cập nhật mật khẩu mới
+        user.password = hashedPassword;
+        await user.save();
+
+        res.status(200).json({
+            success: true,
+            message: 'Đổi mật khẩu thành công'
+        });
+    } catch (error) {
+        console.error('Lỗi khi đổi mật khẩu:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Đã xảy ra lỗi khi đổi mật khẩu'
+        });
+    }
+};
+
+module.exports = { registerUser, loginUser, logoutUser, deleteAccount, changePassword };
 
 
 

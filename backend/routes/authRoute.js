@@ -1,12 +1,13 @@
 const express = require('express');
 const authMiddleware = require('../middleware/authMiddleware');
-const { registerUser, loginUser, logoutUser, deleteAccount } = require('../controllers/authController');
+const { registerUser, loginUser, logoutUser, deleteAccount, changePassword } = require('../controllers/authController');
 const passport = require('passport');
 const {generateToken} = require('../utils/generateToken');
 const router = express.Router();
 
 router.post('/register', registerUser);
 router.post('/login', loginUser);
+router.post('/change-password', authMiddleware, changePassword);
 router.get('/logout', logoutUser);
 router.delete('/deleteAccount', authMiddleware ,deleteAccount);
 
