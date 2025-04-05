@@ -1,4 +1,4 @@
-import { addCommentToPost, createPost, getAllPosts, getAllStories, getPostByUserId, reactPost, sharePost, createStory, reactStory, getAllUserPosts, addReplyToPost, deletePost, deleteComment, deleteReply } from '@/service/post.service';
+import { addCommentToPost, createPost, getAllPosts, getAllStories, getPostByUserId, reactPost, sharePost, createStory, reactStory, getAllUserPosts, addReplyToPost, deletePost, deleteComment, deleteReply, likeComment, editPost } from '@/service/post.service';
 import toast from 'react-hot-toast';
 import { create } from 'zustand';
 //quản lý trạng thái các bài viết và story
@@ -35,8 +35,15 @@ export const usePostStore = create((set)=>({
     fetchStories: async()=> {
         set({loading:true})
         try {
-            const stories = await getAllStories();
-            set({stories,loading:false})
+        const res = await getAllStories();
+        const now = new Date();
+        const last24Hours = new Date(now.getTime() - 24 * 60 * 60 * 1000); // Lùi lại 24 giờ
+        //Story chỉ tồn tại trong 24h 
+        const filterStories = res.filter(story => {
+            const storyDate = new Date(story.createdAt);
+            return storyDate >= last24Hours; // Chỉ lấy story có thời gian >= thời gian 24h trước
+        });
+        set({stories:filterStories,loading:false})
         } catch (error) {
             set({error, loading:false})
         }
@@ -51,6 +58,25 @@ export const usePostStore = create((set)=>({
                 loading: false,    
             }))
             toast.success("Tạo bài đăng thành công.")
+        } catch (error) {
+            set({error, loading:false})
+            toast.error("Đã xảy ra lỗi khi đăng bài. Vui lòng thử lại.")
+        }
+    },
+
+    handleEditPost: async(postId, postData) =>{
+        set({loading:true})
+        try {
+            const editedPost = await editPost(postId, postData)
+            set((state)=>({
+                posts: state.posts.map((post)=>
+                post?._id === postId
+                ?editedPost
+                :post
+                ),
+                loading:false
+            }))
+            toast.success("Sửa bài viết thành công.")
         } catch (error) {
             set({error, loading:false})
             toast.error("Đã xảy ra lỗi khi đăng bài. Vui lòng thử lại.")
@@ -185,6 +211,24 @@ export const usePostStore = create((set)=>({
         } catch (error) {
             set({error, loading:false})
             toast.error("Đã xảy ra lỗi khi xóa phản hồi. Vui lòng thử lại.")
+        }
+    },
+
+    handleLikeComment:async(postId, commentId)=>{
+        set({loading:true})
+        try {
+            const newReply = await likeComment(postId,commentId)
+            set((state)=>({
+                posts: state.posts.map((post)=>
+                post?._id === postId
+                ?newReply?.data
+                :post
+                ),
+                loading:false
+            }))
+        } catch (error) {
+            set({error, loading:false})
+            toast.error("Đã xảy ra lỗi khi thích bình luận. Vui lòng thử lại.")
         }
     },
 }))

@@ -5,7 +5,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { Separator } from '@/components/ui/separator'
 import { AnimatePresence, motion } from 'framer-motion'
-import { MessageCircle, MoreHorizontal, ThumbsUp} from 'lucide-react'
+import { ImageIcon, MessageCircle, MoreHorizontal, Pencil, ThumbsUp, X, XIcon} from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { PiShareFatBold } from "react-icons/pi"
 import { FaXTwitter } from "react-icons/fa6";
@@ -17,12 +17,12 @@ import { formatedDate } from '@/lib/utils'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import userStore from '@/store/userStore'
+import { Textarea } from '@/components/ui/textarea'
 
-
-
-const PostCard = ({post, onReact, onComment, onShare, onDelete}) => {
+const PostCard = ({post, onReact, onComment, onShare, onDelete, onEdit}) => {
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false)
   const [showComments, setShowComments] = useState(false)
+  const [editPost, setEditPost] = useState(false)
   const [showReactionChooser, setShowReactionChooser] = useState(false)
   const [isChoosing, setIsChoosing] = useState(false)
   const totalReact = post?.reactionStats?.like+post?.reactionStats?.love+post?.reactionStats?.haha+post?.reactionStats?.wow+post?.reactionStats?.sad+post?.reactionStats?.angry
@@ -73,23 +73,38 @@ const handleSinglePost = ()  => {
     },0)
   }
   const userPostPlaceholder = post?.user?.username?.split(" ").map((name) => name[0]).join(""); // tên người đăng bài viết tắt
+
+
+  //Các biến và hàm cho Lấy top cảm xúc
   const [topReactions, setTopReactions] = useState([]);
+  const [reactionUserGroups, setReactionUserGroups] = useState({}); // Lưu danh sách user theo từng reaction
+  const [currentReactionDetail, setCurrentReaction] = useState("like");
   useEffect(() => {
-    setReaction(post?.reactions?.find(react=>react?.user == user?._id)?post?.reactions?.find(react=>react?.user == user?._id).type:null)
+    setReaction(post?.reactions?.find(react=>react?.user?._id == user?._id)?post?.reactions?.find(react=>react?.user?._id == user?._id).type:null)
     //đảm bảo object hợp lệ
       if (!post?.reactionStats || typeof post?.reactionStats !== "object") {
       setTopReactions([]);
+      setReactionUserGroups({});
       return;
   }
+  const reactionGroups = post.reactions.reduce((acc, react) => {
+    if (!acc[react.type]) {
+        acc[react.type] = [];
+    }
+    acc[react.type].push(react.user);
+    return acc;
+}, {});
     // cập nhật danh sách top reactions
-    const filteredReactions = Object.entries(post?.reactionStats)
-        .filter(([key, value]) => value > 0) // loại bỏ reaction có số lượng = 0
-        .sort((a, b) => b[1] - a[1]) // sắp xếp giảm dần theo số lượng
-        .slice(0, 3); // lấy 3 reaction nhiều nhất
-    
-    setTopReactions(filteredReactions);
+    const sortedReactions = Object.entries(reactionGroups)
+        .sort((a, b) => b[1].length - a[1].length) // Sắp xếp theo số lượng user
+        .slice(0, 3); // Lấy top 3 reactions
+        setTopReactions(sortedReactions.map(([reaction]) => reaction));
+        setReactionUserGroups(reactionGroups);
 }, [post?.reactionStats]); // Chạy lại khi reactionStats thay đổi
 
+
+
+  //Các biến và hàm cho Chia Sẻ Bài Viết
   const generateSharedLink = () => {
     return `http://localhost:3000/posts/${post?._id}`; //sau khi deploy thì đổi lại + tạo trang bài viết đi!!!!
   };
@@ -118,8 +133,10 @@ const handleSinglePost = ()  => {
     onShare()
     setIsShareDialogOpen(false);
   };
+
+
+  //Các hàm nhỏ :))
   const handleReaction = (reaction) => {
-    console.log("(PostCard.jsx/handleReaction) Reaction in post that has id", post?._id,":", reaction)
     setIsChoosing(false)  //đã chọn được 'cảm xúc'
     onReact(reaction);
     setShowReactionChooser(false); // Ẩn thanh reaction sau khi chọn
@@ -127,7 +144,56 @@ const handleSinglePost = ()  => {
   const handleDeletePost = () =>{
     onDelete();
   }
+  const [reactDetailOpen, setReactDetailOpen] = useState(false)
+  const handleReactionDetail =()=>{
+    setReactDetailOpen(true);
+  }
 
+  
+  //Các biến và hàm cho Chỉnh Sửa Bài Viết
+  const [postContent, setPostContent] = useState("")
+  const [filePreview, setFilePreview] = useState(null)
+  const [selectedFile, setSelectedFile] = useState(null)
+  const [fileType, setFileType] = useState(null)
+  const [loading, setLoading] = useState(false)
+  const fileInputRef = useRef(null)
+  const handleFileChange = (event) => {
+    const file = event.target.files[0]
+    setSelectedFile(file)
+    setFileType(file.type)
+    setFilePreview(URL.createObjectURL(file))
+  }
+
+  const handleEditPost = async() => {
+    try {
+      setLoading(true)
+      const formData = new FormData()
+      formData.append('content', postContent)
+      if(selectedFile){
+        formData.append('media',selectedFile)
+      }
+      //Không thay đổi thì selectedFile = null, filePreview là url
+      //Có thay đổi ảnh thì selectedFile = file
+      //Xóa ảnh thì selectedFile = filePreview = null
+      if(selectedFile){
+        formData.append('flag', 1)
+      }else if(!selectedFile && filePreview){
+        formData.append('flag', 0)
+      }else{
+        formData.append('flag', -1)
+      }
+      await onEdit(formData)
+      setPostContent('')
+      setSelectedFile(null)
+      setFilePreview(null)
+      setFileType(null)
+      setLoading(false)
+      setEditPost(false);
+    } catch (error) {
+      console.log(error)
+      setLoading(false)
+    }
+  }
   return (
     <motion.div
       key={post?._id}
@@ -162,6 +228,18 @@ const handleSinglePost = ()  => {
             </Button>
             {dropdownOpen && (
             <div className="absolute top-10 right-4 w-40 bg-white border border-gray-300 rounded-md shadow-lg" ref={dropdownRef}>
+              <button className="block w-full px-4 py-2 text-left hover:bg-gray-200 flex items-center gap-2"
+              onClick={()=>{
+                setDropdownOpen(false)
+                setEditPost(true)
+                setPostContent(post?.content)
+                setFileType(post?.mediaType)
+                setFilePreview(post?.mediaUrl)
+              }}
+              >
+                <Pencil style={{ width: "20px", height: "20px" }}/>
+                Sửa bài viết
+              </button>
               <button className="block w-full px-4 py-2 text-left text-red-600 hover:bg-gray-200 flex items-center gap-2"
               onClick={()=>{
                 setDropdownOpen(false)
@@ -174,6 +252,88 @@ const handleSinglePost = ()  => {
             </div>
             )}
           </div>
+
+
+          {editPost && (
+            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-80 z-50">
+            <div className="flex flex-col justify-center bg-white p-6 rounded-lg shadow-lg w-1/3"> 
+              <p className="text-lg font-bold mb-4 self-center">Sửa bài viết</p>
+              <Textarea
+                placeholder="Bạn muốn chia sẻ điều gì hôm nay?"
+                className="w-full min-h-[100px] text-sm bg-gray-100 p-2 rounded-md mb-5"
+                value={postContent}
+                onChange={(e) => setPostContent(e.target.value)}
+              />
+              {filePreview ? (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="relative w-full bg-gray-100 flex justify-center rounded-md mb-5"
+                >
+                  {filePreview ? (
+                    fileType.startsWith('image') ? (
+                    <img src={filePreview} alt="Preview" className="max-h-[300px] rounded-md " />
+                  ) : (
+                    <video src={filePreview} controls className="max-h-[300px] rounded-md " />
+                  )):null}
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="absolute top-2 right-12 bg-white rounded-full p-1"
+                    onClick={()=>{fileInputRef.current.click()}}
+                  >
+                    <Pencil className="h-5 w-5 text-gray-500" />
+                    <input type="file" accept="image/*,video/*" className="hidden" onChange={handleFileChange} ref={fileInputRef}/>
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="absolute top-2 right-2 bg-white rounded-full p-1"
+                    onClick={() => {
+                      setFilePreview(null)
+                      setSelectedFile(null)
+                    }}
+                  >
+                    <XIcon className="h-5 w-5 text-gray-500" />
+                  </Button>
+                  
+                </motion.div>
+              ):(
+                <div>
+                  <Button variant="ghost" className="flex items-center mb-5" onClick={()=>{fileInputRef.current.click()}}>
+                  <ImageIcon className="h-5 w-5 text-green-500" />
+                  <span>Ảnh/Video</span>
+                  <input type="file" accept="image/*,video/*" className="hidden" onChange={handleFileChange} ref={fileInputRef}/>
+                </Button>
+                </div>
+              )}
+              <div className="flex flex-col justify-center items-center w-full space-y-2">
+                <button
+                  onClick={() => {
+                    handleEditPost();
+                  }}
+                  className="px-4 py-2 text-white w-full rounded-md bg-[#086280] hover:bg-gray-600"
+                >
+                  {loading?"Đang lưu...":"Hoàn Tất"}
+                </button>
+                <button
+                  onClick={() => {
+                    setEditPost(false);
+                    setFilePreview(null)
+                    setSelectedFile(null)
+                    setPostContent('')
+                    setFileType(null)
+                  }}
+                  className="px-4 py-2 text-white w-full rounded-md bg-gray-400 hover:bg-gray-600"
+                >
+                  Hủy
+                </button>
+              </div>
+            </div>
+          </div>
+          )}
+
           
           {popupOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-80 z-50">
@@ -214,11 +374,91 @@ const handleSinglePost = ()  => {
               Trình duyệt của bạn không hỗ trợ thẻ video.
             </video>
           )}
+          {/*Bảng hiện danh sách các người dùng đã bày tỏ cảm xúc*/}
+           {reactDetailOpen && currentReactionDetail && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-80 z-50">
+          <div className="bg-white p-6 h-96 rounded-lg shadow-lg flex flex-col">
+            <div className='flex items-center justify-between gap-40 pb-5'>
+              <div className='flex gap-10 h-10 justify-center items-center'>
+              <motion.button whileHover={{ scale: 1.2 }}  //phóng to biểu tượng lên
+            className={`px-2 py-2 ${currentReactionDetail==="like"?"border-b-2 border-[#086280]":""} `} 
+            onClick={()=>{
+              setCurrentReaction("like")
+            }}>
+              <Image src={"/like.png"} alt="like" width={30} height={30} unoptimized/>
+            </motion.button>
+            <motion.button whileHover={{ scale: 1.2 }} 
+            className={`px-2 py-2 ${currentReactionDetail==="love"?"border-b-2 border-[#086280]":""} `} 
+            onClick={()=>{
+              setCurrentReaction("love")
+            }}>
+            <Image src={"/love.png"} alt="love"  width={30} height={30} unoptimized/>
+            </motion.button>
+            <motion.button whileHover={{ scale: 1.2 }}
+            className={`px-2 py-2 ${currentReactionDetail==="haha"?"border-b-2 border-[#086280]":""} `} 
+            onClick={()=>{
+              setCurrentReaction("haha")
+            }}>
+            <Image src={"/haha.png"} alt="haha"  width={30} height={30} unoptimized/>
+            </motion.button>
+            <motion.button whileHover={{ scale: 1.2 }}
+            className={`px-2 py-2 ${currentReactionDetail==="wow"?"border-b-2 border-[#086280]":""} `}  
+            onClick={()=>{
+              setCurrentReaction("wow")
+            }}>
+              <Image src={"/wow.png"} alt="wow"  width={30} height={30} unoptimized/>
+            </motion.button>
+            <motion.button whileHover={{ scale: 1.2 }}
+            className={`px-2 py-2 ${currentReactionDetail==="sad"?"border-b-2 border-[#086280]":""} `} 
+             onClick={()=>{
+              setCurrentReaction("sad")
+            }}>
+            <Image src={"/sad.png"} alt="sad"  width={30} height={30} unoptimized/>
+            </motion.button>
+            <motion.button whileHover={{ scale: 1.2 }}
+            className={`px-2 py-2 ${currentReactionDetail==="angry"?"border-b-2 border-[#086280]":""} `} 
+            onClick={()=>{
+              setCurrentReaction("angry")
+            }}>
+            <Image src={"/angry.png"} alt="angry"  width={30} height={30} unoptimized/>
+            </motion.button>
+              </div>
+              <Button variant="ghost" className="hover:bg-gray-200" onClick={()=>{
+                setReactDetailOpen(false)
+                setCurrentReaction("like")
+                }}>
+              <X style={{ width: "20px", height: "20px" }}/>
+              </Button>
+            </div>
+              {reactionUserGroups?.[currentReactionDetail]?.map((user,index)=>{
+                return(
+                  <div key={index} className="flex items-center space-x-2 cursor-pointer mb-2 " onClick={() => handleNavigation(`/user-profile/${user?._id}`)}>
+            <Avatar className="h-10 w-10 ml-2">
+              {user?.profilePicture ? (
+                <AvatarImage
+                  src={user?.profilePicture}
+                  alt={user?.username}
+                />
+              ) : (
+                <AvatarFallback>
+                  {user?.username?.split(" ").map((name) => name[0]).join("")}
+                </AvatarFallback>
+              )}
+            </Avatar>
+            <p className="text-sm font-medium leading-none">{user?.username}</p>
+          </div>
+                )
+              })}
+          </div>
+        </div>
+      )}
+        {/*Top 3 cảm xúc nhiều nhất + tính tổng số lượt bày tỏ*/}
           <div className="flex justify-between items-center mb-2">
-            <span className="text-[15px] text-gray-500 hover:underline border-gray-400 cursor-pointer flex">
+            <span className="text-[15px] text-gray-500 hover:underline border-gray-400 cursor-pointer flex"
+            onClick={()=>{handleReactionDetail()}}>
               {
                topReactions.map((reaction)=>(
-                <Image src={`/${reaction[0]}.png`} alt={`${reaction[0]}`}  width={18} height={18} key={reaction[0]}/>
+                <Image src={`/${reaction}.png`} alt={`${reaction}`}  width={18} height={18} key={reaction}/>
                 ))
               }
               &nbsp;

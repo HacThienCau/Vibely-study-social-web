@@ -46,7 +46,7 @@ function QuizCard({ singleQuiz }) {
             <div className="flex justify-between items-center mt-4 pt-4 border-t border-gray-100">
                 <div className="flex items-center">
                     <Image src="/images/target.png" width={20} height={10} alt="" className='mr-2' />
-                    <span className="bg-blue-400 text-white px-2 py-1 rounded-full text-sm font-medium">
+                    <span className="bg-blue-400 text-white px-2 py-1 rounded-full text-[12px] font-medium">
                         Tỉ lệ đúng: {successRate}%
                     </span>
                 </div>

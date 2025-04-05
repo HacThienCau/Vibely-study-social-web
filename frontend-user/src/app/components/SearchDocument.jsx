@@ -36,7 +36,7 @@ const SearchDocument = ({ onSearch, initialQuery = "" }) => {
                 value={query}
                 onChange={handleChange}
                 placeholder="Nhập tên tài liệu..."
-                className="w-5/6 h-10 bg-gray-500/20 rounded-full border-none placeholder-black pl-4"
+                className="w-5/6 h-10 bg-gray-500/20 rounded-full border-none placeholder-black pl-4 input-name-document"
                 onKeyDown={(e) => e.key === "Enter" && handleSearch()}
             />
             <Button

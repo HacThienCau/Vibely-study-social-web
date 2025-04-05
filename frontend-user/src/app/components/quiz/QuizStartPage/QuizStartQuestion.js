@@ -14,28 +14,24 @@ function QuizStartQuestions({ quizData, onUpdateTime }) {
     const [isQuizEnded, setIsQuizEnded] = useState(false);
     const [score, setScore] = useState(0);
     const [currentQuiz, setCurrentQuiz] = useState(quizData);
-
     const [timer, setTimer] = useState(time);
-    // Use useRef for interval to persist between renders
     const intervalRef = React.useRef(null);
+    const [isHandlingTimeout, setIsHandlingTimeout] = useState(false);
 
-    // Separate effect for timer updates
+    // Effect cho timer updates
     useEffect(() => {
-        // Update parent timer whenever our timer changes
         onUpdateTime(timer);
     }, [timer, onUpdateTime]);
 
-    // Effect for managing the interval
+    // Effect cho interval
     useEffect(() => {
-        // Clear any existing interval
         if (intervalRef.current) {
             clearInterval(intervalRef.current);
         }
 
-        // Reset timer
         setTimer(time);
+        setIsHandlingTimeout(false);
 
-        // Set up new interval
         intervalRef.current = setInterval(() => {
             setTimer((currentTime) => {
                 if (currentTime === 0) {
@@ -46,7 +42,6 @@ function QuizStartQuestions({ quizData, onUpdateTime }) {
             });
         }, 1000);
 
-        // Cleanup function
         return () => {
             if (intervalRef.current) {
                 clearInterval(intervalRef.current);
@@ -54,7 +49,38 @@ function QuizStartQuestions({ quizData, onUpdateTime }) {
         };
     }, [currentQuestionIndex]);
 
+    // Effect xử lý khi hết giờ
+    useEffect(() => {
+        const handleTimeOut = async () => {
+            if (timer === 0 && !isQuizEnded && !isHandlingTimeout) {
+                setIsHandlingTimeout(true);
 
+                toast.error('Hết thời gian!');
+
+                const updatedQuiz = { ...currentQuiz };
+                const currentQuestion = updatedQuiz.quizQuestions[currentQuestionIndex];
+
+                if (currentQuestion.answeredResult === -1) {
+                    currentQuestion.statistics.totalAttempts += 1;
+                    currentQuestion.statistics.incorrectAttempts += 1;
+                    currentQuestion.answeredResult = -2;
+                    setCurrentQuiz(updatedQuiz);
+                }
+
+                await new Promise(resolve => setTimeout(resolve, 2000));
+
+                if (currentQuestionIndex === quizQuestions.length - 1) {
+                    setIsQuizEnded(true);
+                    clearInterval(intervalRef.current);
+                } else {
+                    setCurrentQuestionIndex(prev => prev + 1);
+                    setSelectedChoice(null);
+                }
+            }
+        };
+
+        handleTimeOut();
+    }, [timer]);
 
     async function saveDataIntoDB() {
         try {
@@ -74,26 +100,6 @@ function QuizStartQuestions({ quizData, onUpdateTime }) {
     }
 
     useEffect(() => {
-        if (timer === 0 && !isQuizEnded) {
-            // Updating the quiz questions
-            const updatedQuiz = { ...currentQuiz };
-            updatedQuiz.quizQuestions[currentQuestionIndex].statistics.totalAttempts += 1;
-            updatedQuiz.quizQuestions[currentQuestionIndex].statistics.incorrectAttempts += 1;
-
-            setCurrentQuiz(updatedQuiz);
-
-            if (currentQuestionIndex !== quizQuestions.length - 1) {
-                setTimeout(() => {
-                    setCurrentQuestionIndex((current) => current + 1);
-                }, 1000);
-            } else {
-                setIsQuizEnded(true);
-                clearInterval(intervalRef.current);
-            }
-        }
-    }, [timer, isQuizEnded, currentQuestionIndex, quizQuestions.length, currentQuiz]);
-
-    useEffect(() => {
         if (isQuizEnded) {
             // reinitialize all answers to -1
             const updatedQuiz = { ...currentQuiz };
@@ -106,69 +112,60 @@ function QuizStartQuestions({ quizData, onUpdateTime }) {
     }, [isQuizEnded]);
 
     function selectChoiceFunction(choiceIndexClicked) {
+        if (timer === 0 || isHandlingTimeout) return;
         setSelectedChoice(choiceIndexClicked);
-
         const updatedQuiz = { ...currentQuiz };
         updatedQuiz.quizQuestions[currentQuestionIndex].answeredResult = choiceIndexClicked;
         setCurrentQuiz(updatedQuiz);
     }
 
     function moveToTheNextQuestion() {
+        if (timer === 0 || isHandlingTimeout) return;
+
         if (currentQuiz.quizQuestions[currentQuestionIndex].answeredResult === -1) {
             toast.error('Vui lòng chọn một đáp án!');
             return;
         }
 
         const updatedQuiz = { ...currentQuiz };
-        // Update total attempts
         updatedQuiz.quizQuestions[currentQuestionIndex].statistics.totalAttempts += 1;
 
-        // Check if answer is incorrect
-        if (
-            updatedQuiz.quizQuestions[currentQuestionIndex].answeredResult !==
-            updatedQuiz.quizQuestions[currentQuestionIndex].correctAnswer
-        ) {
+        const isCorrect = updatedQuiz.quizQuestions[currentQuestionIndex].answeredResult ===
+            updatedQuiz.quizQuestions[currentQuestionIndex].correctAnswer;
+
+        if (!isCorrect) {
             updatedQuiz.quizQuestions[currentQuestionIndex].statistics.incorrectAttempts += 1;
             setCurrentQuiz(updatedQuiz);
             toast.error('Đáp án sai!');
 
-            if (currentQuestionIndex !== quizQuestions.length - 1) {
-                setTimeout(() => {
-                    setCurrentQuestionIndex((current) => current + 1);
+            setTimeout(() => {
+                if (currentQuestionIndex === quizQuestions.length - 1) {
+                    setIsQuizEnded(true);
+                    clearInterval(intervalRef.current);
+                } else {
+                    setCurrentQuestionIndex(prev => prev + 1);
                     setSelectedChoice(null);
-                }, 1200);
-            } else {
-                setTimer(0);
-                clearInterval(intervalRef.current);
-                setIsQuizEnded(true);
-            }
+                }
+            }, 1500);
             return;
         }
 
-        // Update correct attempts
         updatedQuiz.quizQuestions[currentQuestionIndex].statistics.correctAttempts += 1;
         setCurrentQuiz(updatedQuiz);
-        setScore((prevState) => prevState + 1);
-
+        setScore(prev => prev + 1);
         toast.success('Đáp án đúng!');
 
-        if (
-            currentQuestionIndex === quizQuestions.length - 1 &&
-            updatedQuiz.quizQuestions[currentQuestionIndex].answeredResult ===
-            updatedQuiz.quizQuestions[currentQuestionIndex].correctAnswer
-        ) {
-            setTimer(0);
-            clearInterval(intervalRef.current);
+        if (currentQuestionIndex === quizQuestions.length - 1) {
             setIsQuizEnded(true);
+            clearInterval(intervalRef.current);
             return;
         }
 
         setTimeout(() => {
-            setCurrentQuestionIndex((current) => current + 1);
+            setCurrentQuestionIndex(prev => prev + 1);
             setSelectedChoice(null);
-        }, 2000);
+        }, 1500);
     }
-
 
     return (
         <div className="relative poppins rounded-sm m-9 w-9/12 mt-[20px] ">

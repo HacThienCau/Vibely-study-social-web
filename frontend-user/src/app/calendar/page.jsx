@@ -12,7 +12,7 @@ import { registerLicense } from '@syncfusion/ej2-base';
 import axios from "axios";
 import './schedule.css';
 
-registerLicense('ORg4AjUWIQA/Gnt2XVhhQlJHfVtdXHxLflFzVWJbdVtyflZGcC0sT3RfQFhjSn5RdkVmXn9ZdnRUTw==');
+registerLicense('Ngo9BigBOggjHTQxAR8/V1NNaF5cXmBCe0x3WmFZfVtgdl9DZVZURWYuP1ZhSXxWdkFjWH9cdXFQQ2ZZU0x9XUs=');
 
 const Schedule = () => {
     const [events, setEvents] = useState([]);
