@@ -142,9 +142,9 @@ export const ProfileDetails = ({
         <div className="w-full lg:w-[30%]">
           <Card className="bg-white shadow-md rounded-lg border border-gray-200">
             <CardContent className="p-6">
-              <h2 className="text-xl font-semibold mb-4 dark:text-gray-300">
+              <p className="text-xl font-semibold mb-4 dark:text-gray-300">
                 Giới thiệu
-              </h2>
+              </p>
               {/* Hiện Textarea khi nhấn Chỉnh sửa tiểu sử */}
               {isEditBioModal ? (
                 <div>
@@ -272,9 +272,9 @@ export const ProfileDetails = ({
         <Card className="bg-white shadow-md rounded-lg border border-gray-200">
           <CardContent className="p-6">
             <div className="flex justify-between items-center">
-              <h2 className="text-xl font-semibold mb-4 dark:text-gray-300">
+              <p className="text-xl font-semibold mb-4 dark:text-gray-300">
                 Video
-              </h2>
+              </p>
             </div>
             {/* Grid hiển thị video */}
             {/* <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
@@ -327,9 +327,9 @@ export const ProfileDetails = ({
         <Card className="bg-white shadow-md rounded-lg border border-gray-200">
           <CardContent className="p-6">
             <div className="flex justify-between items-center">
-              <h2 className="text-xl font-semibold mb-4 dark:text-gray-300">
+              <p className="text-xl font-semibold mb-4 dark:text-gray-300">
                 Ảnh
-              </h2>
+              </p>
               {/* <h3 className="text-[#086280] font-semibold cursor-pointer">
                 Thêm ảnh
               </h3> */}

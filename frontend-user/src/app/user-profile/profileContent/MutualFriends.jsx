@@ -52,7 +52,7 @@ export const MutualFriends = ({ id, isOwner }) => {
       <Card className="bg-white shadow-md rounded-lg border border-gray-200 p-4">
         {/* Header + Search */}
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold dark:text-gray-300">Bạn bè</h2>
+          <p className="text-xl font-semibold dark:text-gray-300">Bạn bè</p>
 
           {/* Search + Tabs */}
           <div className="flex items-center space-x-6">

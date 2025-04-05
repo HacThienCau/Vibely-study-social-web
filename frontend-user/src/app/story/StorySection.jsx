@@ -11,7 +11,7 @@ const StorySection = () => {
   const [scrollPosition, setScrollPosition] = useState(0);
   const [maxScroll, setMaxScroll] = useState(0);
   const containerRef = useRef();
-  const {stories, fetchStories, handleReactStory} = usePostStore()
+  const {stories, fetchStories, handleReactStory, handleDeleteStory} = usePostStore()
   useEffect(()=>{
     fetchStories()
   },[fetchStories])
@@ -66,6 +66,10 @@ const StorySection = () => {
             onReact={async(reactType) => {
               await handleReactStory(story?._id, reactType) 
               await fetchStories()// tải lại danh sách
+            }}
+            onDelete={async()=>{
+              await handleDeleteStory(story?._id)
+              await fetchStories()
             }} />
           ))}
         </motion.div>

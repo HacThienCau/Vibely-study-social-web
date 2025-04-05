@@ -357,6 +357,20 @@ const deletePost = async(req,res) =>{
     }
 }
 
+const deleteStory = async(req,res) =>{
+    const { storyId } = req.params;
+    try {
+        const story = await Story.findById(storyId);
+        if (!story) return response(res, 404, "Không tìm thấy story");
+
+       await Story.findByIdAndDelete(storyId)
+       return response(res, 200, "Xóa story thành công", story);
+    } catch (error) {
+        console.error("Lỗi khi xóa bài viết:", error);
+        return response(res, 500, "Xóa story thất bại", error.message);
+    }
+}
+
 const deleteComment = async(req,res) =>{
     const { postId, commentId } = req.params;
     try {
@@ -448,4 +462,4 @@ const likeComment = async(req,res) =>{
     }
 }
 
-module.exports = { createPost, getAllPosts, getPostByUserId, reactPost, addCommentToPost, addReplyToPost, sharePost, createStory, getAllStories, reactStory, deletePost, deleteComment, deleteReply, getSinglePost, likeComment, editPost };
+module.exports = { createPost, getAllPosts, getPostByUserId, reactPost, addCommentToPost, addReplyToPost, sharePost, createStory, getAllStories, reactStory, deletePost, deleteComment, deleteReply, getSinglePost, likeComment, editPost, deleteStory };

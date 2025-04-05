@@ -29,7 +29,7 @@ function QuizzesArea() {
         <div>Loading...</div>
       ) : (
         <div>
-          <h2 className="text-xl font-bold">Vibely Quizzes</h2>
+          <p className="text-xl font-bold">Vibely Quizzes</p>
           <div className="mt-6 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-4">
             {allQuizzes.length > 0 ? (
               allQuizzes.map((singleQuiz, quizIndex) => (

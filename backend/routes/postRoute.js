@@ -1,7 +1,7 @@
 const express = require('express');
 const authMiddleware = require('../middleware/authMiddleware');
 const { multerMiddleware } = require('../config/cloudinary');
-const { createPost, getAllPosts, getPostByUserId, reactPost, addCommentToPost, sharePost, createStory, getAllStories, reactStory, addReplyToPost, deletePost, deleteComment, deleteReply, getSinglePost, likeComment, editPost} = require('../controllers/postController');
+const { createPost, getAllPosts, getPostByUserId, reactPost, addCommentToPost, sharePost, createStory, getAllStories, reactStory, addReplyToPost, deletePost, deleteComment, deleteReply, getSinglePost, likeComment, editPost, deleteStory} = require('../controllers/postController');
 const router = express.Router();
 
 router.post('/posts', authMiddleware, multerMiddleware.single('media'), createPost);
@@ -20,5 +20,6 @@ router.delete('/posts/deleteComment/:postId/:commentId', authMiddleware, deleteC
 router.delete('/posts/deleteReply/:postId/:commentId/:replyId', authMiddleware, deleteReply);
 router.post('/posts/reactComment/:postId', authMiddleware, likeComment);
 router.put('/posts/edit/:postId', authMiddleware, multerMiddleware.single('media'), editPost);
+router.delete('/posts/deleteStory/:storyId', authMiddleware, deleteStory);
 
 module.exports = router;

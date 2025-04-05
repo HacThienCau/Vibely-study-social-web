@@ -8,7 +8,7 @@ import userStore from '@/store/userStore'
 import { usePostStore } from '@/store/usePostStore'
 import ShowStoryPreview from './ShowStoryPreview'
 
-const StoryCard = ({ isAddStory, story, onReact }) => {
+const StoryCard = ({ isAddStory, story, onReact, onDelete }) => {
   const [filePreview, setFilePreview] = useState(null)
   const { handleCreateStory } = usePostStore()
   const { user } = userStore() //lấy thông tin người dùng
@@ -140,11 +140,13 @@ const StoryCard = ({ isAddStory, story, onReact }) => {
           onClose={handleClosePreview}
           onPost={handleCreateStoryPost}
           isNewStory={isNewStory}
-          username={isNewStory ? user?.username : story?.user?.username} //viet story moi thi username cua minh, nguoc lai dang xem cua ng khac
+          userStory={isNewStory ? user : story?.user} //viet story moi thi username cua minh, nguoc lai dang xem cua ng khac
           avatar={isNewStory ? user?.profilePicture : story?.user?.profilePicture}
           isLoading={loading}
+          reactions = {story?.reactions}
           reaction={story?.reactions?.find(react => react?.user?._id.toString() == user?._id) ? "tym" : null}
           onReact={(reactType) => onReact(reactType)}  // chức năng react
+          onDelete={()=> onDelete()}
         />
       )}
     </>

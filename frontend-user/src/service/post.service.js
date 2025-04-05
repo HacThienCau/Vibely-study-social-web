@@ -172,3 +172,13 @@ export const editPost = async (postId, postData) => {
         throw error
     }
 }
+
+export const deleteStory = async (storyId) => {
+    try {
+        const result = await axiosInstance.delete(`/users/posts/deleteStory/${storyId}`)
+        return result?.data?.data
+    } catch (error) {
+        console.error(error)
+        throw error
+    }
+}
