@@ -270,9 +270,9 @@ export const ProfileDetails = ({
         <Card className="bg-white shadow-md rounded-lg border border-gray-200">
           <CardContent className="p-6">
             <div className="flex justify-between items-center">
-              <h2 className="text-xl font-semibold mb-4 dark:text-gray-300">
+              <p className="text-xl font-semibold mb-4 dark:text-gray-300">
                 Video
-              </h2>
+              </p>
               <h3 className="text-[#086280] font-semibold cursor-pointer">
                 Thêm video
               </h3>
@@ -322,9 +322,9 @@ export const ProfileDetails = ({
         <Card className="bg-white shadow-md rounded-lg border border-gray-200">
           <CardContent className="p-6">
             <div className="flex justify-between items-center">
-              <h2 className="text-xl font-semibold mb-4 dark:text-gray-300">
+              <p className="text-xl font-semibold mb-4 dark:text-gray-300">
                 Ảnh
-              </h2>
+              </p>
               {/* <h3 className="text-[#086280] font-semibold cursor-pointer">
                 Thêm ảnh
               </h3> */}

@@ -36,9 +36,9 @@ export const SavedDocuments = () => {
         >
             <Card className="bg-white shadow-md rounded-lg border border-gray-200">
                 <CardContent className="p-6">
-                    <h2 className="text-xl font-semibold mb-4 dark:text-gray-300">
+                    <p className="text-xl font-semibold mb-4 dark:text-gray-300">
                         Tài liệu
-                    </h2>
+                    </p>
 
                     <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-4">
                         {savedDocuments.map((doc) => (
