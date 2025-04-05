@@ -147,9 +147,9 @@ export const ProfileDetails = ({
         <div className="w-full lg:w-[30%]">
           <Card className="bg-white shadow-md rounded-lg border border-gray-200">
             <CardContent className="p-6">
-              <h2 className="text-xl font-semibold mb-4 dark:text-gray-300">
+              <p className="text-xl font-semibold mb-4 dark:text-gray-300">
                 Giới thiệu
-              </h2>
+              </p>
               {/* Hiện Textarea khi nhấn Chỉnh sửa tiểu sử */}
               {isEditBioModal ? (
                 <div>

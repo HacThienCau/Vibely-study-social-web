@@ -135,7 +135,7 @@ const SavedPage = () => {
                     <AiOutlineClose style={{ width: 24, height: 24, color: "black" }} />
                 </Button>
 
-                <h2 className="font-bold text-xl mb-4">Đã lưu</h2>
+                <p className="font-bold text-xl mb-4">Đã lưu</p>
 
                 {/* Thanh tìm kiếm */}
                 <SearchDocument onSearch={setQuery} initialQuery={query} />
