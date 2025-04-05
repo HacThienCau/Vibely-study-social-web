@@ -47,7 +47,7 @@ const StorySection = () => {
       <div
         ref={containerRef}
         onScroll={handleScroll}
-        className='flex space-x-2 overflow-x-hidden py-4'
+        className='flex space-x-2 overflow-x-hidden py-4 md:py-0'
         style={{scrollbarWidth: "none", msOverflowStyle: "none"}}
       >
        <motion.div

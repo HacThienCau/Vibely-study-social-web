@@ -11,17 +11,43 @@ export default function ResetPassword() {
     const [success, setSuccess] = useState(false);
     const router = useRouter();
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         if (password !== confirmPassword) {
             setError("Mật khẩu nhập lại không khớp!");
             return;
         }
-        console.log("Mật khẩu mới:", password);
-        setSuccess(true);
-        setTimeout(() => {
-            router.push("/user-login"); // Điều hướng về trang đăng nhập
-        }, 3000); // Chuyển hướng sau 3 giây
+
+        try {
+            const token = localStorage.getItem('token'); // Lấy token từ localStorage
+            const response = await fetch('http://localhost:8080/auth/change-password', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    oldPassword: oldPassword,
+                    newPassword: password
+                })
+            });
+
+            const data = await response.json();
+            
+            if (!response.ok) {
+                setError(data.message);
+                return;
+            }
+
+            setSuccess(true);
+            setError('');
+            setTimeout(() => {
+                router.push("/user-login");
+            }, 3000);
+        } catch (error) {
+            setError("Đã xảy ra lỗi khi đổi mật khẩu");
+            console.error("Lỗi:", error);
+        }
     };
 
     return (
