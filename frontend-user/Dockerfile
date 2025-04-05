@@ -13,6 +13,16 @@ RUN npm install
 # Copy toàn bộ code frontend
 COPY . .
 
+# Định nghĩa các ARG để nhận giá trị khi build
+ARG URL
+ARG NEXT_PUBLIC_BACKEND_URL
+ARG PUBLIC_FOLDER
+
+# Set các biến môi trường từ ARG
+ENV URL=${URL}
+ENV NEXT_PUBLIC_BACKEND_URL=${NEXT_PUBLIC_BACKEND_URL}
+ENV PUBLIC_FOLDER=${PUBLIC_FOLDER}
+
 # Build Next.js
 RUN npm run build
 
