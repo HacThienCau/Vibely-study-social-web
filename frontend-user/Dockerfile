@@ -23,9 +23,6 @@ ENV URL=${URL}
 ENV NEXT_PUBLIC_BACKEND_URL=${NEXT_PUBLIC_BACKEND_URL}
 ENV PUBLIC_FOLDER=${PUBLIC_FOLDER}
 
-# Build Next.js
-RUN npm run build
-
 # Sử dụng lightweight server để chạy production
 FROM node:18-alpine
 WORKDIR /app
@@ -37,4 +34,4 @@ COPY --from=builder /app ./
 EXPOSE 3000
 
 # Khởi động Next.js app
-CMD ["npm", "start"]
+CMD ["npm", "run", "dev"]

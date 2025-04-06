@@ -10,18 +10,16 @@ The Vibely educational social networking website is an online platform that comb
 Table of Contents
 -----------------
 
--   [Features](#features)
--   [System Architecture Overview](#system-architecture-overview)
--   [Future Scope](#future-scope)
--   [Tech Stack](#tech-stack)
--   [Installation](#installation)
--   [Setting Up Environment Variables](#setting-up-environment-variables)
--   [Running the Project](#running-the-project)
-    -   [Frontend](#frontend)
-    -   [Backend](#backend)
--   [Build and Deployment](#build-and-deployment)
--   [Contributing](#contributing)
--   [License](#license)
+- [Vibely Educational Social Web](#vibely-educational-social-web)
+  - [Table of Contents](#table-of-contents)
+  - [Features](#features)
+    - [**User Features**:](#user-features)
+    - [**Admin Features**:](#admin-features)
+  - [Tech Stack](#tech-stack)
+  - [Setting Up Environment Variables](#setting-up-environment-variables)
+  - [Running the Project](#running-the-project)
+  - [Build and Deployment](#build-and-deployment)
+    - [**Phase 1: Initial Setup and Deployment**](#phase-1-initial-setup-and-deployment)
 
 * * * * *
 Features
@@ -64,71 +62,54 @@ Tech Stack
 -   **Package Manager**: npm (for frontend and backend dependencies), pip (for chatbot backend dependencies)
 -   **Database**: MongoDB
 
-Diagram
+* * * * *
+Setting Up Environment Variables
 ----------
-```mermaid
-flowchart TD
-    %% Frontend Layer
-    subgraph "Frontend Layer"
-        FE_USER["Frontend-User"]:::frontend
-        FE_ADMIN["Frontend-Admin"]:::frontend
-    end
+* * * * *
 
-    %% Backend Layer
-    subgraph "Backend Layer"
-        BE_API["Backend API"]:::backend
-        API_DOC["API Documentation (Swagger)"]:::backend
-    end
+Running the Project
+----------
+* * * * *
 
-    %% Data & External Services
-    subgraph "Data & External"
-        DB["Database (MongoDB)"]:::database
-        CLOUD["Cloudinary Integration"]:::external
-    end
+Build and Deployment
+----------
+### **Phase 1: Initial Setup and Deployment**
 
-    %% Real-Time & AI Services
-    subgraph "Real-Time & AI Services"
-        SOCKET["Socket Server"]:::socket
-        CHATBOT["Chatbot Service"]:::chatbot
-        AI["External AI Providers"]:::external
-    end
+**Step 1: Launch EC2 (Ubuntu 22.04):**
 
-    %% CI/CD & Testing
-    CI_CD["CI/CD & Testing"]:::ciCD
+- Provision an EC2 instance on AWS with Ubuntu 22.04.
+- Connect to the instance using SSH.
 
-    %% Connections
-    FE_USER -->|"calls"| BE_API
-    FE_ADMIN -->|"calls"| BE_API
-    BE_API -->|"docs-in"| API_DOC
-    BE_API -->|"reads/writes"| DB
-    BE_API -->|"media"| CLOUD
-    BE_API <-->|"real-time"| SOCKET
-    BE_API -->|"AIquery"| CHATBOT
-    CHATBOT -->|"calls"| AI
-    SOCKET -->|"updates"| FE_USER
-    SOCKET -->|"updates"| FE_ADMIN
-    CI_CD --- FE_USER
-    CI_CD --- FE_ADMIN
-    CI_CD --- BE_API
-    CI_CD --- SOCKET
-    CI_CD --- CHATBOT
+**Step 2: Clone the Code:**
 
-    %% Click Events
-    click FE_USER "https://github.com/vonhatphuongahihi/vibely-study-social-web/tree/main/frontend-user"
-    click FE_ADMIN "https://github.com/vonhatphuongahihi/vibely-study-social-web/tree/main/frontend-admin"
-    click BE_API "https://github.com/vonhatphuongahihi/vibely-study-social-web/tree/main/backend"
-    click CHATBOT "https://github.com/vonhatphuongahihi/vibely-study-social-web/tree/main/chatbot-backend"
-    click SOCKET "https://github.com/vonhatphuongahihi/vibely-study-social-web/tree/main/socket"
-    click DB "https://github.com/vonhatphuongahihi/vibely-study-social-web/blob/main/backend/config/db.js"
-    click CLOUD "https://github.com/vonhatphuongahihi/vibely-study-social-web/blob/main/backend/config/cloudinary.js"
-    click API_DOC "https://github.com/vonhatphuongahihi/vibely-study-social-web/blob/main/backend/API/swagger.yaml"
-    click CI_CD "https://github.com/vonhatphuongahihi/vibely-study-social-web/tree/main/tests"
+- Update all the packages and then clone the code.
+- Clone your application's code repository onto the EC2 instance:
+    
+    ```bash
+    git clone https://github.com/vonhatphuongahihi/Vibely-study-social-web
+    ```
 
-    %% Styles
-    classDef frontend fill:#ADD8E6,stroke:#000,stroke-width:2px;
-    classDef backend fill:#90EE90,stroke:#000,stroke-width:2px;
-    classDef chatbot fill:#FFDAB9,stroke:#000,stroke-width:2px;
-    classDef socket fill:#E6E6FA,stroke:#000,stroke-width:2px;
-    classDef database fill:#FFFACD,stroke:#000,stroke-width:2px;
-    classDef external fill:#FFB6C1,stroke:#000,stroke-width:2px;
-    classDef ciCD fill:#D3D3D3,stroke:#000,stroke-width:2px;
+**Step 3: Install Docker and Run the App Using a Container:**
+
+- Set up Docker on the EC2 instance:
+    
+    ```bash
+    
+    sudo apt-get update
+    sudo apt-get install docker.io -y
+    sudo usermod -aG docker $USER  # Replace with your system's username, e.g., 'ubuntu'
+    newgrp docker
+    sudo chmod 777 /var/run/docker.sock
+    ```
+    
+- Build and run your application using Docker containers:
+    
+    ```bash
+    docker build -t netflix .
+    docker run -d --name netflix -p 8081:80 netflix:latest
+    
+    #to delete
+    docker stop <containerid>
+    docker rmi -f netflix
+    ```
+* * * * *
