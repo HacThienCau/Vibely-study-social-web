@@ -20,7 +20,7 @@ export default function ResetPassword() {
 
         try {
             const token = localStorage.getItem('token'); // Lấy token từ localStorage
-            const response = await fetch('http://localhost:8080/auth/change-password', {
+            const response = await fetch('https://vibely-study-social-web.onrender.com/auth/change-password', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -33,7 +33,7 @@ export default function ResetPassword() {
             });
 
             const data = await response.json();
-            
+
             if (!response.ok) {
                 setError(data.message);
                 return;

@@ -27,11 +27,15 @@ const Homepage = () => {
         <LeftSideBar />
         <div className="flex-1 px-4 py-6 md:ml-64 lg:mr-64 lg:max-w-2xl xl:max-w-3xl mxx-auto">
           <div className="lg:ml-2 xl:ml-28">
-            <StorySection />
-            <NewPostForm
-              isPostFormOpen={isPostFormOpen}
-              setIsPostFormOpen={setIsPostFormOpen}
-            />
+            <div className="-mt-8">
+              <StorySection />
+            </div>
+            <div className="mt-6">
+              <NewPostForm
+                isPostFormOpen={isPostFormOpen}
+                setIsPostFormOpen={setIsPostFormOpen}
+              />
+            </div>
 
             <div className='mt-6 space-y-6'>
               {posts.map(post => (
@@ -54,7 +58,7 @@ const Homepage = () => {
                     await handleDeletePost(post?._id)
                     await fetchPosts()
                   }}
-                  onEdit={async(postData)=>{
+                  onEdit={async (postData) => {
                     await handleEditPost(post?._id, postData)
                     await fetchPosts()
                   }}
