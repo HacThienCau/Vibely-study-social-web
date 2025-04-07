@@ -13,6 +13,9 @@ RUN npm install
 # Copy toàn bộ code frontend
 COPY . .
 
+# Build ứng dụng (cho production)
+RUN npm run build
+
 # Định nghĩa các ARG để nhận giá trị khi build
 ARG NEXT_PUBLIC_BACKEND_URL
 
@@ -26,8 +29,8 @@ WORKDIR /app
 # Copy code đã build từ container trước
 COPY --from=builder /app ./
 
-# Lắng nghe trên cổng 3001
+ENV PORT=3001
+
 EXPOSE 3001
 
-# Khởi động Next.js app
-CMD ["npm", "run", "dev", "-p", "3001"]
+CMD ["npm", "run", "dev"]

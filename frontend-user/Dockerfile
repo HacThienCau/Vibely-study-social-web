@@ -35,8 +35,6 @@ ENV URL=${URL}
 ENV NEXT_PUBLIC_BACKEND_URL=${NEXT_PUBLIC_BACKEND_URL}
 ENV PUBLIC_FOLDER=${PUBLIC_FOLDER}
 
-EXPOSE 3000
-
 # Chạy server production
 CMD ["npm", "start"]
 
@@ -55,5 +53,7 @@ ENV PUBLIC_FOLDER=${PUBLIC_FOLDER}
 
 EXPOSE 3000
 
+ENV PORT=3000
+
 # Chạy server development
-CMD ["npm", "run", "dev", "--", "--turbo=false"]
+CMD ["npm", "run", "dev"]
