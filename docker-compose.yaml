@@ -25,7 +25,8 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./frontend-user:/app
+      - ./frontend-user/public:/app/public  
+      - ./frontend-user/package.json:/app/package.json 
       - /app/node_modules
     stdin_open: true
     tty: true
@@ -37,7 +38,8 @@ services:
     ports:
       - "3001:3001"
     volumes:
-      - ./frontend-admin:/app
+      - ./frontend-admin/public:/app/public  
+      - ./frontend-admin/package.json:/app/package.json 
       - /app/node_modules
     stdin_open: true
     tty: true
