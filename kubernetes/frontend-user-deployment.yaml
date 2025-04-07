@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-user
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend-user
+  template:
+    metadata:
+      labels:
+        app: frontend-user
+    spec:
+      containers:
+        - name: frontend-user
+          image: frontend-user
+          ports:
+            - containerPort: 3000
