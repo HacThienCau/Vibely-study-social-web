@@ -1,6 +1,6 @@
 services:
   backend:
-    image: backend
+    image: vonhatphuongahihi/backend
     ports:
       - "8080:8080"
     volumes:
@@ -11,7 +11,7 @@ services:
       - ./backend/.env
 
   socket:
-    image: socket
+    image: vonhatphuongahihi/socket
     ports:
       - "8900:8900"
     volumes:
@@ -21,7 +21,7 @@ services:
       - backend
 
   frontend-user:
-    image: frontend-user
+    image: vonhatphuongahihi/frontend-user
     ports:
       - "3000:3000"
     volumes:
@@ -33,7 +33,7 @@ services:
       - backend
 
   frontend-admin:
-    image: frontend-admin
+    image: vonhatphuongahihi/frontend-admin
     ports:
       - "3001:3001"
     volumes:
