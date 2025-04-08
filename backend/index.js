@@ -25,6 +25,7 @@ const adminInformationRoute = require('./routes/adminInformationRoute');
 const forgotPasswordRoute = require('./routes/forgotPassword');
 const quizRoute = require('./routes/quizRoute');
 const YAML = require('yamljs');
+const createDefaultAdmin = require('./utils/createDefaultAdmin');
 
 const swaggerDocument = YAML.load(path.join(__dirname, 'API/swagger.yaml'));
 
@@ -50,7 +51,10 @@ app.use(cors(corsOptions));
 
 
 
-connectDb();
+connectDb().then(() => {
+    // Tạo admin mặc định sau khi kết nối database thành công
+    createDefaultAdmin();
+});
 app.use(passport.initialize())
 
 //API Route

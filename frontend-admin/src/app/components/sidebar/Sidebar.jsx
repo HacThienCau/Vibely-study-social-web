@@ -4,6 +4,8 @@ import useSidebarStore from "@/store/sidebarStore";
 import userStore from "@/store/userStore";
 import { usePathname, useRouter } from "next/navigation";
 import React from 'react';
+import { logoutAdmin } from "@/service/authAdmin.service";
+import { toast } from "react-hot-toast";
 
 const SidebarItem = ({ path, icon, label, onClick }) => {
     const router = useRouter();
@@ -45,11 +47,16 @@ const Sidebar = () => {
     const { user } = userStore();
     const router = useRouter();
 
-    const handleLogout = () => {
-        localStorage.removeItem("authToken");
-        sessionStorage.removeItem("authToken");
-        userStore.setState({ user: null });
-        router.push("/admin-login");
+    const handleLogout = async () => {
+        try {
+            await logoutAdmin();
+            localStorage.removeItem("adminToken");
+            userStore.setState({ user: null });
+            router.push("/admin-login");
+        } catch (error) {
+            console.error("Lỗi đăng xuất:", error);
+            toast.error("Có lỗi xảy ra khi đăng xuất");
+        }
     };
 
     const menuItems = [

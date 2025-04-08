@@ -202,9 +202,7 @@ const UsersPage = () => {
                     <th className="px-4 py-3 text-gray-600 font-medium">
                       NGÀY THAM GIA
                     </th>
-                    <th className="px-4 py-3 text-gray-600 font-medium text-center">
-                      SỐ BÀI VIẾT
-                    </th>
+
                     <th className="px-4 py-3"></th>
                   </tr>
                 </thead>
@@ -253,9 +251,7 @@ const UsersPage = () => {
                       <td className="px-4 py-3 text-gray-600">
                         {new Date(user.createdAt).toLocaleDateString("vi-VN")}
                       </td>
-                      <td className="px-4 py-3 text-gray-600 text-center">
-                        {user.posts?.length || 0}
-                      </td>
+                      
                       <td className="px-4 py-3 text-right">
                         <button
                           className="text-red-400 hover:text-red-600 transition-colors duration-200"
