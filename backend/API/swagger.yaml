@@ -365,7 +365,7 @@ paths:
         - BearerAuth: []
       responses:
         200:
-          description: List of friend requests
+          description: Get all friend requests successfully
 
   /users/user-to-request:
     get:
@@ -375,7 +375,7 @@ paths:
         - BearerAuth: []
       responses:
         200:
-          description: List of suggested users
+          description: Get all suggested friends successfully
 
   /users/mutual-friends/{userId}:
     get:
@@ -391,7 +391,7 @@ paths:
             type: string
       responses:
         200:
-          description: List of mutual friends
+          description: Get mutual friends successfully
  
 
   /users/check-auth:
@@ -409,7 +409,7 @@ paths:
   /users/bio/{userId}:
     put:
       tags: [Users]
-      summary: Update user bio
+      summary: Create or update user bio
       security:
         - BearerAuth: []
       parameters:
@@ -425,16 +425,40 @@ paths:
             schema:
               type: object
               properties:
-                bio:
+                bioText:
+                  type: string
+                liveIn:
+                  type: string
+                workplace:
+                  type: string
+                education:
+                  type: string
+                hometown:
                   type: string
       responses:
         200:
-          description: Bio updated successfully
-
+          description: Bio created or updated successfully
+  
   /users/profile/{userId}:
+    get:
+      tags: [Users]
+      summary: Get logged-in user's profile
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: User profile retrieved successfully
+        404:
+          description: User not found
     put:
       tags: [Users]
-      summary: Update user profile picture
+      summary: Update user profile
       security:
         - BearerAuth: []
       parameters:
@@ -449,13 +473,26 @@ paths:
           multipart/form-data:
             schema:
               type: object
+              required:
+                - username
+                - gender
+                - dateOfBirth
               properties:
                 profilePicture:
                   type: string
                   format: binary
+                username:
+                  type: string
+                gender:
+                  type: string
+                dateOfBirth:
+                  type: string
+                  format: date
       responses:
         200:
-          description: Profile picture updated successfully
+          description: Profile updated successfully
+        404:
+          description: User not found
 
   /users/profile/cover-picture/{userId}:
     put:
@@ -482,6 +519,10 @@ paths:
       responses:
         200:
           description: Cover picture updated successfully
+        400:
+          description: Invalid file type or size
+        404:
+          description: User not found
 
   /users/get-users:
     post:
@@ -509,6 +550,8 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/User'
+        400:
+          description: Invalid input data
 
   /users/saved:
     get:
@@ -531,13 +574,7 @@ paths:
             type: string
       responses:
         200:
-          description: List of saved documents
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Document'
+          description: Get saved documents successfully
 
   /users/saved/{id}:
     get:
@@ -553,11 +590,7 @@ paths:
             type: string
       responses:
         200:
-          description: Document details
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Document'
+          description: Document details retrieved successfully  
     delete:
       tags: [Users]
       summary: Unsave a document
@@ -572,28 +605,8 @@ paths:
       responses:
         200:
           description: Document unsaved successfully
-    put:
-      tags: [Users]
-      summary: Update user profile
-      security:
-        - BearerAuth: []
-      requestBody:
-        required: true
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              properties:
-                avatar:
-                  type: string
-                  format: binary
-                username:
-                  type: string
-                bio:
-                  type: string
-      responses:
-        200:
-          description: Profile updated successfully
+        404:
+          description: Document not found
 
   # Post Routes
   /users/posts:
@@ -963,6 +976,11 @@ paths:
         - BearerAuth: []
       parameters:
         - in: query
+          name: query
+          schema:
+            type: string
+          description: Filter by document title
+        - in: query
           name: level
           schema:
             type: string
@@ -998,7 +1016,7 @@ paths:
       requestBody:
         required: true
         content:
-          multipart/form-data:
+          application/json:
             schema:
               type: object
               required:
@@ -1006,7 +1024,8 @@ paths:
                 - pages
                 - level
                 - subject
-                - file
+                - fileType
+                - fileUrl
               properties:
                 title:
                   type: string
@@ -1016,9 +1035,12 @@ paths:
                   type: string
                 subject:
                   type: string
-                file:
+                fileType:
                   type: string
-                  format: binary
+                  enum: [pdf, docx]
+                fileUrl:
+                  type: string
+                  format: uri
       responses:
         201:
           description: Document created successfully
@@ -1057,9 +1079,16 @@ paths:
       requestBody:
         required: true
         content:
-          multipart/form-data:
+          application/json:
             schema:
               type: object
+              required:
+                - title
+                - pages
+                - level
+                - subject
+                - fileType
+                - fileUrl
               properties:
                 title:
                   type: string
@@ -1069,14 +1098,19 @@ paths:
                   type: string
                 subject:
                   type: string
-                file:
+                fileType:
                   type: string
-                  format: binary
+                  enum: [pdf, docx]
+                fileUrl:
+                  type: string
+                  format: uri
       responses:
         200:
           description: Document updated successfully
         404:
           description: Document not found
+        400:
+          description: Invalid input data
 
     delete:
       tags: [Documents]
@@ -1124,6 +1158,8 @@ paths:
       responses:
         201:
           description: Level created successfully
+        400:
+          description: Level already exists
 
   /documents/subjects/{levelId}:
     get:
@@ -1164,6 +1200,10 @@ paths:
       responses:
         201:
           description: Subject created successfully
+        400:
+          description: Subject already exists
+        404:
+          description: Level not found
 
   /documents/save:
     post:
@@ -1185,6 +1225,8 @@ paths:
       responses:
         200:
           description: Document saved successfully
+        400:
+          description: Document already saved
 
 
   # Quiz Routes
@@ -1581,7 +1623,7 @@ paths:
           name: status
           schema:
             type: string
-            enum: ["Pending", "Responded"]
+            enum: ["Chưa phản hồi", "Đã phản hồi"]
           description: Filter by status
       responses:
         200:
@@ -1626,7 +1668,9 @@ paths:
               properties:
                 status:
                   type: string
-                  enum: ["Pending", "Responded"]
+                  enum:
+                    - Đã phản hồi
+                  description: Inquiry status
                 response:
                   type: string
                   description: Response content
