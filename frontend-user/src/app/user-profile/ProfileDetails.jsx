@@ -36,7 +36,6 @@ export const ProfileDetails = ({
       // Gửi API cập nhật
       const updatedBio = await createOrUpdateUserBio(id, { bioText: tempBio });
 
-
       // Cập nhật dữ liệu mới vào state
       setProfileData((prev) => ({
         ...prev,
@@ -179,9 +178,7 @@ export const ProfileDetails = ({
                   </p>
                   {isOwner && (
                     <Button
-
-                      className="w-full bg-[#A6A7AA] text-white mb-4 edit-bio"
-
+                      className="w-full bg-[#086280] text-white mb-4 edit-bio"
                       onClick={() => setIsEditBioModal(true)}
                     >
                       Chỉnh sửa tiểu sử
@@ -240,25 +237,37 @@ export const ProfileDetails = ({
         </div>
         {/* Bài viết đã đăng của người dùng */}
         <div className="w-full lg:w-[70%] space-y-6 mb-4">
-          {userPosts?.map((post) => (
-            <PostsContent
-              key={post?._id}
-              post={post}
-              reaction={reactPosts[post?._id] || null} //loại react
-              onReact={(reactType) => handleReact(post?._id, reactType)} // chức năng react
-              onComment={async (commentText) => {
-                //chức năng comment
-                //console.log("onComment: ",commentText)
-                await handleCommentPost(post?._id, commentText);
-                await fetchUserPost(id);
-              }}
-              onShare={async () => {
-                //chức năng share
-                await handleSharePost(post?._id);
-                await fetchUserPost(id);
-              }}
-            />
-          ))}
+          {userPosts?.length > 0 ? (
+            userPosts.map((post) => (
+              <PostsContent
+                key={post?._id}
+                post={post}
+                reaction={reactPosts[post?._id] || null} // Loại react
+                onReact={(reactType) => handleReact(post?._id, reactType)} // Chức năng react
+                onComment={async (commentText) => {
+                  // Chức năng comment
+                  await handleCommentPost(post?._id, commentText);
+                  await fetchUserPost(id);
+                }}
+                onShare={async () => {
+                  // Chức năng share
+                  await handleSharePost(post?._id);
+                  await fetchUserPost(id);
+                }}
+              />
+            ))
+          ) : (
+            <div className="flex flex-col items-center justify-center text-center space-y-4">
+                <img
+                  src="/nopost.png"
+                  alt="No posts illustration"
+                  className="h-[280px] mx-auto"
+                />
+                <p className="text-center text-gray-500">
+                  Chưa có bài viết
+                </p>
+              </div>
+          )}
         </div>
       </div>
     ),
@@ -310,7 +319,16 @@ export const ProfileDetails = ({
                   ))}
               </div>
             ) : (
-              <p className="text-center text-gray-500">Chưa có video</p>
+              <div className="flex flex-col items-center justify-center text-center space-y-4">
+                <img
+                  src="/novideo.png"
+                  alt="No posts illustration"
+                  className="h-[180px] mx-auto"
+                />
+                <p className="text-center text-gray-500">
+                  Bạn chưa đăng Video nào
+                </p>
+              </div>
             )}
           </CardContent>
         </Card>
@@ -335,18 +353,33 @@ export const ProfileDetails = ({
               </h3> */}
             </div>
             <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-              {userPosts
-                ?.filter(
-                  (post) => post?.mediaType === "image" && post?.mediaUrl
-                )
-                .map((post) => (
-                  <img
-                    key={post?._id}
-                    src={post?.mediaUrl}
-                    alt="user_all_photos"
-                    className="w-[200px] h-[150px] object-cover rounded-lg"
-                  />
-                ))}
+              {userPosts?.filter(
+                (post) => post?.mediaType === "image" && post?.mediaUrl
+              ).length === 0 ? (
+                <div className="flex flex-col items-center justify-center text-center space-y-4 col-span-full">
+  <img
+    src="/novideo.png"
+    alt="No posts illustration"
+    className="h-[180px] mx-auto"
+  />
+  <p className="text-center text-gray-500">
+    Bạn chưa đăng hình ảnh nào
+  </p>
+</div>
+              ) : (
+                userPosts
+                  .filter(
+                    (post) => post?.mediaType === "image" && post?.mediaUrl
+                  )
+                  .map((post) => (
+                    <img
+                      key={post?._id}
+                      src={post?.mediaUrl}
+                      alt="user_all_photos"
+                      className="w-[200px] h-[150px] object-cover rounded-lg"
+                    />
+                  ))
+              )}
             </div>
           </CardContent>
         </Card>

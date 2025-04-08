@@ -16,6 +16,7 @@ import {
 import { createOrUpdateUserBio, updateUserCoverPhoto, updateUserProfile } from "@/service/user.service";
 import userStore from "@/store/userStore";
 import { useForm } from "react-hook-form";
+import { userFriendStore } from "@/store/userFriendsStore";
 
 const ProfileHeader = ({
   id,
@@ -34,6 +35,12 @@ const ProfileHeader = ({
     education: profileData?.bio?.education,
   });
 
+  const { fetchMutualFriends, mutualFriends } = userFriendStore();
+  useEffect(() => {
+      if (id) {
+        fetchMutualFriends(id);
+      }
+    }, [id, fetchMutualFriends]);
 
   const [profilePictureFile, setProfilePictureFile] = useState(null);
   const [coverPhotoFile, setCoverPhotoFile] = useState(null);
@@ -206,7 +213,7 @@ const ProfileHeader = ({
           <div className="mt-4 mdLmt-0 text-center md:text-left flex-grow">
             <h1 className="text-3xl font-bold">{profileData?.username}</h1>
             <p className="text-gray-400 font-semibold">
-              {profileData?.followerCount} người bạn
+            {mutualFriends.length} người bạn
             </p>
           </div>
           {isOwner && (
