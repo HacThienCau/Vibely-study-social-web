@@ -32,11 +32,9 @@ const Page = () => {
     const onSubmit = async (data) => {
         setLoading(true);
         try {
-            const response = await loginAdmin(data); // Gọi API đăng nhập admin
+            const response = await loginAdmin(data);
 
-            // Kiểm tra nếu API trả về thành công
             if (response?.status === "success" && response?.data?.token) {
-                localStorage.setItem("adminToken", response.data.token); // Lưu token
                 toast.success("Đăng nhập thành công!");
                 router.push("/admin/dashboard");
             } else {
@@ -90,12 +88,9 @@ const Page = () => {
                                     className="w-full bg-[#23CAF1] text-white mt-5"
                                     type="submit"
                                     disabled={loading}
-                                    onClick={() => router.push("/admin/dashboard")}
                                 >
                                     {loading ? "Đang đăng nhập..." : <><LogIn className="mr-2 w-4 h-4" /> Đăng nhập</>}
                                 </Button>
-
-
                             </div>
                         </form>
                     </CardContent>
