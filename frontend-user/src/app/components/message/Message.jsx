@@ -14,7 +14,7 @@ export default function Message({ message, own }) {
       try {
         const token = localStorage.getItem("token");
         const res = await axios.post(
-          "https://vibely-study-social-web.onrender.com/users/get-users",
+          "http://localhost:8080/users/get-users",
           { userIds: [message.sender] },
           { headers: { Authorization: `Bearer ${token}` } }
         );
@@ -33,7 +33,7 @@ export default function Message({ message, own }) {
   return (
     <div className={own ? "message own" : "message"}>
       <div className="messageTop">
-        {!own && 
+        {!own &&
           <img
             src={user?.profilePicture || "/images/user_default.jpg"}
             alt="avatar"

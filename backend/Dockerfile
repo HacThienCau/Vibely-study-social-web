@@ -36,7 +36,7 @@ ENV EMAIL_USER=${EMAIL_USER}
 ENV EMAIL_PASS=${EMAIL_PASS}
 
 # Lắng nghe trên cổng 8081
-EXPOSE 8081
+EXPOSE 0
 
 # Khởi động server bằng nodemon
 CMD ["npx", "nodemon", "index.js"]

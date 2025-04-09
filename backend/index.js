@@ -50,8 +50,8 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 
-  //mở dòng này nếu chạy nodemon, cmt khi test api
-connectDb().then(() => {  
+//mở dòng này nếu chạy nodemon, cmt khi test api
+connectDb().then(() => {
     // Tạo admin mặc định sau khi kết nối database thành công
     createDefaultAdmin();
 });
@@ -99,7 +99,7 @@ app.use((err, req, res, next) => {
     res.status(500).json({ message: 'Something went wrong!' });
 });
 
-const PORT = process.env.PORT || 8081;
+const PORT = process.env.PORT || 8080;
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
