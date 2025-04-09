@@ -10,6 +10,7 @@ import Conversation from "../components/conversations/Conversation";
 import Message from "../components/message/Message";
 import "./messenger.css";
 import { PiDotsThreeVerticalBold } from "react-icons/pi";
+import { IoSend } from "react-icons/io5";
 
 const Messenger = () => {
     const [user, setUser] = useState(null);
@@ -31,6 +32,8 @@ const Messenger = () => {
     const [friendNickname, setFriendNickname] = useState(null);
     const [showNicknameModal, setShowNicknameModal] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [chatColor, setChatColor] = useState("#30BDFF");
+    const [showColorModal, setShowColorModal] = useState(false);
 
     // Kết nối socket
     useEffect(() => {
@@ -197,8 +200,7 @@ const Messenger = () => {
     const handleOptionClick = async (option) => {
         switch (option) {
             case "changeColor":
-                // Implement change color logic
-                console.log("Change chat color");
+                setShowColorModal(true);
                 break;
             case "setNickname":
                 setShowNicknameModal(true);
@@ -266,6 +268,37 @@ const Messenger = () => {
         } catch (err) {
             console.error("Không thể xóa cuộc trò chuyện:", err);
         }
+    };
+
+    // Lấy màu khi currentChat thay đổi
+    useEffect(() => {
+        if (currentChat && currentChat.color) {
+            setChatColor(currentChat.color);
+            // Áp dụng màu cho CSS
+            document.documentElement.style.setProperty('--message-color', currentChat.color);
+        } else {
+            // Đặt về màu mặc định
+            setChatColor("#30BDFF");
+            document.documentElement.style.setProperty('--message-color', "#30BDFF");
+        }
+    }, [currentChat]);
+
+    // Thêm hàm đổi màu
+    const changeColor = async (newColor) => {
+        try {
+            await axios.put("http://localhost:8080/conversation/color", {
+                conversationId: currentChat._id,
+                color: newColor
+            });
+
+            setChatColor(newColor);
+            document.documentElement.style.setProperty('--message-color', newColor);
+
+            console.log("Đổi màu đoạn chat thành công");
+        } catch (err) {
+            console.error("Không thể đổi màu đoạn chat:", err);
+        }
+        setShowColorModal(false);
     };
 
     return (
@@ -391,7 +424,13 @@ const Messenger = () => {
                                     value={newMessage}
                                     onKeyDown={(e) => e.key === "Enter" && handleSubmit(e)}
                                 ></textarea>
-                                <img src="images/send.png" alt="send" onClick={handleSubmit} className="chatSubmitButton" />
+                                <button
+                                    onClick={handleSubmit}
+                                    className="chatSubmitButton flex items-center justify-center"
+                                    style={{ color: chatColor }}
+                                >
+                                    <IoSend size={24} />
+                                </button>
                             </div>
                         </>
                     ) : (
@@ -522,6 +561,52 @@ const Messenger = () => {
                                 >
                                     Xóa
                                 </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Modal chọn màu đoạn chat */}
+            {showColorModal && (
+                <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
+                    <div className="bg-white rounded-lg w-[450px] max-w-[90%] overflow-hidden shadow-xl">
+                        {/* Header */}
+                        <div className="relative flex justify-center items-center px-6 py-4 border-b">
+                            <h3 className="text-[17px] font-semibold">Đổi màu đoạn chat</h3>
+                            <button
+                                onClick={() => setShowColorModal(false)}
+                                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-500"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={0.5} d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+
+                        {/* Body */}
+                        <div className="px-6 py-4">
+                            <p className="text-center mb-4">Chọn màu cho đoạn chat</p>
+
+                            <div className="grid grid-cols-5 gap-4 mt-4">
+                                {['#30BDFF', '#E84040', '#096621', '#000000', '#472ECF',
+                                    '#FF79C6', '#0551E9', '#FF8357', '#001C44', '#00B22C'].map((color) => (
+                                        <button
+                                            key={color}
+                                            onClick={() => changeColor(color)}
+                                            className="w-12 h-12 rounded-full flex items-center justify-center transition-transform transform hover:scale-110"
+                                            style={{
+                                                backgroundColor: color,
+                                                border: chatColor === color ? '3px solid #000' : 'none',
+                                            }}
+                                        >
+                                            {chatColor === color && (
+                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                                </svg>
+                                            )}
+                                        </button>
+                                    ))}
                             </div>
                         </div>
                     </div>

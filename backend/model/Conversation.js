@@ -9,6 +9,10 @@ const ConversationSchema = new mongoose.Schema(
             type: Map,
             of: String,
         },
+        color: {
+            type: String,
+            default: "#30BDFF"
+        }
     },
     { timestamps: true }
 );
