@@ -25,6 +25,7 @@ const adminInformationRoute = require('./routes/adminInformationRoute');
 const forgotPasswordRoute = require('./routes/forgotPassword');
 const quizRoute = require('./routes/quizRoute');
 const YAML = require('yamljs');
+const createDefaultAdmin = require('./utils/createDefaultAdmin');
 
 const swaggerDocument = YAML.load(path.join(__dirname, 'API/swagger.yaml'));
 
@@ -49,8 +50,12 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 
+  //mở dòng này nếu chạy nodemon, cmt khi test api
+connectDb().then(() => {  
+    // Tạo admin mặc định sau khi kết nối database thành công
+    createDefaultAdmin();
+});
 
-connectDb();
 app.use(passport.initialize())
 
 //API Route
@@ -95,7 +100,15 @@ app.use((err, req, res, next) => {
 });
 
 const PORT = process.env.PORT || 8081;
+
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
     console.log(`📜 API Docs available at http://localhost:${PORT}/api-docs`);
 });
+
+/*    //FOR TEST API - chỉ mở đoạn này và cmt các đoạn trên nếu test API
+module.exports = (async () => {
+    await connectDb(); // Chờ kết nối DB xong
+    return app;
+})();
+*/

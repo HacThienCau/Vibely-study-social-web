@@ -248,11 +248,11 @@ const getUserProfile = async(req, res) =>{
         // Nạp thông tin người dùng và loại bỏ thông tin nhạy cảm
         const userProfile = await User.findById(userId).select('-password').populate("bio");
 
-        if(!userProfile) return response(res,403, 'Người dùng không tồn tại')
+        if(!userProfile) return response(res,404, 'Người dùng không tồn tại')
 
         const isOwner = loggedInUserId === userId;
 
-        return response(res,201, 'Lấy hồ sơ người dùng thành công', {profile:userProfile,isOwner})
+        return response(res,200, 'Lấy hồ sơ người dùng thành công', {profile:userProfile,isOwner})
     } catch (error) {
         return response(res, 500, 'Lỗi máy chủ nội bộ', error.message)
     }

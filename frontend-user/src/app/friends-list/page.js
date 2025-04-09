@@ -1,12 +1,12 @@
 "use client";
 //import React from "react";
 import { FriendCardSkeleton, NoFriendsMessage } from "@/lib/Skeleton";
-import { useEffect, useState } from "react";
+import { userFriendStore } from "@/store/userFriendsStore";
+import { useEffect } from "react";
+import toast from "react-hot-toast";
 import LeftSideBar from "../components/LeftSideBar";
 import FriendRequest from "./FriendRequest";
 import FriendsSuggestion from "./FriendsSuggestion";
-import { userFriendStore } from "@/store/userFriendsStore";
-import toast from "react-hot-toast";
 
 const Page = () => {
   const {
@@ -42,7 +42,7 @@ const Page = () => {
   return (
     <div className="min-h-screen">
       <LeftSideBar />
-      <main className="ml-0 md:ml-64 mt-16 p-6">
+      <main className="ml-0 md:ml-72 mt-16 p-6">
         <h1 className="text-xl font-bold mb-6">Lời mời kết bạn</h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {loading ? (

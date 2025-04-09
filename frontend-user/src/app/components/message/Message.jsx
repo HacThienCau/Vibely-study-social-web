@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
 import axios from "axios";
-import "./message.css";
+import { useEffect, useState } from "react";
 import { format, register } from "timeago.js";
 import vi from "timeago.js/lib/lang/vi";
+import "./message.css";
 
 register("vi", vi);
 
@@ -33,14 +33,16 @@ export default function Message({ message, own }) {
   return (
     <div className={own ? "message own" : "message"}>
       <div className="messageTop">
-        <img
-          src={user?.profilePicture || "/images/user_default.jpg"}
-          alt="avatar"
-          className="messageImg"
-        />
+        {!own && 
+          <img
+            src={user?.profilePicture || "/images/user_default.jpg"}
+            alt="avatar"
+            className="messageImg"
+          />
+        }
         <p className="messageText">{message.text}</p>
       </div>
-      <div className="messageBottom">{format(message.createdAt, "vi")}</div>
+      <div className={`messageBottom ${!own ? "ml-11" : ""}`}>{format(message.createdAt, "vi")}</div>
     </div>
   );
 }

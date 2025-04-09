@@ -116,7 +116,7 @@ const putQuestion = async (req, res) => {
     ];
 
     try {
-        const updatedChat = await Chatbỉ.updateOne(
+        const updatedChat = await Chatbot.updateOne(
             { _id: req.params.chatId, user: userId },
             {
                 $push: {
