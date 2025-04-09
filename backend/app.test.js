@@ -2,10 +2,12 @@ require('dotenv').config();
 const mongoose = require('mongoose');
 const request = require('supertest');
 const path = require('path');
+const jwt = require('jsonwebtoken');
 const fs = require('fs');
 // Nhớ kiểm tra file index.js trước khi test api
+// Nhớ xóa Test Level và Test Subject bên CSDL khi test xong để tránh lỗi cho lần test sau
 let app;
-let token;
+let token, userId;
 const testUser = {
     username: 'testuser',
     email: 'test@example.com',
@@ -14,10 +16,10 @@ const testUser = {
     dateOfBirth: '2000-01-01'
 };
 const newPassword = "newPassword"
-let postId;
-let commentId;
-let replyId;
-let storyId;
+let postId, commentId, replyId, storyId;
+let createdChatId;
+let conversationId;
+let levelId, subjectId, documentId;
 
 beforeAll(async () => {
   app = await require('./index'); // 👈 Chờ connectDb xong
@@ -72,6 +74,8 @@ describe('Test API', () => {
     expect(res.statusCode).toBe(200);
     expect(res.body.data).toHaveProperty('token');
     token = res.body.data.token;
+    const decoded = jwt.decode(token);
+    userId = decoded.userId;
   }, 15000);
 //POST API
   it('should get all posts', async () => {
@@ -183,7 +187,7 @@ describe('Test API', () => {
     expect(res.statusCode).toBe(200);
   }, 10000);
 
-  it('should delete the comment i have created', async () => {
+  it('should delete the comment i have just created', async () => {
     const res = await request(app)
       .delete(`/users/posts/deleteComment/${postId}/${commentId}`)
       .set('Authorization', `Bearer ${token}`);
@@ -248,6 +252,204 @@ describe('Test API', () => {
     expect(res.statusCode).toBe(200);
   }, 10000);
 
+// CHATBOT API??  
+  it('should create a new chat', async () => {
+    const res = await request(app)
+        .post('/chats/')
+        .set('Authorization', `Bearer ${token}`)
+        .send({
+            text: 'Bạn khỏe không?',
+            answer: 'Tôi rất khỏe, cảm ơn bạn!'
+        });
+
+    expect(res.statusCode).toEqual(201);
+    expect(res.body).toHaveProperty('_id');
+    createdChatId = res.body._id;
+});
+
+it('should get chat list (owned)', async () => {
+    const res = await request(app)
+        .get('/chats/')
+        .set('Authorization', `Bearer ${token}`);
+
+    expect(res.statusCode).toBe(200);
+});
+
+it('should get a specific chat (owned)', async () => {
+    const res = await request(app)
+        .get(`/chats/${createdChatId}`)
+        .set('Authorization', `Bearer ${token}`);
+
+    expect(res.statusCode).toEqual(200);
+});
+
+// Test thêm câu hỏi vào hội thoại
+it('should add a new question to chat', async () => {
+    const res = await request(app)
+        .put(`/chats/${createdChatId}`)
+        .set('Authorization', `Bearer ${token}`)
+        .send({
+            question: 'Bạn có thể giúp tôi học không?',
+            answer: 'Tất nhiên rồi!',
+            img: null
+        });
+
+    expect(res.statusCode).toEqual(200);
+    expect(res.body.modifiedCount).toBeGreaterThan(0);
+});
+// CONVERSATION API
+it('should create a new conversation', async () => {
+    const id = '67eb68f2b6eaf959905512e3';  // id của HacThienCau :))
+    const res = await request(app)
+        .post('/conversation/')
+        .set('Authorization', `Bearer ${token}`)
+        .send({
+            senderId: userId, receiverId: id  
+        });
+
+    expect(res.statusCode).toEqual(200);
+});
+
+it('should get conversation list of 1 person', async () => {
+    const res = await request(app)
+        .get(`/conversation/${userId}`)
+        .set('Authorization', `Bearer ${token}`);
+
+    expect(res.statusCode).toEqual(200);
+    expect(res.body.length).toBeGreaterThan(0);
+});
+
+it('should get conversation between 2 people', async () => {
+    const id = '67eb68f2b6eaf959905512e3';  // id của HacThienCau :))
+    const res = await request(app)
+        .get(`/conversation/find/${userId}/${id}`)
+        .set('Authorization', `Bearer ${token}`);
+
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toHaveProperty('_id');
+    conversationId = res.body._id;
+});
+// DOCUMENT API
+it('should get levels', async () => {
+    const res = await request(app)
+        .get('/documents/levels')
+
+    expect(res.statusCode).toBe(200);
+    expect(Array.isArray(res.body.data)).toBe(true);
+});
+
+it('should get subjects by levelId', async () => {
+    const levelId = "67d153e331cf980c7adf85a1" // id của level Đại Học
+    const res = await request(app)
+        .get(`/documents/subjects/${levelId}`)
+
+    expect(res.statusCode).toBe(200);
+    expect(Array.isArray(res.body.data)).toBe(true);
+});
+it('should create a new level', async () => {
+    const res = await request(app)
+        .post('/documents/levels')
+        .set('Authorization', `Bearer ${token}`)
+        .send({ name: "Test Level" });
+
+    expect(res.statusCode).toBe(201);
+    expect(res.body.data).toHaveProperty('_id');
+    levelId = res.body.data._id;
+});
+
+it('should create a new subject', async () => {
+    const res = await request(app)
+        .post('/documents/subjects')
+        .set('Authorization', `Bearer ${token}`)
+        .send({ name: "Test Subject", levelId });
+
+    expect(res.statusCode).toBe(201);
+    expect(res.body.data).toHaveProperty('_id');
+    subjectId = res.body.data._id;
+});
+
+it('should save a document', async () => {
+    const id = "67d1b73b93d210c701c66448" // id của đề thi ck csdl :)))
+    const res = await request(app)
+        .post('/documents/save')
+        .set('Authorization', `Bearer ${token}`)
+        .send({ documentId : id });
+
+    expect(res.statusCode).toBe(200);
+});
+
+it('should get documents by filter', async () => {
+    const res = await request(app)
+        .get('/documents/')
+        .set('Authorization', `Bearer ${token}`)
+        .send({ 
+            query: null,
+            level: "Tiểu Học",
+            subject: "Toán"
+         });
+
+    expect(res.statusCode).toBe(200);
+    expect(Array.isArray(res.body.data)).toBe(true);
+});
+
+it('should create a new document', async () => {
+    const res = await request(app)
+        .post('/documents/')
+        .set('Authorization', `Bearer ${token}`)
+        .send({ 
+            level: levelId,
+            subject: subjectId,
+            
+                title: "Test Document",
+                pages: 0,
+                fileType : "pdf",
+                fileUrl: "https://drive.google.com/file/d/1btv5eurHfz81YXztvxBf74n_iw4udRhx/view…"
+            
+         });
+
+    expect(res.statusCode).toBe(201);
+    expect(res.body.data).toHaveProperty('_id');
+    documentId = res.body.data._id;
+});
+
+it('should get document by id', async () => {
+    const id = documentId
+    const res = await request(app)
+        .get(`/documents/${id}`)
+        .set('Authorization', `Bearer ${token}`)
+
+    expect(res.statusCode).toBe(200);
+});
+
+it('should update the document', async () => {
+    const id = documentId
+    const res = await request(app)
+        .put(`/documents/${id}`)
+        .set('Authorization', `Bearer ${token}`)
+        .send({ 
+            level: levelId,
+            subject: subjectId,
+            
+                title: "Updated Test Document",
+                pages: 20,
+                fileType : "pdf",
+                fileUrl: "https://drive.google.com/file/d/1btv5eurHfz81YXztvxBf74n_iw4udRhx/view…"
+            
+         });
+
+    expect(res.statusCode).toBe(200);
+});
+
+it('should delete the document i have just created', async () => {
+    const id = documentId
+    const res = await request(app)
+        .delete(`/documents/${id}`)
+        .set('Authorization', `Bearer ${token}`)
+
+    expect(res.statusCode).toBe(200);
+});
+
+// The last API  
   it('should delete account', async () => {
     const res = await request(app)
       .delete('/auth/deleteAccount')
