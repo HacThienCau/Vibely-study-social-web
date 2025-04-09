@@ -50,11 +50,12 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 
-
-connectDb().then(() => {
+  //mở dòng này nếu chạy nodemon, cmt khi test api
+connectDb().then(() => {  
     // Tạo admin mặc định sau khi kết nối database thành công
     createDefaultAdmin();
 });
+
 app.use(passport.initialize())
 
 //API Route
@@ -97,9 +98,16 @@ app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).json({ message: 'Something went wrong!' });
 });
-
+   //mở đoạn này nếu chạy nodemon, cmt khi test api
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
     console.log(`📜 API Docs available at http://localhost:${PORT}/api-docs`);
 });
+
+/*    //FOR TEST API - chỉ mở đoạn này và cmt các đoạn trên nếu test API
+module.exports = (async () => {
+    await connectDb(); // Chờ kết nối DB xong
+    return app;
+})();
+*/
