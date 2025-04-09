@@ -79,7 +79,7 @@ describe('Test API', () => {
     const decoded = jwt.decode(token);
     userId = decoded.userId;
   }, 15000);
-/*
+
 //POST API
   it('should get all posts', async () => {
     const res = await request(app)
@@ -744,13 +744,188 @@ it('should delete the schedule', async () => {
     
   expect(res.statusCode).toBe(200);
 }, 15000);
-*/
+
 // USER API
+it('should follow an user', async () => {
+  const res = await request(app)
+    .post(`/users/follow`)
+    .set("Authorization", `Bearer ${token}`)
+    .send({
+      userIdToFollow: "67eb68f2b6eaf959905512e3"  //id của HacThienCau
+    })
+    
+  expect(res.statusCode).toBe(200);
+}, 15000);
 
+it('should unfollow an user', async () => {
+  const res = await request(app)
+    .post(`/users/unfollow`)
+    .set("Authorization", `Bearer ${token}`)
+    .send({
+      userIdToUnfollow: "67eb68f2b6eaf959905512e3"  //id của HacThienCau
+    })
+    
+  expect(res.statusCode).toBe(200);
+}, 15000);
 
+it('should remove friend request', async () => {
+  const res = await request(app)
+    .post(`/users/friend-request/remove`)
+    .set("Authorization", `Bearer ${token}`)
+    .send({
+      requestSenderId: "67eb68f2b6eaf959905512e3"  //id của HacThienCau
+    })
+    
+  expect(res.statusCode).toBe(404);
+  expect(res.body.message).toBe('Không tìm thấy yêu cầu kết bạn');  //phải có lời mời kết bạn từ người kia :'(
+}, 15000);
 
+it('should get all requests', async () => {
+  const res = await request(app)
+    .get(`/users/friend-request`)
+    .set("Authorization", `Bearer ${token}`)
+    
+  expect(res.statusCode).toBe(200);
+  expect(Array.isArray(res.body.data)).toBe(true);
+}, 15000);
 
+it('should get all users to request', async () => {
+  const res = await request(app)
+    .get(`/users/user-to-request`)
+    .set("Authorization", `Bearer ${token}`)
+    
+  expect(res.statusCode).toBe(200);
+  expect(Array.isArray(res.body.data)).toBe(true);
+}, 15000);
 
+it('should get all friends of an user', async () => {
+  const res = await request(app)
+    .get(`/users/mutual-friends/${userId}`)
+    .set("Authorization", `Bearer ${token}`)
+    
+  expect(res.statusCode).toBe(200);
+  expect(Array.isArray(res.body.data)).toBe(true);
+}, 15000);
+
+it('should get all users', async () => {
+  const res = await request(app)
+    .get(`/users/`)
+    .set("Authorization", `Bearer ${token}`)
+    
+  expect(res.statusCode).toBe(200);
+  expect(Array.isArray(res.body.data)).toBe(true);
+}, 15000);
+
+it('should get user info', async () => {
+  const res = await request(app)
+    .get(`/users/profile/${userId}`)
+    .set("Authorization", `Bearer ${token}`)
+    
+  expect(res.statusCode).toBe(200);
+  expect(res.body.data).toHaveProperty("profile")
+}, 15000);
+
+it('should check if user logged in', async () => {
+  const res = await request(app)
+    .get(`/users/check-auth`)
+    .set("Authorization", `Bearer ${token}`)
+    
+  expect(res.statusCode).toBe(201);
+}, 15000);
+
+it('should create bio', async () => {
+  const res = await request(app)
+    .put(`/users/bio/${userId}`)
+    .set("Authorization", `Bearer ${token}`)
+    .send({
+      bioText: "Test bio",
+      liveIn: null,
+      workplace: null,
+      education: null,
+      hometown: null
+    })
+    
+  expect(res.statusCode).toBe(201);
+}, 15000);
+
+it('should edit bio', async () => {
+  const res = await request(app)
+    .put(`/users/bio/${userId}`)
+    .set("Authorization", `Bearer ${token}`)
+    .send({
+      bioText: "Updated bio",
+      liveIn: "HCMC",
+      workplace: "UIT",
+      education: "UIT",
+      hometown: "HCMC"
+    })
+    
+  expect(res.statusCode).toBe(201);
+}, 15000);
+
+it('should edit profile', async () => {
+  const res = await request(app)
+    .put(`/users/profile/${userId}`)
+    .set("Authorization", `Bearer ${token}`)
+    .send({
+      username: "HacThienCau",
+      gender: "female",
+      dateOfBirth: '2004-06-28'
+    })
+    
+  expect(res.statusCode).toBe(200);
+}, 15000);
+
+it('should edit cover picture', async () => {
+  const filePath = path.join(__dirname, 'uploads/sample.png');
+  const res = await request(app)
+    .put(`/users/profile/cover-picture/${userId}`)
+    .set("Authorization", `Bearer ${token}`)
+    .attach('coverPicture', filePath);
+    
+  expect(res.statusCode).toBe(200);
+}, 15000);
+
+it('should get users info', async () => {
+  const res = await request(app)
+    .post(`/users/get-users`)
+    .set("Authorization", `Bearer ${token}`)
+    .send({
+      userIds:[
+        "67c2c63ddb49e23170d5e3f7","67c4fdc08014cf4f8bb70cd4", "67eb68f2b6eaf959905512e3"
+      ]
+    })
+    
+  expect(res.statusCode).toBe(200);
+  expect(Array.isArray(res.body.data)).toBe(true);
+}, 15000);
+
+it('should get user saved documents', async () => {
+  const res = await request(app)
+    .get(`/users/saved`)
+    .set("Authorization", `Bearer ${token}`)
+    
+  expect(res.statusCode).toBe(200);
+  expect(Array.isArray(res.body.data)).toBe(true);
+}, 15000);
+
+it('should get a specific saved documents', async () => {
+  const id = "67d1b73b93d210c701c66448" // id của đề thi ck csdl :)))
+  const res = await request(app)
+    .get(`/users/saved/${id}`)
+    .set("Authorization", `Bearer ${token}`)
+    
+  expect(res.statusCode).toBe(200);
+}, 15000);
+
+it('should get a specific saved documents', async () => {
+  const id = "67d1b73b93d210c701c66448" // id của đề thi ck csdl :)))
+  const res = await request(app)
+    .delete(`/users/saved/${id}`)
+    .set("Authorization", `Bearer ${token}`)
+    
+  expect(res.statusCode).toBe(200);
+}, 15000);
 
 // The last API  
   it('should delete account', async () => {

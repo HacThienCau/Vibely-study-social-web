@@ -64,13 +64,13 @@ const unfollowUser =  async(req,res) =>{
         }
 
         // Kiểm tra xem currentUser đã theo dõi userToUnfollow chưa
-        if(!currentUser.followers.includes(userIdToUnfollow)){
+        if(!currentUser.followings.includes(userIdToUnfollow)){
             return response(res,404, 'Bạn chưa theo dõi người dùng này');
         }
 
         // Xóa người dùng khỏi danh sách theo dõi và cập nhật số lượng người theo dõi
         currentUser.followers = currentUser.followers.filter(id => id.toString() !== userIdToUnfollow)
-        currentUser.followeings = currentUser.followings.filter(id => id.toString() !== userIdToUnfollow)
+        currentUser.followings = currentUser.followings.filter(id => id.toString() !== userIdToUnfollow)
         userToUnfollow.followers = userToUnfollow.followers.filter(id => id.toString() !== userId)
 
         // Cập nhật số lượng người theo dõi và người đang theo dõi
