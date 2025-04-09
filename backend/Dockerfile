@@ -35,8 +35,8 @@ ENV CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET}
 ENV EMAIL_USER=${EMAIL_USER}
 ENV EMAIL_PASS=${EMAIL_PASS}
 
-# Lắng nghe trên cổng 8080
-EXPOSE 8080
+# Lắng nghe trên cổng 8081
+EXPOSE 8081
 
 # Khởi động server bằng nodemon
 CMD ["npx", "nodemon", "index.js"]

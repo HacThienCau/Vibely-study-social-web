@@ -7,7 +7,7 @@ info:
     email: 22521172@gm.uit.edu.vn
 
 servers:
-  - url: http://localhost:8080
+  - url: http://localhost:8081
     description: Local Development Server
   - url: https://vibely-study-social-web.onrender.com
     description: Production Server
@@ -319,7 +319,7 @@ paths:
         - BearerAuth: []
       requestBody:
         required: true
-        content:
+                content:
           application/json:
             schema:
               type: object
@@ -499,7 +499,7 @@ paths:
                 userIds:
                   type: array
                   items:
-                    type: string
+                  type: string
       responses:
         200:
           description: Users retrieved successfully

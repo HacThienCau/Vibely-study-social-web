@@ -1,0 +1,60 @@
+version: '3'
+services:
+  frontend:
+    build:
+      context: ./frontend-user
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+
+  selenium-hub:
+    image: selenium/hub:latest
+    ports:
+      - "4444:4444"  # Port này đã đúng
+    environment:
+      GRID_MAX_SESSION: 16
+      GRID_BROWSER_TIMEOUT: 300
+      GRID_TIMEOUT: 300
+
+  chrome-node:
+    image: selenium/node-chrome:latest
+    depends_on:
+      - selenium-hub
+    ports:
+      - "4446:5900"  # Map port như hiện tại của bạn
+    environment:
+      - SE_EVENT_BUS_HOST=selenium-hub
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+      - SE_NODE_MAX_SESSIONS=4
+    shm_size: '2g'  # Thêm shared memory để tránh lỗi Chrome
+
+  chrome-node-1:
+    image: selenium/node-chrome:latest
+    depends_on:
+      - selenium-hub
+    ports:
+      - "4447:5900"  # Map port như hiện tại của bạn
+    environment:
+      - SE_EVENT_BUS_HOST=selenium-hub
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+      - SE_NODE_MAX_SESSIONS=4
+    shm_size: '2g'  # Thêm shared memory để tránh lỗi Chrome
+
+  test-runner:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    volumes:
+      - ./tests:/app/tests
+      - ./reports:/app/reports
+    depends_on:
+      - frontend
+      - selenium-hub
+      - chrome-node
+      - chrome-node-1
+    environment:
+      - SELENIUM_HOST=selenium-hub
+      - SELENIUM_PORT=4444
+      - BASE_URL=http://frontend:3000
