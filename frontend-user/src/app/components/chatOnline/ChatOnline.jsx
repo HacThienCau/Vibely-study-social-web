@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useEffect, useState } from "react";
 import "./chatOnline.css";
 
-export default function ChatOnline({ onlineUsers, currentId, setCurrentChat }) {
+export default function ChatOnline({ onlineUsers, currentId, setCurrentChat, setSelectedFriend }) {
   const [friends, setFriends] = useState([]);
   const [onlineFriends, setOnlineFriends] = useState([]);
 
@@ -40,8 +40,12 @@ export default function ChatOnline({ onlineUsers, currentId, setCurrentChat }) {
 
   const handleClick = async (user) => {
     try {
-      const res = await axios.get(`https://vibely-study-social-web.onrender.com/conversation/find/${currentId}/${user._id}`);
+      const res = await axios.post(`http://localhost:8080/conversation`, {
+        senderId: currentId,
+        receiverId: user._id,
+      });
       setCurrentChat(res.data);
+      setSelectedFriend(user);
     }
     catch (err) {
       console.error("❌ Lỗi khi tạo hoặc lấy cuộc trò chuyện:", err);
@@ -49,10 +53,10 @@ export default function ChatOnline({ onlineUsers, currentId, setCurrentChat }) {
   }
 
   return (
-    <div className="chatOnline">
+    <div className="chatOnline h-full">
       {onlineFriends.length > 0 ? (
         <>
-          <div className="chatOnlineTitle">Bạn bè online</div>
+          <h1 className="text-xl font-bold mt-5 ml-2">Bạn bè online</h1>
           {onlineFriends.map((online) => (
             <div className="chatOnlineFriend" key={online._id} onClick={() => { handleClick(online) }}>
               <div className="chatOnlineImgContainer">
@@ -64,7 +68,9 @@ export default function ChatOnline({ onlineUsers, currentId, setCurrentChat }) {
           ))}
         </>
       ) : (
-        <p>Không có bạn bè nào đang online</p>
+        <div className="flex justify-center items-center h-full">
+          <p className="">Không có bạn bè nào đang online</p>
+        </div>
       )}
     </div>
   );

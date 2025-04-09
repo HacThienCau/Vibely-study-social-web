@@ -9,6 +9,17 @@ const createConversation = async (req, res) => {
             return res.status(400).json({ message: "Thiếu senderId hoặc receiverId" });
         }
 
+        // Kiểm tra xem đã có cuộc trò chuyện giữa 2 người chưa
+        const existingConversation = await Conversation.findOne({
+            members: { $all: [senderId, receiverId] },
+            $expr: { $eq: [{ $size: "$members" }, 2] } // kiểm tra đúng 2 thành viên
+        });
+
+        if (existingConversation) {
+            return res.status(200).json(existingConversation);
+        }
+
+        // Nếu chưa có thì tạo mới
         const newConversation = new Conversation({
             members: [senderId, receiverId],
         });

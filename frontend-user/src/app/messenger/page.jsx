@@ -1,18 +1,22 @@
 "use client";
-import React, { useEffect, useState, useRef } from "react";
-import axios from "axios";
-import "./messenger.css";
-import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { checkUserAuth } from "@/service/auth.service";
+import axios from "axios";
+import { Search } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { io } from "socket.io-client";
+import ChatOnline from "../components/chatOnline/ChatOnline";
 import Conversation from "../components/conversations/Conversation";
 import Message from "../components/message/Message";
-import ChatOnline from "../components/chatOnline/ChatOnline";
-import { checkUserAuth } from "@/service/auth.service";
-import { io } from "socket.io-client";
+import "./messenger.css";
 
 const Messenger = () => {
     const [user, setUser] = useState(null);
-    const [conversations, setConversations] = useState([]);
+    // const [conversations, setConversations] = useState([]);
+    const [friends, setFriends] = useState([]);
+    const [selectedFriend, setSelectedFriend] = useState(null);
+    const [filteredFriends, setFilteredFriends] = useState([]);
+    const [searchValue, setSearchValue] = useState("");
     const [currentChat, setCurrentChat] = useState(null);
     const [arrivalMessage, setArrivalMessage] = useState(null);
     const [messages, setMessages] = useState([]);
@@ -65,23 +69,41 @@ const Messenger = () => {
         });
     }, []);
 
-    // Lấy danh sách hội thoại của user
+    // Lấy danh sách bạn bè của user
     useEffect(() => {
         if (!user || !user._id) return;
 
-        const getConversations = async () => {
+        const getFriends = async () => {
             try {
-                console.log(`📞 Gọi API: https://vibely-study-social-web.onrender.com/conversation/${user._id}`);
-                const res = await axios.get(`https://vibely-study-social-web.onrender.com/conversation/${user._id}`);
-                console.log("📨 Danh sách hội thoại:", res.data);
-                setConversations(res.data);
+                const token = localStorage.getItem("token");
+                const res = await axios.get(`https://vibely-study-social-web.onrender.com/users/mutual-friends/${user._id}`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+                console.log("Danh sách bạn bè:", res.data.data);
+                setFriends(res.data.data);
             } catch (err) {
-                console.error("❌ Lỗi khi lấy hội thoại:", err);
+                console.error("Lỗi khi lấy danh sách bạn bè:", err);
             }
         };
-
-        getConversations();
+        getFriends();
     }, [user]);
+
+    // Lấy danh sách hội thoại của user
+    // useEffect(() => {
+    //     if (!user || !user._id) return;
+
+    //     const getConversations = async () => {
+    //         try {
+    //             const res = await axios.get(`https://vibely-study-social-web.onrender.com/conversation/${user._id}`);
+    //             console.log("📨 Danh sách hội thoại:", res.data);
+    //             setConversations(res.data);
+    //         } catch (err) {
+    //             console.error("❌ Lỗi khi lấy hội thoại:", err);
+    //         }
+    //     };
+
+    //     getConversations();
+    // }, [user]);
 
     // Lấy tin nhắn khi currentChat thay đổi
     useEffect(() => {
@@ -146,38 +168,68 @@ const Messenger = () => {
         scrollRef.current?.scrollIntoView({ behavior: "smooth" });
     }, [messages]);
 
+    // Tìm kiếm bạn bè
+    const searchFriend = (e) => {
+        const value = e.target.value.toLowerCase();
+        setSearchValue(value);
+    
+        if (value.length === 0) {
+            setFilteredFriends([]);
+            return;
+        }
+    
+        const filtered = friends.filter((friend) =>
+            friend.username.toLowerCase().includes(value)
+        );
+    
+        setFilteredFriends(filtered);
+    };
+    
+    const displayedFriends = searchValue.length > 0 ? filteredFriends : friends;
+
     return (
         <div className="pt-14 messenger">
             {/* Sidebar danh sách hội thoại */}
             <div className="chatMenu">
                 <div className="chatMenuWrapper">
+                    <h1 className="text-xl font-bold mb-6">Đoạn chat</h1>
                     {/* Ô tìm kiếm */}
-                    <div className="relative w-full max-w-[300px] md:max-w-[400px] mb-4">
+                    <div className="relative w-full mb-4">
                         <Search className="absolute top-1/2 left-3 transform -translate-y-1/2 text-gray-800" size={20} />
                         <Input
                             type="text"
                             placeholder="Tìm kiếm trên Messenger"
-                            className="pl-10 w-40 md:w-64 h-10 bg-[#F0F2F5] rounded-full border-none chatMenuInput"
+                            className="pl-10 w-full h-10 bg-[#F0F2F5] rounded-full border-none chatMenuInput"
                             style={{ textIndent: "40px" }}
+                            value={searchValue}
+                            onChange={searchFriend}
                         />
                     </div>
 
                     {/* Danh sách hội thoại */}
-                    {conversations.length > 0 ? (
-                        conversations.map((conv) => (
+                    {displayedFriends.length > 0 ? (
+                        displayedFriends.map((friend) => (
                             <button
-                                key={conv._id}
-                                onClick={() => {
-                                    console.log("👉 Chọn hội thoại:", conv);
-                                    setCurrentChat(conv);
+                                key={friend._id}
+                                onClick={async () => {
+                                    try {
+                                        const res = await axios.post(`http://localhost:8080/conversation`, {
+                                            senderId: user._id,
+                                            receiverId: friend._id,
+                                        });
+                                        setCurrentChat(res.data);
+                                        setSelectedFriend(friend);
+                                    } catch (err) {
+                                        console.error("Lỗi tạo hoặc lấy hội thoại:", err);
+                                    }
                                 }}
                                 className="w-full text-left"
                             >
-                                <Conversation conversation={conv} currentUser={user} />
+                                <Conversation friend={friend} currentChat={currentChat}/>
                             </button>
                         ))
-                    ) : (
-                        <p>Không có hội thoại nào</p>
+                        ) : (   
+                        <p>Không có bạn bè nào</p>
                     )}
                 </div>
             </div>
@@ -187,6 +239,19 @@ const Messenger = () => {
                 <div className="chatBoxWrapper">
                     {currentChat ? (
                         <>
+                            {/* Hiển thị ảnh + tên người đang chat */}
+                            {selectedFriend && (
+                                <div className="flex items-center gap-4 pr-4 pl-0 py-2 border-b border-gray-300">
+                                    <img
+                                        src={selectedFriend.profilePicture || "/images/user_default.jpg"}
+                                        alt="avatar"
+                                        className="w-10 h-10 rounded-full object-cover"
+                                    />
+                                    <span className="font-medium">{selectedFriend.username}</span>
+                                </div>
+                            )}         
+                    
+                            {/* Danh sách tin nhắn */}
                             <div className="chatBoxTop">
                                 {messages.length > 0 ? (
                                     messages.map((msg) => (
@@ -195,14 +260,18 @@ const Messenger = () => {
                                         </div>
                                     ))
                                 ) : (
-                                    <p>Chưa có tin nhắn nào</p>
+                                    <div className="flex justify-center items-center h-full">
+                                        <p className="">Chưa có tin nhắn nào</p>
+                                    </div>
                                 )}
                             </div>
+                            {/* Gửi tin nhắn */}
                             <div className="chatBoxBottom">
                                 <textarea className="chatMessageInput"
                                     placeholder="Aa"
                                     onChange={(e) => setNewMessage(e.target.value)}
                                     value={newMessage}
+                                    onKeyDown={(e) => e.key === "Enter" && handleSubmit(e)}
                                 ></textarea>
                                 <img src="images/send.png" alt="send" onClick={handleSubmit} className="chatSubmitButton" />
                             </div>
@@ -221,7 +290,7 @@ const Messenger = () => {
             {/* Danh sách bạn bè online */}
             <div className="chatOnline">
                 <div className="chatOnlineWrapper">
-                    {user && <ChatOnline onlineUsers={onlineUsers} currentId={user._id} setCurrentChat={setCurrentChat} />}
+                    {user && <ChatOnline onlineUsers={onlineUsers} currentId={user._id} setCurrentChat={setCurrentChat} setSelectedFriend={setSelectedFriend}/>}
                 </div>
             </div>
         </div>
