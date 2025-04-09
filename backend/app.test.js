@@ -18,10 +18,10 @@ const testUser = {
 };
 const newPassword = "newPassword"
 let postId, commentId, replyId, storyId;
-let createdChatId;
-let conversationId;
+let createdChatId; let conversationId;
 let levelId, subjectId, documentId;
-let forgotCode;
+let forgotCode; let inquiryId; let quizId;
+let scheduleId;
 
 beforeAll(async () => {
   app = await require('./index'); // 👈 Chờ connectDb xong
@@ -50,7 +50,7 @@ describe('Test API', () => {
     expect(res.body.data).toHaveProperty('token');
     token = res.body.data.token;
   }, 15000);
-/*
+
   it('should change password', async () => {
     const res = await request(app)
       .post('/auth/change-password')
@@ -79,6 +79,7 @@ describe('Test API', () => {
     const decoded = jwt.decode(token);
     userId = decoded.userId;
   }, 15000);
+/*
 //POST API
   it('should get all posts', async () => {
     const res = await request(app)
@@ -506,8 +507,251 @@ it('should reset password', async () => {
 
   expect(res.statusCode).toBe(200);
 });
+
+// INQUIRY API
+it('should create a new inquiry', async () => {
+  const res = await request(app)
+    .post('/inquiry/')
+    .set('Authorization', `Bearer ${token}`)
+    .send({ 
+      message : "Test message inquiry"
+     });
+
+  expect(res.statusCode).toBe(201);
+  expect(res.body.data).toHaveProperty('_id');
+  inquiryId = res.body.data._id;
+}, 15000);
+
+it('should get inquiries', async () => {
+  const res = await request(app)
+    .get('/inquiry/')
+    .set('Authorization', `Bearer ${token}`)
+    .send({ 
+      query: testUser.email,
+      status: "Chưa phản hồi"
+     });
+
+  expect(res.statusCode).toBe(200);
+}, 15000);
+
+it('should update the inquiry', async () => {
+  const res = await request(app)
+    .put(`/inquiry/${inquiryId}`)
+    .set('Authorization', `Bearer ${token}`)
+    .send({ 
+      response: "Test response",
+      status: "Đã phản hồi"
+     });
+
+  expect(res.statusCode).toBe(200);
+}, 15000);
+
+it('should delete the inquiry', async () => {
+  const res = await request(app)
+    .delete(`/inquiry/${inquiryId}`)
+    .set('Authorization', `Bearer ${token}`)
+    .send({ 
+      response: "Test response",
+      status: "Đã phản hồi"
+     });
+
+  expect(res.statusCode).toBe(200);
+}, 15000);
+
+//QUIZ API
+it('should get quizzes', async () => {
+  const res = await request(app)
+    .get('/quizzes/')
+    .set('Authorization', `Bearer ${token}`)
+
+  expect(res.statusCode).toBe(200);
+  expect(Array.isArray(res.body.data)).toBe(true);
+}, 15000);
+
+it('should create a new quiz', async () => {
+  const res = await request(app)
+    .post("/quizzes/")
+    .set("Authorization", `Bearer ${token}`)
+    .send({
+      icon: "faComputer",
+      quizTitle: "Tin học lớp 12",
+      quizQuestions: [
+        {
+          mainQuestion: "Cơ sở dữ liệu (CSDL) là gì?",
+          choices: [
+            "Tập hợp các bảng tính được lưu trữ riêng lẻ",
+            "Tập hợp các dữ liệu có liên quan được tổ chức theo cấu trúc",
+            "Một phần mềm dùng để soạn thảo văn bản",
+            "Một hệ thống điều hành máy tính",
+          ],
+          correctAnswer: 1,
+          answeredResult: -1,
+          statistics: {
+            totalAttempts: 0,
+            correctAttempts: 0,
+            incorrectAttempts: 0,
+          },
+        },
+        {
+          mainQuestion:
+            "Trong mô hình CSDL quan hệ, dữ liệu được lưu trữ dưới dạng gì?",
+          choices: [
+            "Danh sách liên kết",
+            "Tập tin văn bản",
+            "Bảng (table)",
+            "Đồ thị",
+          ],
+          correctAnswer: 2,
+          answeredResult: -1,
+          statistics: {
+            totalAttempts: 0,
+            correctAttempts: 0,
+            incorrectAttempts: 0,
+          },
+        },
+        {
+          mainQuestion: "Trong hệ quản trị cơ sở dữ liệu, SQL là gì?",
+          choices: [
+            "Một phần mềm thiết kế web",
+            "Ngôn ngữ truy vấn có cấu trúc",
+            "Một loại virus máy tính",
+            "Một phần cứng dùng để lưu trữ dữ liệu",
+          ],
+          correctAnswer: 1,
+          answeredResult: -1,
+          statistics: {
+            totalAttempts: 0,
+            correctAttempts: 0,
+            incorrectAttempts: 0,
+          },
+        },
+      ],
+    });
+  expect(res.statusCode).toBe(201);
+  expect(res.body.data).toHaveProperty('_id');
+  quizId = res.body.data._id;
+}, 15000);
+
+it('should get the quiz by id', async () => {
+  const res = await request(app)
+    .get(`/quizzes/${quizId}`)
+    .set('Authorization', `Bearer ${token}`)
+
+  expect(res.statusCode).toBe(200);
+}, 15000);
+
+it('should update the quiz', async () => {
+  const res = await request(app)
+    .put(`/quizzes/${quizId}`)
+    .set('Authorization', `Bearer ${token}`)
+    .send({
+      updatedQuiz:{
+        icon: "fabook",
+        quizTitle: "updated quiz",
+        quizQuestions:[
+          {
+            mainQuestion: "Test question 1",
+            choices: [
+              "a1",
+              "a2",
+              "a3",
+              "a4",
+            ],
+            correctAnswer: 1,
+            answeredResult: -1,
+            statistics: {
+              totalAttempts: 0,
+              correctAttempts: 0,
+              incorrectAttempts: 0,
+            },
+          },
+        ]
+      }
+    })
+
+  expect(res.statusCode).toBe(200);
+}, 15000);
+
+it('should delete the quiz', async () => {
+  const res = await request(app)
+    .delete(`/quizzes/${quizId}`)
+    .set('Authorization', `Bearer ${token}`)
+
+  expect(res.statusCode).toBe(200);
+}, 15000);
+
+// SCHEDULE API
+it('should create a new schedule', async () => {
+  const res = await request(app)
+    .post("/schedules/")
+    .set("Authorization", `Bearer ${token}`)
+    .send({
+      subject:"Test schedule",
+      startTime:new Date(),
+      endTime: new Date(Date.now() + 60 * 60 * 1000),
+      categoryColor:"#f71949"
+    });
+  expect(res.statusCode).toBe(201);
+  expect(res.body.data).toHaveProperty('_id');
+  scheduleId = res.body.data._id;
+}, 15000);
+
+it('should get user schedules', async () => {
+  const res = await request(app)
+    .get("/schedules/")
+    .set("Authorization", `Bearer ${token}`)
+
+  expect(res.statusCode).toBe(200);
+  expect(Array.isArray(res.body.data)).toBe(true);
+}, 15000);
+
+it('should get schedule by id', async () => {
+  const res = await request(app)
+    .get(`/schedules/${scheduleId}`)
+    .set("Authorization", `Bearer ${token}`)
+    
+  expect(res.statusCode).toBe(200);
+}, 15000);
+
+it('should get schedules from userId', async () => {
+  const id = "67c11abcbe6cc97c28b1261a" // id của P
+  const res = await request(app)
+    .get(`/schedules/user/${id}`)
+    .set("Authorization", `Bearer ${token}`)
+    
+    expect(Array.isArray(res.body)).toBe(true);
+
+}, 15000);
+
+it('should edit the schedule', async () => {
+  const res = await request(app)
+    .put(`/schedules/${scheduleId}`)
+    .set("Authorization", `Bearer ${token}`)
+    .send({
+      subject:"Updated schedule",
+      startTime:new Date(),
+      endTime: new Date(Date.now() + 120 * 60 * 1000),
+      categoryColor:"#000000"
+    })
+    
+  expect(res.statusCode).toBe(200);
+}, 15000);
+
+it('should delete the schedule', async () => {
+  const res = await request(app)
+    .delete(`/schedules/${scheduleId}`)
+    .set("Authorization", `Bearer ${token}`)
+    
+  expect(res.statusCode).toBe(200);
+}, 15000);
 */
-// INQUIRY ROUTE
+// USER API
+
+
+
+
+
+
 // The last API  
   it('should delete account', async () => {
     const res = await request(app)

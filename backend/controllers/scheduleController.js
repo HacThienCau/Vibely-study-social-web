@@ -117,7 +117,7 @@ const getScheduleById = async (req, res) => {
 // Lấy tất cả lịch trình của một người dùng cụ thể
 const getScheduleByIdUser = async (req, res) => {
     try {
-      const schedule = await Schedule.findById(req.params.id);
+      const schedule = await Schedule.find({user:req.params.id})
       if (!schedule) {
         return res.status(404).json({ message: "Lịch trình không tồn tại" });
       }
