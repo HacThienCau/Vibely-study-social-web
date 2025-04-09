@@ -3,9 +3,9 @@ kind: ConfigMap
 metadata:
   name: backend-config
 data:
-  PORT: "8081"
+  PORT: "8080"
   NODE_ENV: "production"
   FRONTEND_URL: "http://localhost:3000"
-  NEXT_PUBLIC_BACKEND_URL: "http://localhost:8081"
+  NEXT_PUBLIC_BACKEND_URL: "http://localhost:8080"
   URL: "http://localhost:3000"
-  PUBLIC_FOLDER: "http://localhost:8081/images"
+  PUBLIC_FOLDER: "http://localhost:8080/images"

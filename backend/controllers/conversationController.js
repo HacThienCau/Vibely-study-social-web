@@ -71,4 +71,67 @@ const getConversationBetweenUsers = async (req, res) => {
     }
 };
 
-module.exports = { createConversation, getUserConversations, getConversationBetweenUsers };
+// Thay đổi biệt danh 
+const changeNickname = async (req, res) => {
+    try {
+        const { conversationId, userId, nickname } = req.body;
+
+        const conversation = await Conversation.findById(conversationId);
+        if (!conversation) {
+            return res.status(404).json({ message: "Không tìm thấy cuộc trò chuyện" });
+        }
+
+        // Kiểm tra và khởi tạo nicknames nếu chưa tồn tại
+        if (!conversation.nicknames) {
+            conversation.nicknames = new Map();
+        }
+
+        conversation.nicknames.set(userId, nickname);
+        await conversation.save();
+
+        return res.status(200).json({ message: "Đặt biệt danh thành công" });
+    } catch (err) {
+        console.error("Không thể đặt biệt danh:", err);
+        return res.status(500).json({ message: "Lỗi server", error: err.message });
+    }
+};
+// Xóa cuộc trò chuyện
+const deleteConversation = async (req, res) => {
+    try {
+        const { conversationId } = req.params;
+
+        await Conversation.findByIdAndDelete(conversationId);
+
+        return res.status(200).json({ message: "Xóa cuộc trò chuyện thành công" });
+    } catch (err) {
+        console.error("Không thể xóa cuộc trò chuyện:", err);
+        return res.status(500).json({ message: "Lỗi server", error: err.message });
+    }
+};
+
+// Lấy biệt danh của một người dùng trong cuộc trò chuyện
+const getNickname = async (req, res) => {
+    try {
+        const { conversationId, userId } = req.params;
+
+        const conversation = await Conversation.findById(conversationId);
+        if (!conversation) {
+            return res.status(404).json({ message: "Không tìm thấy cuộc trò chuyện" });
+        }
+
+        // Kiểm tra xem nicknames có tồn tại không
+        if (!conversation.nicknames) {
+            return res.status(200).json({ nickname: null });
+        }
+
+        // Lấy biệt danh của người dùng
+        const nickname = conversation.nicknames.get(userId);
+
+        return res.status(200).json({ nickname });
+    } catch (err) {
+        console.error("Không thể lấy biệt danh:", err);
+        return res.status(500).json({ message: "Lỗi server", error: err.message });
+    }
+};
+
+module.exports = { createConversation, getUserConversations, getConversationBetweenUsers, changeNickname, deleteConversation, getNickname };
