@@ -46,4 +46,8 @@ const logoutAdmin = (req, res) => {
     return response(res, 200, "Đăng xuất thành công");
 };
 
-module.exports = { loginAdmin, logoutAdmin };
+const checkAuth = (req, res) => {
+    return response(res, 200, "Đã xác thực", { admin: req.admin });
+};
+
+module.exports = { loginAdmin, logoutAdmin, checkAuth };

@@ -68,18 +68,22 @@ export const MutualFriends = ({ id, isOwner }) => {
                 <Search className="h-5 w-5" />
               </button>
             </div>
-            <p
-              className="text-[#086280] font-semibold cursor-pointer"
-              onClick={() => handleNavigation("/friends-list")}
-            >
-              Lời mời kết bạn
-            </p>
-            <p
-              className="text-[#086280] font-semibold cursor-pointer"
-              onClick={() => handleNavigation("/friends-list")}
-            >
-              Tìm bạn bè
-            </p>
+            {isOwner && (
+  <div className="flex space-x-4">
+    <p
+      className="text-[#086280] font-semibold cursor-pointer"
+      onClick={() => handleNavigation("/friends-list")}
+    >
+      Lời mời kết bạn
+    </p>
+    <p
+      className="text-[#086280] font-semibold cursor-pointer"
+      onClick={() => handleNavigation("/friends-list")}
+    >
+      Tìm bạn bè
+    </p>
+  </div>
+)}
           </div>
         </div>
 

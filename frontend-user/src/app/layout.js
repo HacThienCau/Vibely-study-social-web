@@ -1,4 +1,3 @@
-import { ThemeProvider } from "next-themes";
 import { Roboto_Condensed } from "next/font/google";
 import { Toaster } from "react-hot-toast";
 import AuthWrapper from "./auth-wrapper";
@@ -21,13 +20,11 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={`${robotoCondensed.variable} antialiased`}>
         <Toaster />
-        <ThemeProvider attribute="class">
-          <AuthWrapper>
-            <ContextProvider> {/* Bọc toàn bộ ứng dụng */}
-              {children}
-            </ContextProvider>
-          </AuthWrapper>
-        </ThemeProvider>
+        <AuthWrapper>
+          <ContextProvider> {/* Bọc toàn bộ ứng dụng */}
+            {children}
+          </ContextProvider>
+        </AuthWrapper>
       </body>
     </html>
   );

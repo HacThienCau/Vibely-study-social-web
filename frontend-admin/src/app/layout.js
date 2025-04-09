@@ -2,6 +2,7 @@ import { Geist_Mono, Roboto_Condensed } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
 
+
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
@@ -18,7 +19,7 @@ export const metadata = {
   description: "Mạng xã hội học tập kết nối các bạn học sinh, sinh viên",
 };
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={`${geistMono.variable} ${robotoCondensed.variable} antialiased`}>

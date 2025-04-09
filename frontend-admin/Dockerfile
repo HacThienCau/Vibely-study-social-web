@@ -13,8 +13,14 @@ RUN npm install
 # Copy toàn bộ code frontend
 COPY . .
 
-# Build Next.js
+# Build ứng dụng (cho production)
 RUN npm run build
+
+# Định nghĩa các ARG để nhận giá trị khi build
+ARG NEXT_PUBLIC_BACKEND_URL
+
+# Set các biến môi trường từ ARG
+ENV NEXT_PUBLIC_BACKEND_URL=${NEXT_PUBLIC_BACKEND_URL}
 
 # Sử dụng lightweight server để chạy production
 FROM node:18-alpine
@@ -23,8 +29,8 @@ WORKDIR /app
 # Copy code đã build từ container trước
 COPY --from=builder /app ./
 
-# Lắng nghe trên cổng 3001
+ENV PORT=3001
+
 EXPOSE 3001
 
-# Khởi động Next.js app
-CMD ["npm", "start"]
+CMD ["npm", "run", "dev"]

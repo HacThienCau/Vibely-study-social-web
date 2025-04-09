@@ -23,9 +23,9 @@ const LeftSideBar = () => {
     <aside
 
 
-      className={`fixed top-14 left-0 h-full w-64 transform transition-transform duration-200 ease-in-out md:translate-x-0 flex flex-col z-50 md:z-0 ${isSidebarOpen
-          ? "translate-x-0 shadow-lg  "
-          : " -translate-x-full"
+      className={`fixed top-14 left-0 h-full w-72 transform transition-transform duration-200 ease-in-out md:translate-x-0 flex flex-col z-50 md:z-0 ${isSidebarOpen
+        ? "translate-x-0 shadow-lg  "
+        : " -translate-x-full"
 
 
         } ${isSidebarOpen ? "md:hidden" : ""} md:bg-transparent md:shadow-none`}
@@ -33,9 +33,9 @@ const LeftSideBar = () => {
       <div className="flex flex-col h-full overflow-y-auto bg-[#f0fcff] p-4 ">
         {/* navigation menu yaha pr */}
 
-        <nav className="space-y-8 flex-grow">
+        <nav className="space-y-7 flex-grow">
           <div className="flex items-center space-x-2 cursor-pointer pb-2 " onClick={() => handleNavigation(`/user-profile/${user?._id}`)}>
-            <Avatar className="h-10 w-10 ml-2">
+            <Avatar className="h-9 w-9 ml-4 mt-2">
 
               {user?.profilePicture ? (
                 <AvatarImage
@@ -83,7 +83,7 @@ const LeftSideBar = () => {
             className="full justify-start"
             onClick={() => handleNavigation("/calendar")}
           >
-            <img src="images/calendar_sidebar.png" alt="calendar" className="mr-4" />
+            <img src="images/calendar_sidebar.png" alt="calendar" className="mr-3" />
             Lịch
           </Button>
           <br></br>
@@ -92,7 +92,7 @@ const LeftSideBar = () => {
             className="full justify-start"
             onClick={() => handleNavigation("/document")}
           >
-            <img src="images/document_sidebar.png" alt="document" className="mr-2" />
+            <img src="images/document_sidebar.png" alt="document" className="mr-3" />
             Tài liệu
           </Button>
           <Button
@@ -100,7 +100,7 @@ const LeftSideBar = () => {
             className="full justify-start"
             onClick={() => handleNavigation("/pomodoro")}
           >
-            <img src="images/pomodoro_sidebar.png" alt="pomodoro" className="mr-0" />
+            <img src="images/pomodoro_sidebar.png" alt="pomodoro" className="-ml-2 mr-2" />
             Chế độ Pomodoro
           </Button>
           {/* <Button
@@ -118,7 +118,7 @@ const LeftSideBar = () => {
 
             onClick={() => handleNavigation("/quiz")}
           >
-            <img src="images/game_sidebar.png" alt="quiz" className="mr-0" />
+            <img src="images/game_sidebar.png" alt="quiz" className="-ml-2 mr-2" />
             Củng cố kiến thức
           </Button>
 

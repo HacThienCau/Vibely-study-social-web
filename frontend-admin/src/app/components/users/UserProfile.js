@@ -55,7 +55,7 @@ const UserProfile = ({ user }) => {
         </h2>
 
         {/* Contact Icons */}
-        <div className="flex space-x-3 mb-6">
+        {/* <div className="flex space-x-3 mb-6">
           <div className="p-2 bg-gray-100 rounded-full">
             <Image
               src="/images/users/school.png"
@@ -80,7 +80,7 @@ const UserProfile = ({ user }) => {
               height={24}
             />
           </div>
-        </div>
+        </div> */}
 
         {/* User Bio */}
         <div className="w-full mb-6">

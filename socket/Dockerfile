@@ -17,4 +17,4 @@ COPY . .
 EXPOSE 8900
 
 # Chạy ứng dụng
-CMD ["node", "index.js"] 
+CMD ["npx", "nodemon", "index.js"]
