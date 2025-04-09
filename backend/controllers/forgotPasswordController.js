@@ -56,7 +56,7 @@ exports.verifyCode = async (req, res) => {
             return res.status(404).json({ message: 'Không tìm thấy tài khoản' });
         }
 
-        if (user.verificationCode !== code) {
+        if (user.verificationCode.toString().trim() !== code.toString().trim()) {
             return res.status(400).json({ message: 'Mã xác thực không chính xác' });
         }
 
@@ -80,7 +80,7 @@ exports.resetPassword = async (req, res) => {
             return res.status(404).json({ message: 'Không tìm thấy tài khoản' });
         }
 
-        if (user.verificationCode !== code) {
+        if (user.verificationCode.toString().trim() !== code.toString().trim()) {
             return res.status(400).json({ message: 'Mã xác thực không chính xác' });
         }
 

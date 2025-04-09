@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken');
 const fs = require('fs');
 // Nhớ kiểm tra file index.js trước khi test api
 // Nhớ xóa Test Level và Test Subject bên CSDL khi test xong để tránh lỗi cho lần test sau
+// Thêm dòng code:verificationCode vào json trả về khi test. Lưu ý: CHỈ KHI TEST MỚI CHỈNH!!!
 let app;
 let token, userId;
 const testUser = {
@@ -20,6 +21,7 @@ let postId, commentId, replyId, storyId;
 let createdChatId;
 let conversationId;
 let levelId, subjectId, documentId;
+let forgotCode;
 
 beforeAll(async () => {
   app = await require('./index'); // 👈 Chờ connectDb xong
@@ -48,7 +50,7 @@ describe('Test API', () => {
     expect(res.body.data).toHaveProperty('token');
     token = res.body.data.token;
   }, 15000);
-
+/*
   it('should change password', async () => {
     const res = await request(app)
       .post('/auth/change-password')
@@ -449,6 +451,63 @@ it('should delete the document i have just created', async () => {
     expect(res.statusCode).toBe(200);
 });
 
+// MESSAGE API
+it('should get messages by conversationId', async () => {
+  const res = await request(app)
+      .get(`/message/${conversationId}`)
+
+  expect(res.statusCode).toBe(200);
+});
+
+it('should add a message', async () => {
+  const res = await request(app)
+      .post(`/message`)
+      .send({
+        conversationId: conversationId,
+        sender: userId,
+        text: 'Hello, this is a test message!'
+    });
+
+  expect(res.statusCode).toBe(200);
+});
+
+// FORGOT PASSWORD API
+it('should send email', async () => {
+  const res = await request(app)
+      .post(`/forgot-password/send-code`)
+      .send({
+        email: testUser.email
+    });
+
+  expect(res.statusCode).toBe(200);
+  expect(res.body).toHaveProperty('code');
+  forgotCode = res.body.code;
+});
+
+it('should verify code', async () => {
+  const res = await request(app)
+      .post(`/forgot-password/verify-code`)
+      .send({
+        email: testUser.email,
+        code: forgotCode
+    });
+
+  expect(res.statusCode).toBe(200);
+});
+
+it('should reset password', async () => {
+  const res = await request(app)
+      .post(`/forgot-password/reset-password`)
+      .send({
+        email: testUser.email,
+        code: forgotCode,
+        newPassword
+    });
+
+  expect(res.statusCode).toBe(200);
+});
+*/
+// INQUIRY ROUTE
 // The last API  
   it('should delete account', async () => {
     const res = await request(app)
