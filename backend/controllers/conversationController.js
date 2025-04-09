@@ -134,4 +134,24 @@ const getNickname = async (req, res) => {
     }
 };
 
-module.exports = { createConversation, getUserConversations, getConversationBetweenUsers, changeNickname, deleteConversation, getNickname };
+// Đổi màu đoạn chat
+const changeColor = async (req, res) => {
+    try {
+        const { conversationId, color } = req.body;
+
+        const conversation = await Conversation.findById(conversationId);
+        if (!conversation) {
+            return res.status(404).json({ message: "Không tìm thấy cuộc trò chuyện" });
+        }
+
+        conversation.color = color;
+        await conversation.save();
+
+        return res.status(200).json({ message: "Đổi màu đoạn chat thành công" });
+    } catch (err) {
+        console.error("Không thể đổi màu đoạn chat:", err);
+        return res.status(500).json({ message: "Lỗi server", error: err.message });
+    }
+};
+
+module.exports = { createConversation, getUserConversations, getConversationBetweenUsers, changeNickname, deleteConversation, getNickname, changeColor };

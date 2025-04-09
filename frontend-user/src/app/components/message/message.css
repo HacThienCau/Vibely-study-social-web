@@ -35,6 +35,10 @@
 }
 
 .message.own .messageText {
-    background-color: #30BDFF;
+    background-color: var(--message-color);
     color: white;
+}
+
+:root {
+    --message-color: #30BDFF;
 }
