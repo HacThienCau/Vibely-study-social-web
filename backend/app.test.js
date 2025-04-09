@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const request = require('supertest');
 const path = require('path');
 const fs = require('fs');
-
+// Nhớ kiểm tra file index.js trước khi test api
 let app;
 let token;
 const testUser = {

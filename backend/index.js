@@ -50,7 +50,7 @@ app.use(cors(corsOptions));
 
 
 
-//connectDb();
+connectDb();  //mở dòng này nếu chạy nodemon
 app.use(passport.initialize())
 
 //API Route
@@ -93,15 +93,17 @@ app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).json({ message: 'Something went wrong!' });
 });
-/*
+//mở đoạn này nếu chạy nodemon
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
     console.log(`📜 API Docs available at http://localhost:${PORT}/api-docs`);
 });
-*/
-//FOR TEST API - Mở đoạn này + cmt đoạn app.listen và dòng connectDb khi test API
+
+/*    //FOR TEST API - chỉ mở đoạn này và cmt các đoạn trên nếu test API
 module.exports = (async () => {
     await connectDb(); // Chờ kết nối DB xong
     return app;
 })();
+
+*/
