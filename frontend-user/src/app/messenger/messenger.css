@@ -3,10 +3,11 @@
     display: flex;
 }
 .chatMenu{
-    flex: 3.5;
+    flex: 3;
+    margin-top: 14px;
 }
 .chatBox{
-    flex: 5.5;
+    flex: 6;
     /*tạo đường kẻ giữa 3 phần*/
     border-left-width: 1px;
     border-right-width: 1px;
@@ -15,12 +16,19 @@
 .chatOnline{
     flex: 3;
 }
-.chatMenuWrapper, .chatBoxWrapper, .chatOnlineWrapper{
+.chatMenuWrapper {
+    padding: 10px;
+    height: 100%;
+    margin-left: 10px;
+}
+
+.chatBoxWrapper, .chatOnlineWrapper{
     padding: 10px;
     height: 100%;
 }
+
 .chatMenuInput{
-    width: 80%;
+    width: 90%;
     padding: 10px 0;
 }
 .chatBoxBottom{
