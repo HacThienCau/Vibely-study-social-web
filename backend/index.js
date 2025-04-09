@@ -50,7 +50,7 @@ app.use(cors(corsOptions));
 
 
 
-connectDb();
+//connectDb();
 app.use(passport.initialize())
 
 //API Route
@@ -93,9 +93,15 @@ app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).json({ message: 'Something went wrong!' });
 });
-
+/*
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
     console.log(`📜 API Docs available at http://localhost:${PORT}/api-docs`);
 });
+*/
+//FOR TEST API - Mở đoạn này + cmt đoạn app.listen và dòng connectDb khi test API
+module.exports = (async () => {
+    await connectDb(); // Chờ kết nối DB xong
+    return app;
+})();
