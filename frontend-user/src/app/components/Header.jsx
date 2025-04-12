@@ -178,7 +178,7 @@ const Header = () => {
                 <Input
                   type="text"
                   placeholder="Tìm kiếm"
-                  className="pl-10 w-40 md:w-64 h-10 bg-search_bar rounded-full border-none"
+                  className="pl-10 w-40 lg:w-64 h-10 bg-search_bar rounded-full border-none"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onFocus={() => setIsSearchOpen(true)}
@@ -232,7 +232,7 @@ const Header = () => {
         </div>
 
         {/* Thanh điều hướng */}
-        <nav className="hidden md:flex justify-around w-[40%] max-w-md ml-[-100px] -translate-x-1/5 space-x-20">
+        <nav className="hidden md:flex justify-around w-[40%] max-w-md lg:ml-[-100px] -translate-x-1/5 flex-wrap gap-x-[clamp(1rem,2.5vw,80px)]">
           {navItems.map(({ icon, path }) => (
             <Link key={path} href={path} className="flex items-center">
               <img
