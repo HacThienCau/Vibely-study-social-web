@@ -11,8 +11,12 @@ import Message from "../components/message/Message";
 import "./messenger.css";
 import { PiDotsThreeVerticalBold } from "react-icons/pi";
 import { IoSend } from "react-icons/io5";
+import { IoIosVideocam } from "react-icons/io";
+import { useRouter } from "next/navigation";
+
 
 const Messenger = () => {
+    const router = useRouter();
     const [user, setUser] = useState(null);
     // const [conversations, setConversations] = useState([]);
     const [friends, setFriends] = useState([]);
@@ -34,6 +38,29 @@ const Messenger = () => {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [chatColor, setChatColor] = useState("#30BDFF");
     const [showColorModal, setShowColorModal] = useState(false);
+    const handleVideoClick = () => {
+        if (!currentChat || !user || !selectedFriend) {
+            console.error("Missing required data for video call:", {
+                currentChat,
+                user,
+                selectedFriend
+            });
+            return;
+        }
+
+        // Tạo room ID mới mỗi lần gọi video
+        const newRoomID = `video_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+
+        // Log để kiểm tra dữ liệu
+        console.log("Starting video call with:", {
+            roomID: newRoomID,
+            callerId: user._id,
+            receiverId: selectedFriend._id
+        });
+
+        // Chuyển đến trang video call với các tham số cần thiết
+        router.push(`/video-call?roomID=${newRoomID}&callerId=${user._id}&receiverId=${selectedFriend._id}`);
+    };
 
     // Kết nối socket
     useEffect(() => {
@@ -367,6 +394,9 @@ const Messenger = () => {
                                         </span>
                                     </div>
                                     <div className="relative">
+                                        <button onClick={handleVideoClick}>
+                                            <IoIosVideocam size={27} className="mr-4" />
+                                        </button>
                                         <button onClick={() => setShowOptions(!showOptions)}>
                                             <PiDotsThreeVerticalBold size={25} />
                                         </button>

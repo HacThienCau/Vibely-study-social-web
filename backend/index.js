@@ -24,8 +24,10 @@ const adminUserRoute = require('./routes/adminUserRoute')
 const adminInformationRoute = require('./routes/adminInformationRoute');
 const forgotPasswordRoute = require('./routes/forgotPassword');
 const quizRoute = require('./routes/quizRoute');
+const videoCallRoute = require('./routes/videoCallRoute');
 const YAML = require('yamljs');
 const createDefaultAdmin = require('./utils/createDefaultAdmin');
+const ioMiddleware = require('./middleware/io');
 
 const swaggerDocument = YAML.load(path.join(__dirname, 'API/swagger.yaml'));
 
@@ -57,7 +59,7 @@ connectDb().then(() => {
 });
 
 app.use(passport.initialize())
-
+app.use(ioMiddleware);
 //API Route
 app.use('/auth', authRoute);
 app.use('/users', postRoute);
@@ -77,6 +79,7 @@ app.use('/admin', adminInformationRoute);
 app.use('/admin/posts', adminPostRoute);
 app.use('/admin/users', adminUserRoute);
 app.use('/forgot-password', forgotPasswordRoute);
+app.use('/video-call', videoCallRoute);
 
 // ✅ API lấy danh ngôn ngẫu nhiên
 app.get('/quotations/random', async (req, res) => {
