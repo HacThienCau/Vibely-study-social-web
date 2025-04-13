@@ -14,7 +14,7 @@ export default function Message({ message, own }) {
       try {
         const token = localStorage.getItem("token");
         const res = await axios.post(
-          "http://localhost:8080/users/get-users",
+          "http://localhost:8081/users/get-users",
           { userIds: [message.sender] },
           { headers: { Authorization: `Bearer ${token}` } }
         );

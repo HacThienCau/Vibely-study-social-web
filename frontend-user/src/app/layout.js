@@ -2,7 +2,6 @@ import { Roboto_Condensed } from "next/font/google";
 import { Toaster } from "react-hot-toast";
 import AuthWrapper from "./auth-wrapper";
 import { ContextProvider } from "./context/QuizContext";
-import { SocketProvider } from "./context/SocketContext";
 import "./globals.css";
 
 const robotoCondensed = Roboto_Condensed({
@@ -14,6 +13,9 @@ const robotoCondensed = Roboto_Condensed({
 export const metadata = {
   title: "Vibely",
   description: "Mạng xã hội học tập kết nối các bạn học sinh, sinh viên",
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({ children }) {
@@ -23,9 +25,7 @@ export default function RootLayout({ children }) {
         <Toaster />
         <AuthWrapper>
           <ContextProvider>
-            <SocketProvider>
-              {children}
-            </SocketProvider>
+            {children}
           </ContextProvider>
         </AuthWrapper>
       </body>

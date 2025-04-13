@@ -24,10 +24,8 @@ const adminUserRoute = require('./routes/adminUserRoute')
 const adminInformationRoute = require('./routes/adminInformationRoute');
 const forgotPasswordRoute = require('./routes/forgotPassword');
 const quizRoute = require('./routes/quizRoute');
-const videoCallRoute = require('./routes/videoCallRoute');
 const YAML = require('yamljs');
 const createDefaultAdmin = require('./utils/createDefaultAdmin');
-const ioMiddleware = require('./middleware/io');
 
 const swaggerDocument = YAML.load(path.join(__dirname, 'API/swagger.yaml'));
 
@@ -44,7 +42,9 @@ app.use(cookieParser());
 
 
 const corsOptions = {
-    origin: ["http://localhost:3000", "http://localhost:3001", "https://vibely-study-social-web.onrender.com"],
+    origin: ["http://localhost:3000", "http://localhost:3001",
+        "http://localhost:3002", "http://localhost:3003",
+        "https://vibely-study-social-web.onrender.com"],
     credentials: true,
 };
 
@@ -52,14 +52,11 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 
-//mở dòng này nếu chạy nodemon, cmt khi test api
 connectDb().then(() => {
     // Tạo admin mặc định sau khi kết nối database thành công
     createDefaultAdmin();
 });
-
 app.use(passport.initialize())
-app.use(ioMiddleware);
 //API Route
 app.use('/auth', authRoute);
 app.use('/users', postRoute);
@@ -79,7 +76,6 @@ app.use('/admin', adminInformationRoute);
 app.use('/admin/posts', adminPostRoute);
 app.use('/admin/users', adminUserRoute);
 app.use('/forgot-password', forgotPasswordRoute);
-app.use('/video-call', videoCallRoute);
 
 // ✅ API lấy danh ngôn ngẫu nhiên
 app.get('/quotations/random', async (req, res) => {
@@ -102,7 +98,7 @@ app.use((err, req, res, next) => {
     res.status(500).json({ message: 'Something went wrong!' });
 });
 
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 8081;
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
