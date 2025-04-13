@@ -11,12 +11,9 @@ import Message from "../components/message/Message";
 import "./messenger.css";
 import { PiDotsThreeVerticalBold } from "react-icons/pi";
 import { IoSend } from "react-icons/io5";
-import { IoIosVideocam } from "react-icons/io";
-import { useRouter } from "next/navigation";
 
 
 const Messenger = () => {
-    const router = useRouter();
     const [user, setUser] = useState(null);
     // const [conversations, setConversations] = useState([]);
     const [friends, setFriends] = useState([]);
@@ -38,29 +35,6 @@ const Messenger = () => {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [chatColor, setChatColor] = useState("#30BDFF");
     const [showColorModal, setShowColorModal] = useState(false);
-    const handleVideoClick = () => {
-        if (!currentChat || !user || !selectedFriend) {
-            console.error("Missing required data for video call:", {
-                currentChat,
-                user,
-                selectedFriend
-            });
-            return;
-        }
-
-        // Tạo room ID mới mỗi lần gọi video
-        const newRoomID = `video_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-
-        // Log để kiểm tra dữ liệu
-        console.log("Starting video call with:", {
-            roomID: newRoomID,
-            callerId: user._id,
-            receiverId: selectedFriend._id
-        });
-
-        // Chuyển đến trang video call với các tham số cần thiết
-        router.push(`/video-call?roomID=${newRoomID}&callerId=${user._id}&receiverId=${selectedFriend._id}`);
-    };
 
     // Kết nối socket
     useEffect(() => {
@@ -113,7 +87,7 @@ const Messenger = () => {
         const getFriends = async () => {
             try {
                 const token = localStorage.getItem("token");
-                const res = await axios.get(`http://localhost:8080/users/mutual-friends/${user._id}`, {
+                const res = await axios.get(`http://localhost:8081/users/mutual-friends/${user._id}`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 console.log("Danh sách bạn bè:", res.data.data);
@@ -148,7 +122,7 @@ const Messenger = () => {
 
         const getMessages = async () => {
             try {
-                const res = await axios.get(`http://localhost:8080/message/${currentChat._id}`);
+                const res = await axios.get(`http://localhost:8081/message/${currentChat._id}`);
                 setMessages(res.data);
             } catch (err) {
                 console.error("❌ Lỗi khi lấy tin nhắn:", err);
@@ -182,7 +156,7 @@ const Messenger = () => {
 
 
         try {
-            const res = await axios.post("http://localhost:8080/message", message);
+            const res = await axios.post("http://localhost:8081/message", message);
             setMessages([...messages, res.data]);
             setNewMessage("");
         } catch (err) {
@@ -248,11 +222,11 @@ const Messenger = () => {
 
             try {
                 // Lấy biệt danh của người bạn đang chat
-                const friendNicknameRes = await axios.get(`http://localhost:8080/conversation/nickname/${currentChat._id}/${selectedFriend._id}`);
+                const friendNicknameRes = await axios.get(`http://localhost:8081/conversation/nickname/${currentChat._id}/${selectedFriend._id}`);
                 setFriendNickname(friendNicknameRes.data.nickname);
 
                 // Lấy biệt danh của bạn
-                const myNicknameRes = await axios.get(`http://localhost:8080/conversation/nickname/${currentChat._id}/${user._id}`);
+                const myNicknameRes = await axios.get(`http://localhost:8081/conversation/nickname/${currentChat._id}/${user._id}`);
                 setMyNickname(myNicknameRes.data.nickname);
             } catch (err) {
                 console.error("Lỗi khi lấy biệt danh:", err);
@@ -266,7 +240,7 @@ const Messenger = () => {
         const newNickname = prompt(`Đặt biệt danh cho ${username}:`, currentNickname || "");
         if (newNickname !== null) { // Người dùng không nhấn cancel
             try {
-                await axios.put("http://localhost:8080/conversation/nickname", {
+                await axios.put("http://localhost:8081/conversation/nickname", {
                     conversationId: currentChat._id,
                     userId: userId,
                     nickname: newNickname,
@@ -288,7 +262,7 @@ const Messenger = () => {
 
     const handleDeleteChat = async () => {
         try {
-            await axios.delete(`http://localhost:8080/conversation/${currentChat._id}`);
+            await axios.delete(`http://localhost:8081/conversation/${currentChat._id}`);
             setCurrentChat(null);
             setShowDeleteModal(false);
             console.log("Xóa cuộc trò chuyện thành công");
@@ -313,7 +287,7 @@ const Messenger = () => {
     // Thêm hàm đổi màu
     const changeColor = async (newColor) => {
         try {
-            await axios.put("http://localhost:8080/conversation/color", {
+            await axios.put("http://localhost:8081/conversation/color", {
                 conversationId: currentChat._id,
                 color: newColor
             });
@@ -354,7 +328,7 @@ const Messenger = () => {
                                 key={friend._id}
                                 onClick={async () => {
                                     try {
-                                        const res = await axios.post(`http://localhost:8080/conversation`, {
+                                        const res = await axios.post(`http://localhost:8081/conversation`, {
                                             senderId: user._id,
                                             receiverId: friend._id,
                                         });
@@ -394,9 +368,6 @@ const Messenger = () => {
                                         </span>
                                     </div>
                                     <div className="relative">
-                                        <button onClick={handleVideoClick}>
-                                            <IoIosVideocam size={27} className="mr-4" />
-                                        </button>
                                         <button onClick={() => setShowOptions(!showOptions)}>
                                             <PiDotsThreeVerticalBold size={25} />
                                         </button>
