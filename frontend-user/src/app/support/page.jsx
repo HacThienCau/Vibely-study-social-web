@@ -11,6 +11,7 @@ const SupportPage = () => {
     const [loading, setLoading] = useState(false);
     const [isEmpty, setEmpty] = useState();
     const [token, setToken] = useState(null);
+    const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8081';
 
     // Lấy token từ localStorage trên client
     useEffect(() => {
@@ -32,7 +33,7 @@ const SupportPage = () => {
         setEmpty(false);
 
         try {
-            const response = await axios.post("https://vibely-study-social-web.onrender.com/inquiry", { message }, {
+            const response = await axios.post(`${API_URL}/inquiry`, { message }, {
                 headers: { Authorization: `Bearer ${token}` },
             });
 

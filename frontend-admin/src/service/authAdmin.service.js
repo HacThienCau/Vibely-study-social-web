@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Sửa lại URL API cho đúng với backend của bạn
-const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8081/';
+const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8081';
 
 // Tạo instance axios với cấu hình mặc định
 const axiosInstance = axios.create({
@@ -15,7 +15,7 @@ const axiosInstance = axios.create({
 // Đăng nhập Admin
 export const loginAdmin = async (adminData) => {
     try {
-        const fullUrl = `${API_URL}admin/auth/login`;
+        const fullUrl = `${API_URL}/admin/auth/login`;
         console.log('Đang gửi request đăng nhập đến:', fullUrl);
         console.log('Dữ liệu đăng nhập:', adminData);
 
@@ -54,7 +54,7 @@ export const logoutAdmin = async () => {
             throw new Error('Không tìm thấy token đăng nhập');
         }
 
-        const response = await axios.post(`${API_URL}admin/auth/logout`, {}, {
+        const response = await axios.post(`${API_URL}/admin/auth/logout`, {}, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 'Content-Type': 'application/json',
@@ -78,7 +78,7 @@ export const checkAdminAuth = async () => {
             return { isAuthenticated: false };
         }
 
-        const response = await axios.get(`${API_URL}admin/auth/check-auth`, {
+        const response = await axios.get(`${API_URL}/admin/auth/check-auth`, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 'Content-Type': 'application/json',
@@ -104,7 +104,7 @@ export const updateAdminPassword = async (passwordData) => {
         }
 
         const response = await axios.put(
-            `${API_URL}admin/auth/update-password`,
+            `${API_URL}/admin/auth/update-password`,
             passwordData,
             {
                 headers: {

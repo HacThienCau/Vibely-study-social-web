@@ -10,6 +10,7 @@ export default function CodeConfirm() {
     const [loading, setLoading] = useState(false);
     const [email, setEmail] = useState("");
     const router = useRouter();
+    const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8081';
 
     useEffect(() => {
         // Lấy email từ localStorage khi component mount
@@ -25,7 +26,7 @@ export default function CodeConfirm() {
         setLoading(true);
         setError("");
         try {
-            await axios.post('https://vibely-study-social-web.onrender.com/forgot-password/send-code', { email });
+            await axios.post(`${API_URL}/forgot-password/send-code`, { email });
             alert('Đã gửi lại mã xác thực');
         } catch (error) {
             setError(error.response?.data?.message || 'Có lỗi xảy ra');
@@ -39,7 +40,7 @@ export default function CodeConfirm() {
         setLoading(true);
         setError("");
         try {
-            await axios.post('https://vibely-study-social-web.onrender.com/forgot-password/verify-code', {
+            await axios.post(`${API_URL}/forgot-password/verify-code`, {
                 email,
                 code
             });

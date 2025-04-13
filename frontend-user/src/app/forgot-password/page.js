@@ -9,13 +9,13 @@ export default function ForgotPassword() {
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
     const router = useRouter();
-
+    const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8081';
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
         setError("");
         try {
-            await axios.post('https://vibely-study-social-web.onrender.com/forgot-password/send-code', { email });
+            await axios.post(`${API_URL}/forgot-password/send-code`, { email });
             // Lưu email vào localStorage để sử dụng ở trang code-confirm
             localStorage.setItem('resetPasswordEmail', email);
             router.push("/forgot-password/code-confirm");

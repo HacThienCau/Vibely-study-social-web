@@ -35,6 +35,7 @@ const Messenger = () => {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [chatColor, setChatColor] = useState("#30BDFF");
     const [showColorModal, setShowColorModal] = useState(false);
+    const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8081';
 
     // Kết nối socket
     useEffect(() => {
@@ -87,7 +88,7 @@ const Messenger = () => {
         const getFriends = async () => {
             try {
                 const token = localStorage.getItem("token");
-                const res = await axios.get(`http://localhost:8081/users/mutual-friends/${user._id}`, {
+                const res = await axios.get(`${API_URL}/users/mutual-friends/${user._id}`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 console.log("Danh sách bạn bè:", res.data.data);
@@ -122,7 +123,7 @@ const Messenger = () => {
 
         const getMessages = async () => {
             try {
-                const res = await axios.get(`http://localhost:8081/message/${currentChat._id}`);
+                const res = await axios.get(`${API_URL}/message/${currentChat._id}`);
                 setMessages(res.data);
             } catch (err) {
                 console.error("❌ Lỗi khi lấy tin nhắn:", err);
@@ -156,7 +157,7 @@ const Messenger = () => {
 
 
         try {
-            const res = await axios.post("http://localhost:8081/message", message);
+            const res = await axios.post(`${API_URL}/message`, message);
             setMessages([...messages, res.data]);
             setNewMessage("");
         } catch (err) {
@@ -222,11 +223,11 @@ const Messenger = () => {
 
             try {
                 // Lấy biệt danh của người bạn đang chat
-                const friendNicknameRes = await axios.get(`http://localhost:8081/conversation/nickname/${currentChat._id}/${selectedFriend._id}`);
+                const friendNicknameRes = await axios.get(`${API_URL}/conversation/nickname/${currentChat._id}/${selectedFriend._id}`);
                 setFriendNickname(friendNicknameRes.data.nickname);
 
                 // Lấy biệt danh của bạn
-                const myNicknameRes = await axios.get(`http://localhost:8081/conversation/nickname/${currentChat._id}/${user._id}`);
+                const myNicknameRes = await axios.get(`${API_URL}/conversation/nickname/${currentChat._id}/${user._id}`);
                 setMyNickname(myNicknameRes.data.nickname);
             } catch (err) {
                 console.error("Lỗi khi lấy biệt danh:", err);
@@ -240,7 +241,7 @@ const Messenger = () => {
         const newNickname = prompt(`Đặt biệt danh cho ${username}:`, currentNickname || "");
         if (newNickname !== null) { // Người dùng không nhấn cancel
             try {
-                await axios.put("http://localhost:8081/conversation/nickname", {
+                await axios.put(`${API_URL}/conversation/nickname`, {
                     conversationId: currentChat._id,
                     userId: userId,
                     nickname: newNickname,
@@ -262,7 +263,7 @@ const Messenger = () => {
 
     const handleDeleteChat = async () => {
         try {
-            await axios.delete(`http://localhost:8081/conversation/${currentChat._id}`);
+            await axios.delete(`${API_URL}/conversation/${currentChat._id}`);
             setCurrentChat(null);
             setShowDeleteModal(false);
             console.log("Xóa cuộc trò chuyện thành công");
@@ -287,7 +288,7 @@ const Messenger = () => {
     // Thêm hàm đổi màu
     const changeColor = async (newColor) => {
         try {
-            await axios.put("http://localhost:8081/conversation/color", {
+            await axios.put(`${API_URL}/conversation/color`, {
                 conversationId: currentChat._id,
                 color: newColor
             });
@@ -328,7 +329,7 @@ const Messenger = () => {
                                 key={friend._id}
                                 onClick={async () => {
                                     try {
-                                        const res = await axios.post(`http://localhost:8081/conversation`, {
+                                        const res = await axios.post(`${API_URL}/conversation`, {
                                             senderId: user._id,
                                             receiverId: friend._id,
                                         });
