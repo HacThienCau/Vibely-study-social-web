@@ -10,6 +10,8 @@ export default function ResetPassword() {
     const [error, setError] = useState("");
     const [success, setSuccess] = useState(false);
     const router = useRouter();
+    const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8081';
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -20,7 +22,7 @@ export default function ResetPassword() {
 
         try {
             const token = localStorage.getItem('token'); // Lấy token từ localStorage
-            const response = await fetch('https://vibely-study-social-web.onrender.com/auth/change-password', {
+            const response = await fetch(`${API_URL}/auth/change-password`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

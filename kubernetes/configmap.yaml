@@ -6,6 +6,6 @@ data:
   PORT: "8081"
   NODE_ENV: "production"
   FRONTEND_URL: "http://localhost:3000"
-  NEXT_PUBLIC_BACKEND_URL: "http://localhost:8081"
+  NEXT_PUBLIC_BACKEND_URL: "https://vibely-study-social-web.onrender.com"
   URL: "http://localhost:3000"
-  PUBLIC_FOLDER: "http://localhost:8081/images"
+  PUBLIC_FOLDER: "https://vibely-study-social-web.onrender.com/images"

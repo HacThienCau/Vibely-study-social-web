@@ -18,6 +18,8 @@ const Support = () => {
     const [query, setQuery] = useState("");
     const [status, setStatus] = useState("");
     const [token, setToken] = useState("");
+    const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8081';
+
 
     // Lấy token từ localStorage trên client
     useEffect(() => {
@@ -34,7 +36,7 @@ const Support = () => {
         const fetchInquiries = async () => {
             if (!token) return;
 
-            let url = "https://vibely-study-social-web.onrender.com/inquiry?";
+            let url = `${API_URL}/inquiry?`;
             if (query) url += `query=${query}&`;
             if (status) url += `status=${status}`;
 
@@ -62,7 +64,7 @@ const Support = () => {
         if (!selectedInquiry?._id) return;
 
         try {
-            const res = await axios.delete(`https://vibely-study-social-web.onrender.com/inquiry/${selectedInquiry._id}`, {
+            const res = await axios.delete(`${API_URL}/inquiry/${selectedInquiry._id}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
 
@@ -82,7 +84,7 @@ const Support = () => {
     const updateInquiry = async (inquiry) => {
         try {
             console.log("inquiry", inquiry.inquiryId);
-            const res = await axios.put(`https://vibely-study-social-web.onrender.com/inquiry/${inquiry.inquiryId}`, {
+            const res = await axios.put(`${API_URL}/inquiry/${inquiry.inquiryId}`, {
                 status: "Đã phản hồi",
                 response: inquiry.response,
             }

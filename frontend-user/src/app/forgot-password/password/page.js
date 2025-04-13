@@ -12,6 +12,7 @@ export default function ResetPassword() {
     const [email, setEmail] = useState("");
     const [code, setCode] = useState("");
     const router = useRouter();
+    const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8081';
 
     useEffect(() => {
         // Lấy email và code từ localStorage khi component mount
@@ -34,7 +35,7 @@ export default function ResetPassword() {
         setLoading(true);
         setError("");
         try {
-            await axios.post('https://vibely-study-social-web.onrender.com/forgot-password/reset-password', {
+            await axios.post(`${API_URL}/forgot-password/reset-password`, {
                 email,
                 code,
                 newPassword: password

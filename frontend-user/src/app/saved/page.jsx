@@ -20,6 +20,7 @@ const SavedPage = () => {
     const [selectedSubjectId, setSelectedSubjectId] = useState(null);
     const [token, setToken] = useState(null);
     const [query, setQuery] = useState("");
+    const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8081';
 
     // Hàm cắt chuỗi văn bản
     const truncateText = (text, maxLength) => {
@@ -43,13 +44,13 @@ const SavedPage = () => {
             if (!token) return;
 
             try {
-                const levelsRes = await axios.get("https://vibely-study-social-web.onrender.com/documents/levels", {
+                const levelsRes = await axios.get(`${API_URL}/documents/levels`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
 
                 setLevels(levelsRes.data.data);
 
-                const docsRes = await axios.get("https://vibely-study-social-web.onrender.com/users/saved", {
+                const docsRes = await axios.get(`${API_URL}/users/saved`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
 
@@ -71,7 +72,7 @@ const SavedPage = () => {
             }
 
             try {
-                const res = await axios.get(`https://vibely-study-social-web.onrender.com/documents/subjects/${selectedLevelId}`, {
+                const res = await axios.get(`${API_URL}/documents/subjects/${selectedLevelId}`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
 
@@ -89,7 +90,7 @@ const SavedPage = () => {
         const fetchFilteredDocs = async () => {
             if (!token) return;
 
-            let url = "https://vibely-study-social-web.onrender.com/users/saved?";
+            let url = `${API_URL}/users/saved?`;
             if (query) url += `query=${query}&`;
             if (selectedLevelId) url += `level=${selectedLevelId}&`;
             if (selectedSubjectId) url += `subject=${selectedSubjectId}`;

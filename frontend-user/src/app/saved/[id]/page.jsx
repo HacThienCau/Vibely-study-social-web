@@ -19,6 +19,7 @@ const SavedDocumentDetail = () => {
     const [isSidebarOpen, setSidebarOpen] = useState(false)
     const [token, setToken] = useState(null);
     const [isSharePopupOpen, setSharePopupOpen] = useState(false);
+    const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8081';
 
     // Hàm chuyển đổi ngày tháng năm
     const formatDate = (dateString) => {
@@ -48,7 +49,7 @@ const SavedDocumentDetail = () => {
                 if (!token) return;
 
                 try {
-                    const result = await axios.get(`https://vibely-study-social-web.onrender.com/users/saved/${id}`, {
+                    const result = await axios.get(`${API_URL}/users/saved/${id}`, {
                         headers: { Authorization: `Bearer ${token}` },
                     });
 
@@ -71,7 +72,7 @@ const SavedDocumentDetail = () => {
 
         try {
             const response = await axios.delete(
-                `https://vibely-study-social-web.onrender.com/users/saved/${id}`,
+                `${API_URL}/users/saved/${id}`,
                 { headers: { Authorization: `Bearer ${token}` } }
             );
 

@@ -5,6 +5,8 @@ import "./chatOnline.css";
 export default function ChatOnline({ onlineUsers, currentId, setCurrentChat, setSelectedFriend }) {
   const [friends, setFriends] = useState([]);
   const [onlineFriends, setOnlineFriends] = useState([]);
+  const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8081';
+
 
   useEffect(() => {
     const getFriends = async () => {
@@ -15,7 +17,7 @@ export default function ChatOnline({ onlineUsers, currentId, setCurrentChat, set
           return;
         }
 
-        const res = await axios.get(`http://localhost:8081/users/mutual-friends/${currentId}`, {
+        const res = await axios.get(`${API_URL}/users/mutual-friends/${currentId}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
 
@@ -40,7 +42,7 @@ export default function ChatOnline({ onlineUsers, currentId, setCurrentChat, set
 
   const handleClick = async (user) => {
     try {
-      const res = await axios.post(`http://localhost:8081/conversation`, {
+      const res = await axios.post(`${API_URL}/conversation`, {
         senderId: currentId,
         receiverId: user._id,
       });
