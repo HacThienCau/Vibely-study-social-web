@@ -61,8 +61,8 @@ function QuizStartHeader({ quizId, parentTimer }) {
                                 </div>
                             )}
                         </div>
-                        <div className="flex flex-col gap-1">
-                            <h2 className="font-bold text-xl">{quizTitle}</h2>
+                        <div className="flex flex-col gap-1 mt-1">
+                            <p className="font-bold text-xl">{quizTitle}</p>
                             <span className="font-light text-sm">
                                 {quizQuestions?.length || 0} Câu hỏi
                             </span>
