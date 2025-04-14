@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-// Sửa lại URL API cho đúng với backend của bạn
+// Sử dụng biến môi trường, nếu không có thì dùng localhost
 const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8081';
 
 // Tạo instance axios với cấu hình mặc định
@@ -15,16 +15,10 @@ const axiosInstance = axios.create({
 // Đăng nhập Admin
 export const loginAdmin = async (adminData) => {
     try {
-        const fullUrl = `${API_URL}/admin/auth/login`;
-        console.log('Đang gửi request đăng nhập đến:', fullUrl);
+        console.log('Đang gửi request đăng nhập đến:', `${API_URL}/admin/auth/login`);
         console.log('Dữ liệu đăng nhập:', adminData);
 
-        const response = await axios.post(fullUrl, adminData, {
-            withCredentials: true,
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        });
+        const response = await axiosInstance.post('/admin/auth/login', adminData);
 
         console.log('Phản hồi từ server:', response.data);
 
