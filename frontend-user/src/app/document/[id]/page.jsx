@@ -123,7 +123,7 @@ const DocumentDetail = () => {
                 </Button>
 
                 <div className="min-h-0 flex-1">
-                    <h2 className="text-xl font-bold">{document.title}</h2>
+                    <p className="text-xl font-bold">{document.title}</p>
                     <div className="mt-5 space-y-3">
                         <p className="flex items-center">
                             <span className="mr-3"><BookMarked size={20} /></span>
