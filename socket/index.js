@@ -10,7 +10,7 @@ const io = require("socket.io")(8900, {
       "https://vibely-study-social-web.vercel.app",
       "https://vibelyadmin.netlify.app",
       "https://vibelyuser.netlify.app",
-      "https://vibely-study-social-web-user.onrender.com",
+      "https://vibely-study-social-web-user.vercel.app",
     ],
   },
 });

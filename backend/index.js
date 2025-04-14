@@ -56,7 +56,7 @@ const corsOptions = {
             "http://54.79.253.210:3003",
             "https://vibelyadmin.netlify.app",
             "https://vibelyuser.netlify.app",
-            "https://vibely-study-social-web-user.onrender.com",
+            "https://vibely-study-social-web-user.vercel.app",
         ];
         if (!origin || allowedOrigins.includes(origin)) {
             callback(null, true);
