@@ -1,9 +1,10 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { faCode, faStopwatch } from '@fortawesome/free-solid-svg-icons';
+import { faStopwatch } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { getQuizById } from '@/service/quiz.service';
+import * as Icons from '@fortawesome/free-solid-svg-icons';
 
 function QuizStartHeader({ quizId, parentTimer }) {
     const [quiz, setQuiz] = useState(null);
@@ -26,7 +27,17 @@ function QuizStartHeader({ quizId, parentTimer }) {
 
     if (isLoading || !quiz) return null;
 
-    const { quizTitle, quizQuestions } = quiz;
+    const { quizTitle, quizQuestions, icon } = quiz;
+
+    // Hàm lấy icon từ tên
+    const getIconFromName = (iconName) => {
+        if (!iconName) return null;
+        // Chuyển đổi tên icon từ database (ví dụ: 'faCode') thành key trong Icons (ví dụ: 'faCode')
+        const iconKey = iconName;
+        return Icons[iconKey];
+    };
+
+    const iconData = getIconFromName(icon);
 
     return (
         <div className="fixed top-0 left-0 right-0 bg-white shadow-md z-50">
@@ -35,12 +46,20 @@ function QuizStartHeader({ quizId, parentTimer }) {
                     {/* Quiz Title */}
                     <div className="flex gap-2 items-center">
                         <div className="bg-blue-600 w-12 h-12 flex items-center justify-center p-2 rounded-md">
-                            <FontAwesomeIcon
-                                className="text-white"
-                                width={25}
-                                height={25}
-                                icon={faCode}
-                            />
+                            {iconData ? (
+                                <FontAwesomeIcon
+                                    className="text-white"
+                                    width={25}
+                                    height={25}
+                                    icon={iconData}
+                                />
+                            ) : (
+                                <div className="text-white text-center">
+                                    <span className="text-xs">{quizQuestions?.length || 0}</span>
+                                    <br />
+                                    <span className="text-xs">Câu</span>
+                                </div>
+                            )}
                         </div>
                         <div className="flex flex-col gap-1">
                             <h2 className="font-bold text-xl">{quizTitle}</h2>
