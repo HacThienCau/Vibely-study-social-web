@@ -106,7 +106,7 @@ const PostCard = ({ post, onReact, onComment, onShare, onDelete, onEdit }) => {
 
   //Các biến và hàm cho Chia Sẻ Bài Viết
   const generateSharedLink = () => {
-    return `http://localhost:3000/posts/${post?._id}`; //sau khi deploy thì đổi lại + tạo trang bài viết đi!!!!
+    return `https://vibely-study-social-web.vercel.app/posts/${post?._id}`; //sau khi deploy thì đổi lại + tạo trang bài viết đi!!!!
   };
   const handleShare = (platform) => {
     const url = generateSharedLink();
@@ -581,7 +581,7 @@ const PostCard = ({ post, onReact, onComment, onShare, onDelete, onEdit }) => {
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
-                  <p>Chia sẻ bài viết này</p>
+                  <p className="font-bold  text-[20px]">Chia sẻ bài viết này</p>
                   <DialogDescription>
                     Chọn cách bạn muốn chia sẻ bài viết này
                   </DialogDescription>
