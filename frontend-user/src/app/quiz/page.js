@@ -24,7 +24,7 @@ function QuizzesArea() {
   }, []);
 
   return (
-    <div className="poppins mx-12 mt-20">
+    <div className="poppins mx-12 pt-20">
       {isLoading ? (
         <div>Loading...</div>
       ) : (
