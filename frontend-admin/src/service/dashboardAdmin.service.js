@@ -45,7 +45,7 @@ export const getTotalDocuments = async () => {
 export const getTotalQuestions = async () => {
     try {
         const result = await axiosInstance.get("/admin/dashboard/total-inquiries", getAuthHeaders());
-        return result?.data?.totalQuestions;
+        return result?.data?.totalInquiries;
     } catch (error) {
         console.error(error);
         throw error;
