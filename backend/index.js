@@ -42,16 +42,29 @@ app.use(cookieParser());
 
 
 const corsOptions = {
-    origin: ["http://localhost:3000", "http://localhost:3001",
-        "http://localhost:3002", "http://localhost:3003",
-        "https://vibely-study-social-web.onrender.com",
-        "http://54.79.253.210:3001",
-        "http://54.79.253.210:3000",
-        "http://54.79.253.210:3002",
-        "http://54.79.253.210:3003",
-        "https://vibely-study-social-web.vercel.app"
-    ],
+    origin: function (origin, callback) {
+        const allowedOrigins = [
+            "http://localhost:3000",
+            "http://localhost:3001",
+            "http://localhost:3002",
+            "http://localhost:3003",
+            "https://vibely-study-social-web.onrender.com",
+            "https://vibely-study-social-web.vercel.app",
+            "http://54.79.253.210:3000",
+            "http://54.79.253.210:3001",
+            "http://54.79.253.210:3002",
+            "http://54.79.253.210:3003",
+            "https://vibelyadmin.netlify.app",
+            "https://vibelyuser.netlify.app"
+        ];
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     credentials: true,
+    optionsSuccessStatus: 200,
 };
 
 

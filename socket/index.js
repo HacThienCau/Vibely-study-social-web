@@ -7,7 +7,9 @@ const io = require("socket.io")(8900, {
       "http://54.79.253.210:3000",
       "http://54.79.253.210:3002",
       "http://54.79.253.210:3003",
-      "https://vibely-study-social-web.vercel.app"
+      "https://vibely-study-social-web.vercel.app",
+      "https://vibelyadmin.netlify.app",
+      "https://vibelyuser.netlify.app"
     ],
   },
 });
