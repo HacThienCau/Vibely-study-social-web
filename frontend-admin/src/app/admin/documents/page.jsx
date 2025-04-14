@@ -46,7 +46,7 @@ const Documents = () => {
 
     // Lấy token từ localStorage trên client
     useEffect(() => {
-        const storedToken = localStorage.getItem("token");
+        const storedToken = localStorage.getItem("adminToken");
         if (storedToken) {
             setToken(storedToken);
         } else {
