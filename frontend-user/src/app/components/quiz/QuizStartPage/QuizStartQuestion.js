@@ -205,6 +205,19 @@ function QuizStartQuestions({ quizData, onUpdateTime }) {
                     ),
                 )}
             </div>
+            {/* Submit Button */}
+            <div className="flex justify-end mt-7  ">
+                <button
+                    onClick={() => {
+                        moveToTheNextQuestion();
+                    }}
+                    disabled={isQuizEnded ? true : false}
+                    className={`p-2 px-5 text-[15px] text-white rounded-md bg-blue-700 mr-[70px] ${isQuizEnded ? 'opacity-60' : 'opacity-100'
+                        }`}
+                >
+                    CHỌN
+                </button>
+            </div>
             {isQuizEnded && (
                 <ScoreComponent
                     quizStartParentProps={{

@@ -4,15 +4,17 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { loginAdmin } from "@/service/authAdmin.service";
+import { loginAdmin, checkAdminAuth } from "@/service/authAdmin.service";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { motion } from "framer-motion";
 import { LogIn } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import * as yup from "yup";
+import Link from 'next/link'
+
 
 // Schema validation cho form đăng nhập
 const loginSchema = yup.object().shape({
@@ -23,10 +25,25 @@ const loginSchema = yup.object().shape({
 const Page = () => {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
-
     const { register, handleSubmit, formState: { errors } } = useForm({
         resolver: yupResolver(loginSchema),
     });
+
+    // Kiểm tra trạng thái đăng nhập khi component mount
+    useEffect(() => {
+        const checkLoginStatus = async () => {
+            try {
+                const { isAuthenticated } = await checkAdminAuth();
+                if (isAuthenticated) {
+                    router.replace("/admin/dashboard");
+                }
+            } catch (error) {
+                console.log('Chưa đăng nhập');
+            }
+        };
+
+        checkLoginStatus();
+    }, [router]);
 
     // Hàm xử lý đăng nhập
     const onSubmit = async (data) => {
