@@ -30,7 +30,7 @@ const HelpCenter = () => {
             <div className="max-w-7xl w-full flex gap-10">
                 {/* Sidebar */}
                 <div className="w-1/4 bg-white p-4 shadow-md ml-10 mt-20 h-[600px]">
-                    <h2 className="text-xl font-bold mb-6 flex items-center gap-2 mt-6 ml-6">
+                    <p className="text-xl font-bold mb-6 flex items-center gap-2 mt-6 ml-6">
                         <Image
                             src="/images/helpcenter_vibely.png"
                             alt="Sách hướng dẫn"
@@ -38,7 +38,7 @@ const HelpCenter = () => {
                             height={24}
                         />
                         Sử dụng Vibely
-                    </h2>
+                    </p>
                     <ul className="mb-6 space-y-4">
                         <li
                             className="flex items-center gap-2 ml-10 cursor-pointer"
@@ -65,7 +65,7 @@ const HelpCenter = () => {
                         </li>
                     </ul>
 
-                    <h2 className="text-xl font-bold mb-6 flex items-center gap-2 ml-6">
+                    <p className="text-xl font-bold mb-6 flex items-center gap-2 ml-6">
                         <Image
                             src="/images/helpcenter_qltk.png"
                             alt="Quản lý tài khoản"
@@ -73,7 +73,7 @@ const HelpCenter = () => {
                             height={24}
                         />
                         Quản lý tài khoản
-                    </h2>
+                    </p>
                     <ul className="space-y-4">
                         <li
                             className="flex items-center gap-2 ml-10 cursor-pointer"
@@ -94,7 +94,7 @@ const HelpCenter = () => {
                 <div className="w-3/4 flex mt-20 ml-20">
                     {selectedContent === "createAccount" && (
                         <div className="w-full rounded-lg p-6">
-                            <h2 className="text-2xl font-bold text-black mb-4">Cách tạo tài khoản</h2>
+                            <p className="text-2xl font-bold text-black mb-4">Cách tạo tài khoản</p>
                             <h3 className="text-lg font-bold text-black mb-4">Xác nhận tài khoản</h3>
                             <div className="space-y-4">
                                 <div className="border rounded-lg p-4 shadow-sm bg-white ">
@@ -224,7 +224,7 @@ const HelpCenter = () => {
 
                     {selectedContent === "addFriend" && (
                         <div className="w-full rounded-lg p-6">
-                            <h2 className="text-2xl font-bold text-black mb-4">Kết bạn</h2>
+                            <p className="text-2xl font-bold text-black mb-4">Kết bạn</p>
                             <h3 className="text-lg font-bold text-black mb-4">Thêm bạn bè</h3>
                             <div className="space-y-4">
                                 <div className="border rounded-lg p-4 shadow-sm bg-white">
@@ -261,7 +261,7 @@ const HelpCenter = () => {
 
                     {selectedContent === "loginPassword" && (
                         <div className="w-full rounded-lg p-6">
-                            <h2 className="text-2xl font-bold text-black mb-4">Đăng nhập và mật khẩu</h2>
+                            <p className="text-2xl font-bold text-black mb-4">Đăng nhập và mật khẩu</p>
                             <h3 className="text-lg font-bold text-black mb-4">Đăng nhập tài khoản</h3>
                             <div className="space-y-4">
                                 <div className="border rounded-lg p-4 shadow-sm bg-white">

@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { MutualFriends } from "./profileContent/MutualFriends";
 import { PostsContent } from "./profileContent/PostsContent";
 import { SavedDocuments } from "./profileContent/SavedDocuments";
+import NewPostForm from "../posts/NewPostForm";
 
 export const ProfileDetails = ({
   activeTab,
@@ -134,7 +135,7 @@ export const ProfileDetails = ({
         "https://static.ybox.vn/2021/4/6/1619279350970-ezgif.com-resize.jpg",
     },
   ];
-
+  const [isPostFormOpen, setIsPostFormOpen] = useState(false)
   const tabContent = {
     posts: (
       <div className="flex flex-col lg:flex-row gap-6 ">
@@ -237,6 +238,12 @@ export const ProfileDetails = ({
         </div>
         {/* Bài viết đã đăng của người dùng */}
         <div className="w-full lg:w-[70%] space-y-6 mb-4">
+          {isOwner && 
+          <NewPostForm
+          isPostFormOpen={isPostFormOpen}
+          setIsPostFormOpen={setIsPostFormOpen}
+          />
+          }     
           {userPosts?.length > 0 ? (
             userPosts.map((post) => (
               <PostsContent
@@ -285,37 +292,24 @@ export const ProfileDetails = ({
                 Video
               </p>
             </div>
-            {/* Grid hiển thị video */}
-            {/* <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-              {userVideos.map((video) => (
-                <div key={video._id} className="relative w-[200px] h-[150px]">
-                  <img
-                    src={video.thumbnail}
-                    alt="user_video"
-                    className="w-full h-full object-cover rounded-lg"
-                  />
-
-                  <div className="absolute top-2 right-2 bg-black bg-opacity-50 p-1 rounded-full cursor-pointer">
-                    <Pencil size={16} className="text-white" />
-                  </div>
-                </div>
-              ))}
-            </div> */}
             {userPosts?.some(
-              (post) => post?.mediaType === "video/mp4" && post?.mediaUrl
+              (post) => post?.mediaType === "video" && post?.mediaUrl
             ) ? (
               <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                 {userPosts
                   ?.filter(
-                    (post) => post?.mediaType === "video/mp4" && post?.mediaUrl
+                    (post) => post?.mediaType === "video" && post?.mediaUrl
                   )
                   .map((post) => (
-                    <img
-                      key={post?._id}
-                      src={post?.mediaUrl}
-                      alt="user_video"
-                      className="w-[200px] h-[150px] object-cover rounded-lg"
-                    />
+                    <div key={post?._id} className="w-[220px] h-[180px]">
+                <video
+                  controls
+                  className="w-full h-full object-cover rounded-lg"
+                >
+                  <source src={post?.mediaUrl} type="video/mp4" />
+                  Trình duyệt của bạn không hỗ trợ thẻ video.
+                </video>
+              </div>
                   ))}
               </div>
             ) : (
@@ -348,9 +342,6 @@ export const ProfileDetails = ({
               <p className="text-xl font-semibold mb-4 dark:text-gray-300">
                 Ảnh
               </p>
-              {/* <h3 className="text-[#086280] font-semibold cursor-pointer">
-                Thêm ảnh
-              </h3> */}
             </div>
             <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
               {userPosts?.filter(

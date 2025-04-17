@@ -88,7 +88,7 @@ const Documents = () => {
             }
 
             try {
-                const res = await axios.get(`${API_URL}/subjects/${selectedLevelId}`, {
+                const res = await axios.get(`${API_URL}/documents/subjects/${selectedLevelId}`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
 
