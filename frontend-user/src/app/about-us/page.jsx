@@ -1,3 +1,4 @@
+"use client"
 import Line from "@/app/components/about/LineInAbout";
 import ProfileCard from '@/app/components/about/ProfileCard';
 import ScrollRevealEffect from '@/app/components/about/ScrollRevealEff';
