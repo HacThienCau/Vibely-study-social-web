@@ -435,7 +435,7 @@ const handleSinglePost = ()  => {
             </div>
               {reactionUserGroups?.[currentReactionDetail]?.map((user,index)=>{
                 return(
-                  <div key={index} className="flex items-center space-x-2 cursor-pointer mb-2 " onClick={() => handleNavigation(`/user-profile/${user?._id}`)}>
+                  <div key={index} className="flex items-center space-x-2 cursor-pointer mb-2 " onClick={() => router.push(`/user-profile/${user?._id}`)}>
             <Avatar className="h-10 w-10 ml-2">
               {user?.profilePicture ? (
                 <AvatarImage
