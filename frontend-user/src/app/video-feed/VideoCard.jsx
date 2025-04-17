@@ -497,12 +497,6 @@ const VideoCard = ({post, onReact, onComment, onShare, onDelete, onEdit}) => {
 const {user} = userStore()
 const [reaction,setReaction] = useState(null) 
 
-  const handleCommentClick = () =>{
-    setShowComments(!showComments)
-    setTimeout(()=>{
-      commentInputRef?.current?.focus();
-    },0)
-  }
   const userPostPlaceholder = post?.user?.username?.split(" ").map((name) => name[0]).join(""); // tên người đăng bài viết tắt
 
   //Các biến và hàm cho Lấy top cảm xúc
@@ -767,7 +761,7 @@ const [reaction,setReaction] = useState(null)
             <Button
               variant="ghost"
               className={`flex-1 hover:bg-gray-100 text-gray-500 hover:text-gray-500 text-[15px] h-8`}
-              onClick={handleCommentClick}
+              onClick={() => setShowComments(!showComments)}
             >
               <MessageCircle style={{ width: "20px", height: "20px" }} /> Bình luận
             </Button>
