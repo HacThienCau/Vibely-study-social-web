@@ -6,6 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import React from 'react';
 import { logoutAdmin } from "@/service/authAdmin.service";
 import { toast } from "react-hot-toast";
+import { Menu } from "lucide-react";
 
 const SidebarItem = ({ path, icon, label, onClick }) => {
     const router = useRouter();
@@ -43,7 +44,7 @@ const SidebarItem = ({ path, icon, label, onClick }) => {
 };
 
 const Sidebar = () => {
-    const { isSidebarOpen } = useSidebarStore();
+    const { isSidebarOpen, toggleSidebar } = useSidebarStore();
     const { user } = userStore();
     const router = useRouter();
 
@@ -71,7 +72,11 @@ const Sidebar = () => {
     ];
 
     return (
-        <aside
+        <div>
+            <Button className="fixed top-3 right-3 z-[60] p-3 text-[#086280] rounded-lg hover:bg-[#086280] hover:text-white hover:cursor-pointer md:hidden" onClick={toggleSidebar}>
+                <Menu className="w-16 h-16" />
+            </Button>
+            <aside
             className={`fixed left-0 h-full w-52 p-4 transform transition-transform duration-200 ease-in-out md:translate-x-0 flex flex-col z-50 md:z-0 ${isSidebarOpen ? "translate-x-0 bg-white shadow-lg " : "-translate-x-full"
                 } ${isSidebarOpen ? "md:hidden" : ""} md:bg-white md:shadow-none`}
         >
@@ -95,6 +100,8 @@ const Sidebar = () => {
                 </div>
             </div>
         </aside>
+        </div>
+        
     );
 };
 

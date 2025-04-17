@@ -51,6 +51,7 @@ const UsersPage = () => {
 
   // Xử lý khi click vào người dùng
   const handleUserClick = (user) => {
+    scrollToTop()
     setSelectedUser(user);
   };
 
@@ -141,30 +142,34 @@ const UsersPage = () => {
       </div>
     );
   }
-
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth' // hoặc 'auto' nếu bạn không muốn hiệu ứng mượt
+    });
+  };
   return (
     <div className="flex w-full flex-row min-h-screen bg-[#F4F7FE]">
       {/* Sidebar */}
-      <div className="w-1/5 flex-shrink-0">
-        <Sidebar />
-      </div>
-
+      <Sidebar />
       {/* Main Container */}
-      <div className="w-4/5 ml-[-40px] flex flex-col">
+      <div className="w-full md:ml-52 py-6 overflow-y-auto flex flex-col">
         {/* Header Row */}
-        <div className="w-full ml-[-20px] py-6 px-6 mb-[-15px] flex justify-between items-center">
-          <h1 className="text-2xl font-semibold text-[#333]">
-            Quản lý người dùng
-          </h1>
-          <div className="flex items-center space-x-4"></div>
+        <div className="flex justify-between items-center mb-6 px-6">
+          <h1 className="text-2xl font-semibold text-[#333]">Quản lý người dùng</h1>
+            <div className="flex items-center space-x-4"></div>
         </div>
 
         {/* Content Area */}
-        <div className="py-6 px-6 ml-[-20px] overflow-y-auto flex">
+        <div className="py-6 px-6 overflow-y-auto flex">
           {/* User List Section */}
-          <div className="w-4/5 pr-6">
+          <div className="w-full xl:w-4/5 md:pr-6">
+          {/* User Profile Section */}
+          <div className="xl:hidden mb-5">
+            <UserProfile user={selectedUser} />
+          </div>
             {/* Search Bar */}
-            <div className="mb-6">
+            <div className="mb-6 w-full">
               <form onSubmit={handleSearch} className="flex">
                 <div className="relative flex-1">
                   <input
@@ -192,18 +197,18 @@ const UsersPage = () => {
               <table className="min-w-full">
                 <thead>
                   <tr className="bg-gray-50 text-left">
-                    <th className="px-4 py-3 text-gray-600 font-medium">ID</th>
-                    <th className="px-4 py-3 text-gray-600 font-medium">
+                    <th className="px-2 xl:px-4 py-1 xl:py-3 text-gray-600 font-medium">ID</th>
+                    <th className="px-2 xl:px-4 py-1 xl:py-3 text-gray-600 font-medium">
                       USERNAME
                     </th>
-                    <th className="px-4 py-3 text-gray-600 font-medium">
+                    <th className="px-4 py-3 text-gray-600 font-medium hidden lg:table-cell">
                       EMAIL
                     </th>
-                    <th className="px-4 py-3 text-gray-600 font-medium">
+                    <th className="px-4 py-3 text-gray-600 font-medium hidden lg:table-cell">
                       NGÀY THAM GIA
                     </th>
 
-                    <th className="px-4 py-3"></th>
+                    <th className="px-2 xl:px-4 py-1 xl:py-3"></th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
@@ -216,8 +221,8 @@ const UsersPage = () => {
                         }`}
                       onClick={() => handleUserClick(user)}
                     >
-                      <td className="px-4 py-3 text-gray-800">{user._id}</td>
-                      <td className="px-4 py-3">
+                      <td className="px-2 xl:px-4 py-1 xl:py-3 text-gray-800 text-xs md:text-sm xl:text-base max-w-[230px]">{user._id}</td>
+                      <td className="px-2 xl:px-4 py-1 xl:py-3 text-xs md:text-sm xl:text-base max-w-[250px]">
                         <div className="flex items-center">
                           <div className="h-8 w-8 rounded-full overflow-hidden mr-3">
                             {/* <Image 
@@ -247,8 +252,8 @@ const UsersPage = () => {
                           <span>{user.username}</span>
                         </div>
                       </td>
-                      <td className="px-4 py-3 text-gray-600">{user.email}</td>
-                      <td className="px-4 py-3 text-gray-600">
+                      <td className="px-4 py-3 text-gray-600 font-medium hidden lg:table-cell max-w-[200px] truncate">{user.email}</td>
+                      <td className="px-4 py-3 text-gray-600 font-medium hidden lg:table-cell max-w-[100px]">
                         {new Date(user.createdAt).toLocaleDateString("vi-VN")}
                       </td>
                       
@@ -268,7 +273,7 @@ const UsersPage = () => {
           </div>
 
           {/* User Profile Section */}
-          <div className="w-1/5 mr-5">
+          <div className="hidden xl:block xl:w-1/4 mr-5">
             <UserProfile user={selectedUser} />
           </div>
         </div>
