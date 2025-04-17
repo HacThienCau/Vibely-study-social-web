@@ -6,14 +6,13 @@ const {
   searchUsers,
 } = require("../controllers/adminUserController");
 const router = express.Router();
-// xóa tạm adminAuthMiddleware vì chưa có đăng nhập => token hết hạn => lỗi
 // Lấy danh sách tất cả users
-router.get("/", getAllUsers);
+router.get("/", adminAuthMiddleware, getAllUsers);
 
 // Xóa user theo ID
-router.delete("/:userId", deleteUser);
+router.delete("/:userId", adminAuthMiddleware, deleteUser);
 
 // Tìm kiếm users
-router.get("/search", searchUsers);
+router.get("/search", adminAuthMiddleware, searchUsers);
 
 module.exports = router;

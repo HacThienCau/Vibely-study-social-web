@@ -30,10 +30,10 @@ const LeftSideBar = () => {
 
         } ${isSidebarOpen ? "md:hidden" : ""} md:bg-transparent md:shadow-none`}
     >
-      <div className="flex flex-col h-full overflow-y-auto bg-[#f0fcff] p-4 ">
+      <div className="flex flex-col h-full overflow-y-auto bg-[#f0fcff] p-4">
         {/* navigation menu yaha pr */}
 
-        <nav className="space-y-7 flex-grow">
+        <nav className="space-y-6 flex-grow">
           <div className="flex items-center space-x-2 cursor-pointer pb-2 " onClick={() => handleNavigation(`/user-profile/${user?._id}`)}>
             <Avatar className="h-9 w-9 ml-4 mt-2">
 
@@ -120,6 +120,15 @@ const LeftSideBar = () => {
           >
             <img src="images/game_sidebar.png" alt="quiz" className="-ml-2 mr-2" />
             Củng cố kiến thức
+          </Button>
+          <Button
+            variant="ghost"
+            className="full justify-start"
+
+            onClick={() => handleNavigation("/study-plant")}
+          >
+            <img src="images/plant_sidebar.png" alt="quiz" className="-ml-2 mr-2" />
+            Cây học tập
           </Button>
 
         </nav>

@@ -5,14 +5,14 @@ const Admin = require("../model/Admin");
 const adminAuthMiddleware = async (req, res, next) => {
     try {
         // Lấy token từ cookie hoặc header
-        const authToken = req?.cookies?.auth_token || req?.headers?.authorization?.split(" ")[1];
+        const token = req?.cookies?.auth_token || req?.headers?.authorization?.split(" ")[1];
 
-        if (!authToken) {
+        if (!token) {
             return response(res, 401, "Bạn cần đăng nhập với quyền admin để thực hiện thao tác này");
         }
 
         // Giải mã token
-        const decoded = jwt.verify(authToken, process.env.JWT_SECRET);
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
         // Kiểm tra user có phải admin không
         const admin = await Admin.findById(decoded.id);
