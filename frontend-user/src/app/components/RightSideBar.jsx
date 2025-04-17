@@ -7,6 +7,8 @@ const RightSideBar = () => {
   const [countdown, setCountdown] = useState(300);
   const [quote, setQuote] = useState("Đang tải...");
   const [author, setAuthor] = useState("Khuyết danh");
+  const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8081';
+
 
   // Đếm ngược ngày thi (26/06/2025)
   useEffect(() => {
@@ -18,7 +20,7 @@ const RightSideBar = () => {
 
   // Lấy danh ngôn từ MongoDB
   useEffect(() => {
-    axios.get("https://vibely-study-social-web.onrender.com/quotations/random")
+    axios.get(`${API_URL}/quotations/random`)
       .then((response) => {
         console.log("✅ API trả về:", response.data);
         if (response.data.text) {

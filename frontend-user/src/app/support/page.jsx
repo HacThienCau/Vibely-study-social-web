@@ -11,6 +11,7 @@ const SupportPage = () => {
     const [loading, setLoading] = useState(false);
     const [isEmpty, setEmpty] = useState();
     const [token, setToken] = useState(null);
+    const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8081';
 
     // Lấy token từ localStorage trên client
     useEffect(() => {
@@ -32,7 +33,7 @@ const SupportPage = () => {
         setEmpty(false);
 
         try {
-            const response = await axios.post("https://vibely-study-social-web.onrender.com/inquiry", { message }, {
+            const response = await axios.post(`${API_URL}/inquiry`, { message }, {
                 headers: { Authorization: `Bearer ${token}` },
             });
 
@@ -64,7 +65,7 @@ const SupportPage = () => {
 
                 {/* Form bên phải */}
                 <div className="w-1/2 flex flex-col justify-center px-10">
-                    <h2 className="text-2xl font-bold mb-6 text-center">GỬI THẮC MẮC</h2>
+                    <p className="text-2xl font-bold mb-6 text-center">GỬI THẮC MẮC</p>
                     <p className="mb-5">
                         Vui lòng cung cấp đầy đủ thông tin về vấn đề bạn gặp phải. Chúng tôi sẽ xử lý yêu cầu của bạn nhanh chóng và chính xác hơn.
                     </p>

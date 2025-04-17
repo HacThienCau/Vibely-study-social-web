@@ -1,43 +1,50 @@
-.messenger{
+.messenger {
     height: calc(100vh - 10px);
     display: flex;
 }
-.chatMenu{
+
+.chatMenu {
     flex: 3;
     margin-top: 14px;
 }
-.chatBox{
+
+.chatBox {
     flex: 6;
     /*tạo đường kẻ giữa 3 phần*/
     border-left-width: 1px;
     border-right-width: 1px;
-    border-color:rgba(139, 141, 145, 0.3)
+    border-color: rgba(139, 141, 145, 0.3)
 }
-.chatOnline{
+
+.chatOnline {
     flex: 3;
 }
+
 .chatMenuWrapper {
     padding: 10px;
     height: 100%;
     margin-left: 10px;
 }
 
-.chatBoxWrapper, .chatOnlineWrapper{
+.chatBoxWrapper,
+.chatOnlineWrapper {
     padding: 10px;
     height: 100%;
 }
 
-.chatMenuInput{
+.chatMenuInput {
     width: 90%;
     padding: 10px 0;
 }
-.chatBoxBottom{
+
+.chatBoxBottom {
     margin-top: 5px;
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
-.chatMessageInput{
+
+.chatMessageInput {
     border: none;
     padding: 10px;
     height: 45px;
@@ -46,61 +53,72 @@
     border-radius: 30px;
     outline: none;
 }
-.chatSubmitButton
-{
+
+.chatSubmitButton {
     background-color: transparent;
     border: none;
     color: #30BDFF;
     font-weight: 500;
     cursor: pointer;
 }
-.chatBoxWrapper{
+
+.chatBoxWrapper {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     position: relative;
-    
+
 }
-.chatBoxTop{
+
+.chatBoxTop {
     height: 100%;
     overflow-y: scroll;
     padding-right: 10px;
 }
-.noConversationContainer{
+
+.noConversationContainer {
     justify-self: center;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
-.noConversationText{
+
+.noConversationText {
     text-align: center;
     font-size: 25px;
     font-style: italic;
     cursor: default;
 }
-.chatImage
-{
+
+.chatImage {
     width: 500px;
     height: 500px;
     border-radius: 50%;
     object-fit: cover;
 }
 
-@media screen and (max-width: 400px) {  /*các dòng iphone phổ biến*/
-    .chatImage{
+@media screen and (max-width: 400px) {
+
+    /*các dòng iphone phổ biến*/
+    .chatImage {
         width: 200px;
         height: 200px;
     }
-    .noConversationText{
+
+    .noConversationText {
         font-size: 18px;
     }
 }
-@media screen and (max-width: 340px) {  /*iphone SE, iphone 6*/
-    .chatImage{
+
+@media screen and (max-width: 340px) {
+
+    /*iphone SE, iphone 6*/
+    .chatImage {
         width: 150px;
         height: 150px;
     }
-    .noConversationText{
+
+    .noConversationText {
         font-size: 15px;
     }
 }

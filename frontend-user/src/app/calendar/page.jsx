@@ -16,6 +16,8 @@ registerLicense('Ngo9BigBOggjHTQxAR8/V1NNaF5cXmBCe0x3WmFZfVtgdl9DZVZURWYuP1ZhSXx
 
 const Schedule = () => {
     const [events, setEvents] = useState([]);
+    const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8081';
+
 
     useEffect(() => {
         const fetchSchedules = async () => {
@@ -26,7 +28,7 @@ const Schedule = () => {
                     return;
                 }
 
-                const response = await fetch('https://vibely-study-social-web.onrender.com/schedules', {
+                const response = await fetch(`${API_URL}/schedules`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
 
@@ -63,7 +65,7 @@ const Schedule = () => {
                 return;
             }
 
-            const response = await fetch("https://vibely-study-social-web.onrender.com/schedules", {
+            const response = await fetch(`${API_URL}/schedules`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -91,7 +93,7 @@ const Schedule = () => {
             const token = localStorage.getItem("token");
             if (!token) throw new Error("❌ Không tìm thấy token");
 
-            const response = await fetch(`https://vibely-study-social-web.onrender.com/schedules/${event.Id}`, {
+            const response = await fetch(`${API_URL}/schedules/${event.Id}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -125,7 +127,7 @@ const Schedule = () => {
             const token = localStorage.getItem("token");
             if (!token) throw new Error("❌ Không tìm thấy token");
 
-            const response = await fetch(`https://vibely-study-social-web.onrender.com/schedules/${eventId}`, {
+            const response = await fetch(`${API_URL}/schedules/${eventId}`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",

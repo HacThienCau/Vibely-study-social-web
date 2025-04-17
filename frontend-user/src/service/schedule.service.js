@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'https://vibely-study-social-web.onrender.com/schedules';
+const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL + '/schedules' || 'http://localhost:8081/schedules';
 
 // Lấy tất cả lịch trình
 export const getSchedules = async () => {

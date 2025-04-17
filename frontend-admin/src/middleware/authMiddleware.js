@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 export const requireAuth = async () => {
     try {
         const { isAuthenticated } = await checkAdminAuth();
-        
+
         if (!isAuthenticated) {
             redirect("/admin-login");
         }

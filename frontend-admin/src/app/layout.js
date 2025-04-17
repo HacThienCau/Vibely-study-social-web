@@ -17,6 +17,9 @@ const robotoCondensed = Roboto_Condensed({
 export const metadata = {
   title: "Vibely",
   description: "Mạng xã hội học tập kết nối các bạn học sinh, sinh viên",
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
 export default async function RootLayout({ children }) {

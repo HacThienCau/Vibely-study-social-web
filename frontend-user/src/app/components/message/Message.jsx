@@ -8,13 +8,14 @@ register("vi", vi);
 
 export default function Message({ message, own }) {
   const [user, setUser] = useState(null);
+  const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8081';
 
   useEffect(() => {
     const getUser = async () => {
       try {
         const token = localStorage.getItem("token");
         const res = await axios.post(
-          "https://vibely-study-social-web.onrender.com/users/get-users",
+          `${API_URL}/users/get-users`,
           { userIds: [message.sender] },
           { headers: { Authorization: `Bearer ${token}` } }
         );
@@ -33,7 +34,7 @@ export default function Message({ message, own }) {
   return (
     <div className={own ? "message own" : "message"}>
       <div className="messageTop">
-        {!own && 
+        {!own &&
           <img
             src={user?.profilePicture || "/images/user_default.jpg"}
             alt="avatar"

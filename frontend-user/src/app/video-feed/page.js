@@ -39,7 +39,9 @@ const Page = () => {
                 </div>
             </main>
         </div>
-    )
+      </main>
+    </div>
+  )
 }
 
 export default Page

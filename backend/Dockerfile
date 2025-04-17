@@ -5,7 +5,7 @@ FROM node:18
 WORKDIR /app
 
 # Copy file package.json & package-lock.json trước để tối ưu cache layer
-COPY package.json package-lock.json ./
+COPY package.json package-lock.json ./ 
 
 # Cài đặt dependencies
 RUN npm install
@@ -23,6 +23,9 @@ ARG CLOUDINARY_API_KEY
 ARG CLOUDINARY_API_SECRET
 ARG EMAIL_USER
 ARG EMAIL_PASS
+ARG GOOGLE_CLIENT_ID
+ARG GOOGLE_CLIENT_SECRET
+ARG GOOGLE_CALLBACK_URL
 
 # Set các biến môi trường từ ARG
 ENV NODE_ENV=${NODE_ENV}
@@ -34,9 +37,12 @@ ENV CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY}
 ENV CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET}
 ENV EMAIL_USER=${EMAIL_USER}
 ENV EMAIL_PASS=${EMAIL_PASS}
+ENV GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+ENV GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+ENV GOOGLE_CALLBACK_URL=${GOOGLE_CALLBACK_URL}
 
-# Lắng nghe trên cổng 8080
-EXPOSE 8080
+# Lắng nghe trên cổng 8081
+EXPOSE 8081
 
 # Khởi động server bằng nodemon
 CMD ["npx", "nodemon", "index.js"]

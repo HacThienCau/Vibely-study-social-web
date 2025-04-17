@@ -42,22 +42,41 @@ app.use(cookieParser());
 
 
 const corsOptions = {
-    origin: ["http://localhost:3000", "http://localhost:3001", "https://vibely-study-social-web.onrender.com"],
+    origin: function (origin, callback) {
+        const allowedOrigins = [
+            "http://localhost:3000",
+            "http://localhost:3001",
+            "http://localhost:3002",
+            "http://localhost:3003",
+            "https://vibely-study-social-web.onrender.com",
+            "https://vibely-study-social-web.vercel.app",
+            "http://54.79.253.210:3000",
+            "http://54.79.253.210:3001",
+            "http://54.79.253.210:3002",
+            "http://54.79.253.210:3003",
+            "https://vibelyadmin.netlify.app",
+            "https://vibelyuser.netlify.app",
+            "https://vibely-study-social-web-admin.vercel.app",
+        ];
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     credentials: true,
+    optionsSuccessStatus: 200,
 };
 
 
 app.use(cors(corsOptions));
 
 
-  //mở dòng này nếu chạy nodemon, cmt khi test api
-connectDb().then(() => {  
+connectDb().then(() => {
     // Tạo admin mặc định sau khi kết nối database thành công
     createDefaultAdmin();
 });
-
 app.use(passport.initialize())
-
 //API Route
 app.use('/auth', authRoute);
 app.use('/users', postRoute);
@@ -98,8 +117,9 @@ app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).json({ message: 'Something went wrong!' });
 });
-   //mở đoạn này nếu chạy nodemon, cmt khi test api
-const PORT = process.env.PORT || 8080;
+
+const PORT = process.env.PORT || 8081;
+
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
     console.log(`📜 API Docs available at http://localhost:${PORT}/api-docs`);

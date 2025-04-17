@@ -1,14 +1,14 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
+import AudioPlayer from 'react-h5-audio-player';
+import 'react-h5-audio-player/lib/styles.css';
+import { AiOutlineClose } from "react-icons/ai";
 import { IoMdInformationCircleOutline } from "react-icons/io";
 import { MdOutlineChecklistRtl } from "react-icons/md";
 import { RiPlayListLine } from "react-icons/ri";
-import { AiOutlineClose } from "react-icons/ai";
-import 'react-h5-audio-player/lib/styles.css';
-import AudioPlayer from 'react-h5-audio-player';
 import './pomodoro.css';
 import songs from './songs';
-import { Button } from "@/components/ui/button";
 
 const Pomodoro = () => {
   const [time, setTime] = useState(25 * 60);
@@ -74,12 +74,12 @@ const Pomodoro = () => {
         </Button>
         <div className="flex items-center space-x-2">
             <IoMdInformationCircleOutline size={24} />
-            <h2 className="text-md md:text-lg font-semibold">Pomodoro là gì?</h2>
+            <p className="text-md md:text-lg font-semibold">Pomodoro là gì?</p>
         </div>
         <p className="pt-2 text-justify text-[14px]">Pomodoro có tên tiếng Anh đầy đủ là Pomodoro Technique. Phương pháp Pomodoro đã rất hữu dụng trong việc giúp tập trung, sáng tạo và giảm bớt cảm giác mệt mỏi, thậm chí là xua tan hoàn toàn đi sự uể oải. </p>
         <div className="flex items-center space-x-2 pt-4">
             <MdOutlineChecklistRtl size={24} />
-            <h2 className="text-md md:text-lg font-semibold">Quy trình của Pomodoro</h2>
+            <p className="text-md md:text-lg font-semibold">Quy trình của Pomodoro</p>
         </div>
         <div className="pt-3 text-justify">
             <ul className="list-disc pl-5 text-[14px]">
@@ -123,7 +123,7 @@ const Pomodoro = () => {
             </div>
             {/* Trình phát nhạc */}
             <div className="w-[300px] sm:w-[350px] md:w-[400px] bg-[#086280] text-white p-4 rounded-xl shadow-lg mt-10">
-            <h2 className="text-center text-md md:text-lg font-bold">{songs[currentIndex].name}</h2>
+            <p className="text-center text-md md:text-lg font-bold">{songs[currentIndex].name}</p>
             <p className="text-center text-xs md:text-sm opacity-80">{songs[currentIndex].singer}</p>
             <AudioPlayer
               key={songs[currentIndex].url}
@@ -154,7 +154,7 @@ const Pomodoro = () => {
         </Button>
         <div className="flex items-center space-x-2">
             <RiPlayListLine size={24} />
-            <h2 className="text-md lg:text-lg font-semibold">Danh sách nhạc thư giãn</h2>
+            <p className="text-md lg:text-lg font-semibold">Danh sách nhạc thư giãn</p>
         </div>
 
         {/* Danh sách bài hát */}

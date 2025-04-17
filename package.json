@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "@clerk/nextjs": "^6.12.8",
+    "mongoose": "^8.13.2",
     "selenium-webdriver": "^4.30.0"
   },
   "devDependencies": {

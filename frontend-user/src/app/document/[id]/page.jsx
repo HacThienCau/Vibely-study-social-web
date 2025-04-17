@@ -19,6 +19,7 @@ const DocumentDetail = () => {
     const [isSidebarOpen, setSidebarOpen] = useState(false)
     const [token, setToken] = useState(null);
     const [isSharePopupOpen, setSharePopupOpen] = useState(false);
+    const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8081';
 
     // Hàm chuyển đổi ngày tháng năm
     const formatDate = (dateString) => {
@@ -48,7 +49,7 @@ const DocumentDetail = () => {
                 if (!token) return;
 
                 try {
-                    const result = await axios.get(`https://vibely-study-social-web.onrender.com/documents/${id}`, {
+                    const result = await axios.get(`${API_URL}/documents/${id}`, {
                         headers: { Authorization: `Bearer ${token}` },
                     });
 
@@ -71,7 +72,7 @@ const DocumentDetail = () => {
 
         try {
             const response = await axios.post(
-                "https://vibely-study-social-web.onrender.com/documents/save",
+                `${API_URL}/documents/save`,
                 { documentId },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
@@ -122,7 +123,7 @@ const DocumentDetail = () => {
                 </Button>
 
                 <div className="min-h-0 flex-1">
-                    <h2 className="text-xl font-bold">{document.title}</h2>
+                    <p className="text-xl font-bold">{document.title}</p>
                     <div className="mt-5 space-y-3">
                         <p className="flex items-center">
                             <span className="mr-3"><BookMarked size={20} /></span>

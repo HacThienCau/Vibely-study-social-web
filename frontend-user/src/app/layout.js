@@ -13,6 +13,9 @@ const robotoCondensed = Roboto_Condensed({
 export const metadata = {
   title: "Vibely",
   description: "Mạng xã hội học tập kết nối các bạn học sinh, sinh viên",
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({ children }) {
@@ -21,7 +24,7 @@ export default function RootLayout({ children }) {
       <body className={`${robotoCondensed.variable} antialiased`}>
         <Toaster />
         <AuthWrapper>
-          <ContextProvider> {/* Bọc toàn bộ ứng dụng */}
+          <ContextProvider>
             {children}
           </ContextProvider>
         </AuthWrapper>

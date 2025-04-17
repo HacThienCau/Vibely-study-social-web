@@ -1,11 +1,8 @@
 "use client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Camera, Check, Pencil, PenLine, Save, SquarePlus, Upload, X } from "lucide-react";
-import React, { useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
-import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -14,9 +11,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { createOrUpdateUserBio, updateUserCoverPhoto, updateUserProfile } from "@/service/user.service";
-import userStore from "@/store/userStore";
-import { useForm } from "react-hook-form";
 import { userFriendStore } from "@/store/userFriendsStore";
+import userStore from "@/store/userStore";
+import { AnimatePresence, motion } from "framer-motion";
+import { Camera, Check, Pencil, PenLine, Save, SquarePlus, Upload, X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { useForm } from "react-hook-form";
 
 const ProfileHeader = ({
   id,
@@ -249,9 +249,9 @@ const ProfileHeader = ({
               className=" bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 w-full max-w-md max-h-[90vh] overflow-y-auto hidden-scrollbar"
             >
               <div className="flex justify-between items-center mb-4 border-b border-gray-200 dark:border-gray-700 pb-1">
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                   Chỉnh sửa trang cá nhân
-                </h2>
+                </p>
                 <Button
                   variant="ghost"
                   size="icon"
@@ -442,9 +442,9 @@ const ProfileHeader = ({
               className=" bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 w-full max-w-md"
             >
               <div className="flex justify-between items-center mb-4">
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                   Chỉnh sửa ảnh bìa
-                </h2>
+                </p>
                 <Button
                   variant="ghost"
                   size="icon"
