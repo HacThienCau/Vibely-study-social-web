@@ -76,6 +76,7 @@ const NewPostForm = ({ isPostFormOpen, setIsPostFormOpen }) => {
             </DialogTrigger>
             <DialogContent className="sm:max-w-[550px] bg-white rounded-lg">
               <DialogHeader>
+                <DialogTitle></DialogTitle>
                 <p className="text-center text-lg font-semibold">Tạo bài viết</p>
               </DialogHeader>
               <div className="border-t border-gray-200"></div>

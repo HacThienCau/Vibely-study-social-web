@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { MutualFriends } from "./profileContent/MutualFriends";
 import { PostsContent } from "./profileContent/PostsContent";
 import { SavedDocuments } from "./profileContent/SavedDocuments";
+import NewPostForm from "../posts/NewPostForm";
 
 export const ProfileDetails = ({
   activeTab,
@@ -134,7 +135,7 @@ export const ProfileDetails = ({
         "https://static.ybox.vn/2021/4/6/1619279350970-ezgif.com-resize.jpg",
     },
   ];
-
+  const [isPostFormOpen, setIsPostFormOpen] = useState(false)
   const tabContent = {
     posts: (
       <div className="flex flex-col lg:flex-row gap-6 ">
@@ -237,6 +238,12 @@ export const ProfileDetails = ({
         </div>
         {/* Bài viết đã đăng của người dùng */}
         <div className="w-full lg:w-[70%] space-y-6 mb-4">
+          {isOwner && 
+          <NewPostForm
+          isPostFormOpen={isPostFormOpen}
+          setIsPostFormOpen={setIsPostFormOpen}
+          />
+          }     
           {userPosts?.length > 0 ? (
             userPosts.map((post) => (
               <PostsContent
