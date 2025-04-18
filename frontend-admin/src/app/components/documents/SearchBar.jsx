@@ -39,15 +39,15 @@ const SearchBar = ({
     };
 
     return (
-        <div className="flex flex-col space-y-4">
+        <div className="flex flex-col space-y-4 mt-6">
             {/* Ô tìm kiếm */}
-            <div className="flex items-center gap-x-5 mb-6 ml-1">
+            <div className="flex items-center gap-x-2 md:gap-x-5 mb-6 ml-1">
                 <input
                     type="text"
                     value={query}
                     onChange={handleChange}
                     placeholder="Tìm kiếm..."
-                    className="border px-4 py-2 bg-white rounded-md w-1/2 focus:outline-none italic focus:ring-2 focus:ring-blue-400 border-gray-300"
+                    className="w-full md:w-1/2 border px-4 py-2 bg-white rounded-md focus:outline-none italic focus:ring-2 focus:ring-blue-400 border-gray-300"
                     onKeyDown={(e) => e.key === "Enter" && handleSearch()}
                 />
                 <Button className="w-24 h-10 cursor-pointer ml-2 px-6 py-2 bg-[#086280] text-white rounded-lg hover:bg-gray-700 transition duration-200"
@@ -62,7 +62,7 @@ const SearchBar = ({
                 <div className="flex flex-col">
                     <label className="font-semibold mb-2">Cấp học</label>
                     <select
-                        className="border py-2 px-4 w-full bg-white rounded-md border-gray-300 focus:outline-none focus:ring-1 focus:ring-gray-400"
+                        className="border py-2 px-2 md:px-4 bg-white max-w-40 w-full md:max-w-60 truncate text-sm md:text-base rounded-md border-gray-300 focus:outline-none focus:ring-1 focus:ring-gray-400"
                         value={selectedLevelId || ""}
                         onChange={(e) => {
                             setSelectedLevelId(e.target.value || null);
@@ -88,7 +88,7 @@ const SearchBar = ({
                 <div className="flex flex-col">
                     <label className="font-semibold mb-2">Môn học</label>
                     <select
-                        className="border py-2 px-4 w-full bg-white rounded-md border-gray-300 focus:outline-none focus:ring-1 focus:ring-gray-400"
+                        className="border py-2 px-2 md:px-4 bg-white max-w-40 w-full md:max-w-60 truncate text-sm md:text-base rounded-md border-gray-300 focus:outline-none focus:ring-1 focus:ring-gray-400"
                         value={selectedSubjectId || ""}
                         onChange={(e) => setSelectedSubjectId(e.target.value || null)}
                     >
