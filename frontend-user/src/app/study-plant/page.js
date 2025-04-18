@@ -1,8 +1,13 @@
 'use client'
 import React, { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 const Page = () => {
+    const router = useRouter();
 
+    const handleClick = () => {
+        router.push('/study-plant/select-tree');
+    };
     return (
         <div className="pt-20 min-h-screen flex flex-col items-center justify-center p-6 bg-[#F9FDFF]" style={{
             backgroundImage: 'radial-gradient(circle at 10% 20%, rgba(200, 230, 255, 0.5) 0%, rgba(200, 230, 255, 0.3) 90%)'
@@ -15,9 +20,9 @@ const Page = () => {
                         alt="Vibely Plant"
                         className="w-24 h-28 mx-auto mb-4"
                     />
-                    <h2 className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#3498DB] to-[#2ECC71] mb-4">
+                    <p className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#3498DB] to-[#2ECC71] mb-4">
                         Cây học tập Vibely
-                    </h2>
+                    </p>
                     <p className="text-xl text-[#34495E] max-w-2xl mx-auto">Nơi kiến thức đâm chồi, trí tuệ nở hoa</p>
                 </div>
 
@@ -55,12 +60,13 @@ const Page = () => {
                 </div>
 
 
-                <button className="bg-gradient-to-r from-[#3498DB] to-[#2ECC71] text-white font-semibold py-3 px-8 rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-105 transform">
+                <button onClick={handleClick}
+                    className="bg-gradient-to-r from-[#3498DB] to-[#2ECC71] text-white font-semibold py-3 px-8 rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-105 transform">
                     Bắt đầu hành trình <i className="fas fa-arrow-right ml-2" />
                 </button>
 
                 <p className="mt-8 text-[#7F8C8D] text-sm">
-                    © 2025 Vibely đồng hành cùng bạn trên mọi hành trình phát triển bản thân
+                    © 2025 Đây là tính năng mới và còn đang phát triển của Vibely
                 </p>
             </div>
         </div>
