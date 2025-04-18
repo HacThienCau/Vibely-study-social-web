@@ -1,9 +1,12 @@
 'use client'
 import React, { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 const Page = () => {
+    const router = useRouter();
+
     const handleClick = () => {
-        window.location.href = '/study-plant/select-tree';
+        router.push('/study-plant/goal-tree');
     };
 
     return (
