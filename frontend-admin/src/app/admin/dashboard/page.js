@@ -63,10 +63,8 @@ const Dashboard = () => {
 
     return (
         <div className="flex w-full flex-row min-h-screen bg-[#F4F7FE]">
-            <div className="w-1/5 flex-shrink-0">
-                <Sidebar />
-            </div>
-            <div className="w-4/5 ml-[-70px] py-6 overflow-y-auto">
+            <Sidebar />
+            <div className="w-full md:w-4/5 md:ml-52 py-6 overflow-y-auto">
                 <div className="flex justify-between items-center mb-6 px-6">
                     <h1 className="text-2xl font-semibold text-[#333]">Dashboard</h1>
                     <div className="flex items-center space-x-4">

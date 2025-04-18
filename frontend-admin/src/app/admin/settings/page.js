@@ -49,18 +49,16 @@ const SettingsPage = () => {
 
     return (
         <div className="flex w-full flex-row min-h-screen bg-[#F4F7FE]">
-            <div className="w-1/5 flex-shrink-0">
-                <Sidebar />
-            </div>
-            <div className="w-4/5 ml-[-40px] flex flex-col">
+            <Sidebar />
+            <div className="w-full md:w-4/5 md:ml-52 px-6">
                 {/* Header Row */}
-                <div className="w-full ml-[-20px] py-6 px-6 mb-[-15px] flex justify-between items-center">
+                <div className="w-full py-6 mb-[-15px] flex justify-between items-center">
                     <h1 className="text-2xl font-semibold text-[#333]">Cài đặt</h1>
                     <div className="flex items-center space-x-4">
                     </div>
                 </div>
                 {/* Content Area */}
-                <div className="w-full flex-grow p-6">
+                <div className="w-full flex-grow mx-4 md:mx-6 lg:mx-14 p-6">
                     <div className="ml-[-20px] pr-4 mx-auto">
                         <div className="bg-white rounded-lg shadow-sm overflow-hidden">
                             {/* Password Form Header */}

@@ -4,7 +4,7 @@ import React from 'react'
 
 const ProfileDetailsSection = ({ userData, handleInputChange, handleSubmit }) => {
     return (
-        <div className="w-full pr-4 md:w-2/3">
+        <div className="w-full md:w-2/3">
             <form onSubmit={handleSubmit}>
                 <div className="bg-white rounded-lg shadow-sm overflow-hidden">
                     {/* Profile Form Header */}

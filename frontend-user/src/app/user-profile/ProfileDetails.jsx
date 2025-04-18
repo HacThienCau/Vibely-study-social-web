@@ -9,6 +9,7 @@ import { MutualFriends } from "./profileContent/MutualFriends";
 import { PostsContent } from "./profileContent/PostsContent";
 import { SavedDocuments } from "./profileContent/SavedDocuments";
 import NewPostForm from "../posts/NewPostForm";
+import { useRouter } from "next/navigation";
 
 export const ProfileDetails = ({
   activeTab,
@@ -98,6 +99,7 @@ export const ProfileDetails = ({
       );
     }
   };
+  const router = useRouter();
 
   const userVideos = [
     {
@@ -301,9 +303,9 @@ export const ProfileDetails = ({
                     (post) => post?.mediaType === "video" && post?.mediaUrl
                   )
                   .map((post) => (
-                    <div key={post?._id} className="w-[220px] h-[180px]">
+                    <div key={post?._id} onClick={()=>router.push(`/posts/${post?._id}`)} className="w-[220px] h-[180px]">
                 <video
-                  controls
+                  //controls
                   className="w-full h-full object-cover rounded-lg"
                 >
                   <source src={post?.mediaUrl} type="video/mp4" />
@@ -368,6 +370,7 @@ export const ProfileDetails = ({
                       src={post?.mediaUrl}
                       alt="user_all_photos"
                       className="w-[200px] h-[150px] object-cover rounded-lg"
+                      onClick={()=>router.push(`/posts/${post?._id}`)}
                     />
                   ))
               )}

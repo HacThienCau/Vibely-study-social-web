@@ -10,6 +10,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { formatedDate } from "@/lib/utils";
 import Image from 'next/image'
 import toast from "react-hot-toast";
+import { ArrowDownWideNarrow } from "lucide-react";
 
 function Posts() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -116,7 +117,7 @@ function Posts() {
 
   const PostCard = ({ post }) => {
     return (
-      <div className="flex bg-white w-full rounded-lg my-2 relative drop-shadow-lg">
+      <div className="flex bg-white rounded-lg my-2 relative drop-shadow-lg mx-3 md:mx-6 gap-6">
         {/*Nội dung*/}
         <div className="flex flex-col ml-5 w-1/2 pt-5">
           <div className="flex items-center space-x-3 mb-3">
@@ -152,13 +153,13 @@ function Posts() {
             <img
               src={post?.mediaUrl}
               alt="post_image"
-              className="max-w-[500px] max-h-[300px] object-contain rounded-lg mb-5"
+              className="max-w-[500px] min-h-[200px] max-h-[300px] object-contain rounded-lg mb-5"
             />
           )}
           {post?.mediaUrl && post.mediaType === "video" && (
             <video
               controls
-              className="max-w-[500px] max-h-[300px] object-contain rounded-lg mb-5"
+              className="max-w-[500px] min-h-[200px] max-h-[300px] object-contain rounded-lg mb-5"
             >
               <source src={post?.mediaUrl} type="video/mp4" />
               Trình duyệt của bạn không hỗ trợ thẻ video.
@@ -171,48 +172,49 @@ function Posts() {
           )}
         </div>
         {/*Thông số*/}
-        <div className="flex flex-col space-x-3 w-1/2 absolute right-0 mt-5 self-center">
+        <div className="flex flex-col space-x-3 w-1/3 mt-5 self-center">
           <div className="flex mb-3">
-            <p className="font-['Roboto_Condensed'] text-lg md:text-xl">Số lượt bày tỏ cảm xúc: &nbsp;</p>
-            <p className="font-bold font-['Roboto_Condensed'] text-lg md:text-xl">{Object.values(post.reactionStats).reduce((acc, val) => acc + val, 0)}</p>
+            <p className="font-['Roboto_Condensed'] text-sm md:text-xl hidden lg:block">Số lượt bày tỏ cảm xúc: &nbsp;</p>
+            <p className="font-['Roboto_Condensed'] text-sm md:text-xl lg:hidden">Số lượt cảm xúc: &nbsp;</p>
+            <p className="font-bold font-['Roboto_Condensed'] text-sm md:text-xl">{Object.values(post.reactionStats).reduce((acc, val) => acc + val, 0)}</p>
           </div>
-          <div className="flex items-center gap-10 mb-7">
-            <div className="flex items-center gap-2">
+          <div className="grid grid-cols-3 lg:grid-cols-6 gap-6 mb-7">
+            <div className="flex items-center gap-1 md:gap-2">
               <Image src={"/like.png"} alt="like" width={30} height={30} />
               <p>{post?.reactionStats?.like}</p>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1 md:gap-2">
               <Image src={"/love.png"} alt="love" width={30} height={30} />
               <p>{post?.reactionStats?.love}</p>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1 md:gap-2">
               <Image src={"/haha.png"} alt="haha" width={30} height={30} />
               <p>{post?.reactionStats?.haha}</p>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1 md:gap-2">
               <Image src={"/wow.png"} alt="wow" width={30} height={30} />
               <p>{post?.reactionStats?.wow}</p>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1 md:gap-2">
               <Image src={"/sad.png"} alt="sad" width={30} height={30} />
               <p>{post?.reactionStats?.sad}</p>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1 md:gap-2">
               <Image src={"/angry.png"} alt="angry" width={30} height={30} />
               <p>{post?.reactionStats?.angry}</p>
             </div>
           </div>
-          <div className="flex mb-7">
-            <p className="font-['Roboto_Condensed'] text-lg md:text-xl">Số lượt bình luận: &nbsp;</p>
-            <p className="font-bold font-['Roboto_Condensed'] text-lg md:text-xl">{post?.commentCount}</p>
+          <div className="flex mb-3 lg:mb-7">
+            <p className="font-['Roboto_Condensed'] text-sm md:text-xl">Số lượt bình luận: &nbsp;</p>
+            <p className="font-bold font-['Roboto_Condensed'] text-sm md:text-xl">{post?.commentCount}</p>
           </div>
-          <div className="flex mb-7">
-            <p className="font-['Roboto_Condensed'] text-lg md:text-xl">Số lượt chia sẻ: &nbsp;</p>
-            <p className="font-bold font-['Roboto_Condensed'] text-lg md:text-xl">{post?.shareCount}</p>
+          <div className="flex mb-3 lg:mb-7">
+            <p className="font-['Roboto_Condensed'] text-sm md:text-xl">Số lượt chia sẻ: &nbsp;</p>
+            <p className="font-bold font-['Roboto_Condensed'] text-sm md:text-xl">{post?.shareCount}</p>
           </div>
-          <div>
+          <div className="flex justify-end">
             <Button
-              className="w-40 h-10 cursor-pointer hover:bg-gray-700 text-white text-[20px] bg-[#DF0000] font-['Roboto_Condensed'] rounded-[25px] overflow-hidden absolute right-10"
+              className="w-30 md:w-40 text-sm md:text-[20px] h-8 md:h-10 cursor-pointer hover:bg-gray-700 text-white bg-[#DF0000] font-['Roboto_Condensed'] rounded-[25px] overflow-hidden"
               onClick={() => {
                 handleDelete(post?._id)
               }}
@@ -227,16 +229,16 @@ function Posts() {
   };
 
   return (
-    <div className="flex bg-[#F4F7FE] relative">
+    <div className="flex w-full min-h-screen bg-[#F4F7FE]">
       <Sidebar />
-      <div className="flex w-full flex-col px-10 py-6 md:ml-52">
+      <div className="flex w-full flex-col py-6 md:ml-52 overflow-y-auto">
         {/*Title*/}
-        <div className="text-[#2b3674] text-xl md:text-[28px] font-bold font-['Roboto_Condensed'] mb-10">
-          Quản lý bài viết
+        <div className="flex justify-between items-center mb-6 px-6">
+        <h1 className="text-2xl font-semibold text-[#333]">Quản lý bài viết</h1>
         </div>
         {/*Search & Filter*/}
-        <div className="flex h-[10px] items-center relative mb-10">
-          <div className="flex w-3/5 items-center gap-2 absolute left-0">
+        <div className="flex h-[10px] items-center mb-10 py-3 px-3 md:px-6 justify-between">
+          <div className="flex w-3/5 items-center gap-2 justify-start">
             <Input
               type="text"
               placeholder="Tìm kiếm"
@@ -247,7 +249,7 @@ function Posts() {
 
 
             <Button
-              className="w-24 h-10 cursor-pointer ml-2 px-6 py-2 bg-[#086280] text-white rounded-lg hover:bg-gray-700 transition duration-200"
+              className="w-14 md:w-24 h-10 cursor-pointer md:ml-2 px-6 py-2 bg-[#086280] text-white rounded-lg hover:bg-gray-700 transition duration-200"
               onClick={() => {
                 handleSearch();
               }}
@@ -256,26 +258,28 @@ function Posts() {
               Tìm
             </Button>
           </div>
-          <div className="flex w-2/5 items-center justify-end gap-2 absolute right-0">
-            <div className="text-black text-xl font-bold font-['Roboto_Condensed']">
+          <div className="flex w-1/5 md:w-2/5 items-center justify-end md:gap-2 relative">
+            <div className="lg:hidden ml-2 text-gray-500">
+              <ArrowDownWideNarrow className="w-6 h-6" />
+            </div>
+            <div className="text-black text-sm hidden lg:block md:text-base lg:text-xl font-bold font-['Roboto_Condensed'] ml-2">
               Sắp xếp theo:
             </div>
             <Button
-              className="w-40 h-10 cursor-pointer hover:bg-gray-700 text-white text-[18px] bg-[#07617f] font-['Roboto_Condensed'] rounded-[25px] overflow-hidden"
+              className="w-28 md:w-40 h-10 text-sm md:text-base lg:text-[18px] cursor-pointer hover:bg-gray-700 text-white bg-[#07617f] font-['Roboto_Condensed'] rounded-[25px] overflow-hidden"
               onClick={() => {
                 setModeChooserOpen(!modeChooserOpen);
               }}
             >
               {filterMode}
             </Button>
-          </div>
-          {modeChooserOpen && (
+            {modeChooserOpen && (
             <div
-              className="absolute top-10 right-0 w-40 bg-white border border-gray-300 rounded-md shadow-lg z-50"
+              className="absolute top-full right-0 w-28 mt-2 md:w-40 bg-white border border-gray-300 rounded-md shadow-lg z-50"
               ref={dropdownRef}
             >
               <button
-                className="flex justify-center block w-full px-4 py-2 text-left bg-white text-[#07617f] hover:bg-[#07617f] hover:text-white flex items-center gap-2"
+                className="flex justify-center block w-full px-2 md:px-4 py-2 text-left bg-white text-[#07617f] hover:bg-[#07617f] hover:text-white text-sm md:text-base flex items-center gap-2"
                 onClick={() => {
                   setModeChooserOpen(false);
                   handleModeChooser("Mới nhất");
@@ -284,7 +288,7 @@ function Posts() {
                 Mới nhất
               </button>
               <button
-                className="flex justify-center block w-full px-4 py-2 text-left bg-white text-[#07617f] hover:bg-[#07617f] hover:text-white flex items-center gap-2"
+                className="flex justify-center block w-full px-2 md:px-4 py-2 text-left bg-white text-[#07617f] hover:bg-[#07617f] hover:text-white text-sm md:text-base flex items-center gap-2"
                 onClick={() => {
                   setModeChooserOpen(false);
                   handleModeChooser("Lượt react");
@@ -293,7 +297,7 @@ function Posts() {
                 Lượt react
               </button>
               <button
-                className="flex justify-center block w-full px-4 py-2 text-left bg-white text-[#07617f] hover:bg-[#07617f] hover:text-white flex items-center gap-2"
+                className="flex justify-center block w-full px-2 md:px-4 py-2 text-left bg-white text-[#07617f] hover:bg-[#07617f] hover:text-white text-sm md:text-base flex items-center gap-2"
                 onClick={() => {
                   setModeChooserOpen(false);
                   handleModeChooser("Lượt bình luận");
@@ -302,7 +306,7 @@ function Posts() {
                 Lượt bình luận
               </button>
               <button
-                className="flex justify-center block w-full px-4 py-2 text-left bg-white text-[#07617f] hover:bg-[#07617f] hover:text-white flex items-center gap-2"
+                className="flex justify-center block w-full px-2 md:px-4 py-2 text-left bg-white text-[#07617f] hover:bg-[#07617f] hover:text-white text-sm md:text-base flex items-center gap-2"
                 onClick={() => {
                   setModeChooserOpen(false);
                   handleModeChooser("Lượt chia sẻ");
@@ -312,6 +316,7 @@ function Posts() {
               </button>
             </div>
           )}
+          </div>
         </div>
         {/*List*/}
         {postList &&

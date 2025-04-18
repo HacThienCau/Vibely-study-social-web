@@ -38,8 +38,6 @@ const Page = () => {
                     ))}
                 </div>
             </main>
-        </div>
-      </main>
     </div>
   )
 }
