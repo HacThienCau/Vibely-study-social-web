@@ -89,19 +89,17 @@ const AccountPage = () => {
 
     return (
         <div className="flex w-full flex-row min-h-screen bg-[#F4F7FE]">
-            <div className="w-1/5 flex-shrink-0">
-                <Sidebar />
-            </div>
-            <div className="w-4/5 ml-[-50px] flex flex-col">
+            <Sidebar />
+            <div className="w-full md:w-4/5 md:ml-52 px-6 flex flex-col">
                 {/* Header Row */}
-                <div className="w-full ml-[-20px] py-6 px-6 mb-[-15px] flex justify-between items-center">
+                <div className="w-full py-6 mb-[-15px] flex justify-between items-center">
                     <h1 className="text-2xl font-semibold text-[#333]">Tài khoản</h1>
                 </div>
 
                 {/* Content Area */}
-                <div className="py-6 px-6 ml-[-20px] overflow-y-auto">
+                <div className="w-full flex-grow lg:mx-6 p-6">
                     <div className="max-w-6xl mx-auto">
-                        <div className="flex flex-col md:flex-row gap-6">
+                        <div className="flex flex-col md:flex-row gap-6 justify-center">
                             {/* Profile Picture Section */}
                             {userData && (
                                 <ProfilePictureSection userData={userData} onPictureUpdate={handlePictureUpdate} />

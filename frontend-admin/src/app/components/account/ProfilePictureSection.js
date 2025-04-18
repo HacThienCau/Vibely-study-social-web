@@ -34,7 +34,7 @@ const ProfilePictureSection = ({ userData, onPictureUpdate }) => {
     return (
         <div className="w-full md:w-1/3">
             <div className="bg-white rounded-lg shadow-sm p-6 flex flex-col items-center">
-                <div className="w-40 h-40 rounded-full overflow-hidden mb-6 relative group">
+                <div className="w-40 max-w-full aspect-square  rounded-full overflow-hidden mb-6 relative group">
                     {userData.profilePicture ? (
                         <Image
                             src={userData.profilePicture}
@@ -49,7 +49,7 @@ const ProfilePictureSection = ({ userData, onPictureUpdate }) => {
                         </div>
                     )}
                 </div>
-                <h2 className="text-2xl font-semibold text-gray-800 mb-2">
+                <h2 className="text-2xl font-semibold text-gray-800 mb-2 text-center">
                     {userData.firstName} {userData.lastName}
                 </h2>
                 <p className="text-gray-500 mb-1">{userData.address} {userData.country}</p>
