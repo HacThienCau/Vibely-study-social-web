@@ -115,13 +115,10 @@ const Support = () => {
     return (
         <div className="flex flex-row w-full min-h-screen bg-[#F4F7FE]">
             {/* Sidebar */}
-            <div className="w-1/5 flex-shrink-0">
-                <Sidebar />
-            </div>
-
+            <Sidebar />
             {/* Nội dung chính */}
-            <div className="w-4/5 ml-[-20px] py-6 mr-16 overflow-y-auto">
-                <h2 className="font-semibold mb-6 text-2xl text-[#2B3674]">Hỗ trợ</h2>
+            <div className="w-full md:w-4/5 md:ml-52 py-6 px-6 overflow-y-auto">
+            <h1 className="text-2xl font-semibold text-[#333]">Hỗ trợ</h1>
 
                 {/* Tìm kiếm và lọc */}
                 <SearchBar onSearch={handleSearch} initialQuery={query} initialStatus={status} />

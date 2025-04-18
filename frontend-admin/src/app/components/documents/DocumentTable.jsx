@@ -35,9 +35,9 @@ const DocumentTable = ({ documents, openModal, setSelectedDoc }) => {
                         <td className="px-2 py-3 w-1/12 text-center hidden lg:table-cell">{doc.pages}</td>
                         <td className="px-2 py-3 w-1/9 text-center hidden lg:table-cell">{formatDate(doc.uploadDate)}</td>
                         <td className="px-2 py-3 w-1/9 text-center hidden lg:table-cell">{formatDate(doc.updatedAt)}</td>
-                        <td className="px-2 py-3 w-1/9 text-center flex w-full flex-col items-center justify-center gap-2 lg:table-cell">
+                        <td className="px-2 py-3 w-1/9 text-center">
                             <button 
-                                className="text-white lg:mr-2 bg-[#086280] p-[6px] rounded-sm cursor-pointer hover:bg-[#07556F]"
+                                className="text-white mb-2 lg:mb-0 lg:mr-2 bg-[#086280] p-[6px] rounded-sm cursor-pointer hover:bg-[#07556F]"
                                 onClick={() => {
                                     openModal('updateDocument')
                                     setSelectedDoc(doc)}
