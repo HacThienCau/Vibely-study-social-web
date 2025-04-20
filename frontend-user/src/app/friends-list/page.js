@@ -43,8 +43,7 @@ const Page = () => {
     <div className="min-h-screen">
       <LeftSideBar />
       <main className="ml-0 md:ml-72 mt-16 p-6">
-        <h1 className="text-xl font-bold mb-6">Lời mời kết bạn</h1>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <h1 className="text-xl font-bold mb-6">Lời mời kết bạn</h1>        
           {loading ? (
             <FriendCardSkeleton />
           ) : friendRequest.length === 0 ? (
@@ -52,17 +51,18 @@ const Page = () => {
               text="Không có lời mời kết bạn nào"
               description="Có vẻ như bạn đã bắt kịp mọi thứ! Sao không thử khám phá và kết nối với những người mới?"
             />
-          ) : (
+          ) : (            
             friendRequest.map((friend) => (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               <FriendRequest
                 key={friend._id}
                 friend={friend}
                 loading={loading}
                 onAction={handleAction}
               />
-            ))
-          )}
-        </div>
+            </div>
+            ))            
+          )}       
 
         <h1 className="text-xl font-bold mt-8 mb-6">
           Những người bạn có thể biết
