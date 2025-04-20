@@ -264,7 +264,7 @@ function ScoreComponent({ quizStartParentProps }) {
     }
 
     return (
-        <div className=" flex items-center justify-center rounded-md top-[-100px] border border-gray-200 absolute w-full h-[450px] bg-white">
+        <div className=" flex items-center justify-center rounded-md top-[-40px] border border-gray-200 absolute w-full h-[450px] bg-white">
             {/* Score */}
             <div className=" flex gap-4 items-center justify-center flex-col">
                 <Image src={`/${emojiIconScore()}`} alt="" width={100} height={100} />
