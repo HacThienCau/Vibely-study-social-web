@@ -1,6 +1,7 @@
 "use client";
+import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp, Menu } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 
@@ -17,6 +18,9 @@ const HelpCenter = () => {
     const [loginQuestion3, setLoginQuestion3] = useState(false);
 
     const handleShowContent = (content) => {
+        if (!window.matchMedia("(min-width: 768px)").matches) {
+            toggleSideBar(false)
+        }
         setSelectedContent(content);
         setActiveQuestion(null); // Reset câu hỏi mở rộng khi chuyển nội dung
     };
@@ -24,13 +28,17 @@ const HelpCenter = () => {
     const toggleQuestion = (question) => {
         setActiveQuestion(activeQuestion === question ? null : question);
     };
-
+    const [sideBarOpen, setSibeBarOpen] = useState(true)
+    const toggleSideBar = () => setSibeBarOpen(!sideBarOpen)
     return (
-        <div className="h-[80vh] mt-14 flex items-center p-10">
-            <div className="max-w-7xl w-full flex gap-10">
+        <div className="flex items-center p-2 md:p-10">
+            <div className="max-w-7xl w-full flex gap-2 md:gap-5 lg:gap-10">
+                    <Button className="fixed top-16 left-2 lg:hidden z-50" onClick={()=>toggleSideBar()}>
+                        <Menu className="w-5 h-5"/>
+                    </Button>
                 {/* Sidebar */}
-                <div className="w-1/4 bg-white p-4 shadow-md ml-10 mt-20 h-[600px]">
-                    <p className="text-xl font-bold mb-6 flex items-center gap-2 mt-6 ml-6">
+                <div className={`fixed md:static w-[95%] lg:w-1/4 bg-white p-4 shadow-md md:ml-10 mt-20 h-[600px] ${sideBarOpen?"translate-x-0":"-translate-x-full"} transform transition-transform duration-300`}>
+                    <p className="text-xl font-bold mb-6 flex items-center gap-2 mt-6 md:ml-6">
                         <Image
                             src="/images/helpcenter_vibely.png"
                             alt="Sách hướng dẫn"
@@ -41,7 +49,7 @@ const HelpCenter = () => {
                     </p>
                     <ul className="mb-6 space-y-4">
                         <li
-                            className="flex items-center gap-2 ml-10 cursor-pointer"
+                            className="flex items-center gap-2 ml-4 md:ml-10 cursor-pointer"
                             onClick={() => handleShowContent("createAccount")}
                         >
                             <Image
@@ -52,7 +60,7 @@ const HelpCenter = () => {
                             />
                             Cách tạo tài khoản
                         </li>
-                        <li className="flex items-center gap-2 ml-10 cursor-pointer"
+                        <li className="flex items-center gap-2 ml-4 md:ml-10 cursor-pointer"
                             onClick={() => handleShowContent("addFriend")}
                         >
                             <Image
@@ -65,7 +73,7 @@ const HelpCenter = () => {
                         </li>
                     </ul>
 
-                    <p className="text-xl font-bold mb-6 flex items-center gap-2 ml-6">
+                    <p className="text-xl font-bold mb-6 flex items-center gap-2 md:ml-6">
                         <Image
                             src="/images/helpcenter_qltk.png"
                             alt="Quản lý tài khoản"
@@ -76,7 +84,7 @@ const HelpCenter = () => {
                     </p>
                     <ul className="space-y-4">
                         <li
-                            className="flex items-center gap-2 ml-10 cursor-pointer"
+                            className="flex items-center gap-2 ml-4 md:ml-10 cursor-pointer"
                             onClick={() => handleShowContent("loginPassword")}
                         >
                             <Image
@@ -91,7 +99,7 @@ const HelpCenter = () => {
                 </div>
 
                 {/* Nội dung chính */}
-                <div className="w-3/4 flex mt-20 ml-20">
+                <div className="w-full lg:w-3/4 flex mt-20 md:ml-20">
                     {selectedContent === "createAccount" && (
                         <div className="w-full rounded-lg p-6">
                             <p className="text-2xl font-bold text-black mb-4">Cách tạo tài khoản</p>
