@@ -33,7 +33,7 @@ const HelpCenter = () => {
     return (
         <div className="flex items-center p-2 md:p-10">
             <div className="max-w-7xl w-full flex gap-2 md:gap-5 lg:gap-10">
-                    <Button className="fixed top-16 left-2 lg:hidden z-50" onClick={()=>toggleSideBar()}>
+                    <Button className="fixed top-16 left-2 md:hidden z-50" onClick={()=>toggleSideBar()}>
                         <Menu className="w-5 h-5"/>
                     </Button>
                 {/* Sidebar */}
