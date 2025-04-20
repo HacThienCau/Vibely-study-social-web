@@ -1,7 +1,8 @@
 const jwt = require("jsonwebtoken");
 const response = require("../utils/responseHandler");
+const User = require("../model/User");
 
-const authMiddleware = (req, res, next) => {
+const authMiddleware = async (req, res, next) => {
     try {
         // Lấy token từ cookie hoặc Authorization header
         const authToken = req?.cookies?.auth_token || req?.headers?.authorization?.split(" ")[1];
@@ -12,9 +13,22 @@ const authMiddleware = (req, res, next) => {
 
         // Xác thực token
         const decoded = jwt.verify(authToken, process.env.JWT_SECRET);
-        req.user = decoded;
 
-        next(); // Cho phép tiếp tục nếu token hợp lệ
+        // Lấy thông tin user từ database
+        const user = await User.findById(decoded.userId);
+        if (!user) {
+            return response(res, 401, "Người dùng không tồn tại");
+        }
+
+        // Gán thông tin user vào request
+        req.user = {
+            ...decoded,
+            _id: user._id,
+            user_id: user._id,
+            ...user.toObject()
+        };
+
+        next();
     } catch (error) {
         console.error("Lỗi xác thực:", error.message);
         return response(res, 401, "Token không hợp lệ hoặc đã hết hạn");
