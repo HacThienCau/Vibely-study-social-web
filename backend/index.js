@@ -24,6 +24,9 @@ const adminUserRoute = require('./routes/adminUserRoute')
 const adminInformationRoute = require('./routes/adminInformationRoute');
 const forgotPasswordRoute = require('./routes/forgotPassword');
 const quizRoute = require('./routes/quizRoute');
+const learningTreeRoute = require('./routes/learningTreeRoute');
+const learningGoalRoute = require('./routes/learningGoalRoute');
+
 const YAML = require('yamljs');
 const createDefaultAdmin = require('./utils/createDefaultAdmin');
 
@@ -96,6 +99,9 @@ app.use('/admin', adminInformationRoute);
 app.use('/admin/posts', adminPostRoute);
 app.use('/admin/users', adminUserRoute);
 app.use('/forgot-password', forgotPasswordRoute);
+app.use('/learning-trees', learningTreeRoute);
+app.use('/learning-goals', learningGoalRoute);
+
 
 // ✅ API lấy danh ngôn ngẫu nhiên
 app.get('/quotations/random', async (req, res) => {
