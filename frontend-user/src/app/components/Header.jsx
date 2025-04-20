@@ -161,7 +161,7 @@ const Header = () => {
 
   return (
     <header className="bg-background_header text-foreground shadow-md h-14 fixed top-0 left-0 z-50 w-full">
-      <div className="mx-auto flex justify-between items-center h-full px-4">
+      <div className="mx-auto flex justify-between items-center h-full px-1 md:px-4">
         {/* Logo và Tìm kiếm */}
         <div className="flex items-center gap-2">
           <Image
@@ -248,7 +248,7 @@ const Header = () => {
         </nav>
 
         {/* Profile cá nhân */}
-        <div className="flex space-x-2 md:space-x-4 items-center">
+        <div className="flex space-x-1 md:space-x-4 items-center">
           <Button
             variant="ghost"
             size="icon"
@@ -261,15 +261,15 @@ const Header = () => {
           <Button
             variant="ghost"
             size="icon"
-            className="hidden md:block text-gray-600 cursor-pointer pl-1"
+            className="text-gray-600 cursor-pointer pl-1"
             onClick={() => handleNavigation("/messenger")}
           >
-            <MessageCircle size={22} className="min-w-[22px] min-h-[22px]" />
+            <MessageCircle className="min-w-[16px] min-h-[16px] md:min-w-[24px] md:min-h-[24px]" />
           </Button>
           <Button
             variant="ghost"
             size="icon"
-            className="hidden md:block text-gray-600 cursor-pointer pl-1"
+            className="text-gray-600 cursor-pointer pl-1"
           >
             <NotificationIcon />
           </Button>

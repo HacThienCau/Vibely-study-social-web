@@ -381,8 +381,8 @@ const PostCard = ({ post, onReact, onComment, onShare, onDelete, onEdit }) => {
           {reactDetailOpen && currentReactionDetail && (
             <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-80 z-50">
               <div className="bg-white p-6 h-96 rounded-lg shadow-lg flex flex-col">
-                <div className='flex items-center justify-between gap-40 pb-5'>
-                  <div className='flex gap-10 h-10 justify-center items-center'>
+              <div className='flex items-center justify-between gap-20 md:gap-40 pb-5'>
+                  <div className='flex md:gap-10 h-10 justify-center items-center'>
                     <motion.button whileHover={{ scale: 1.2 }}  //phóng to biểu tượng lên
                       className={`px-2 py-2 ${currentReactionDetail === "like" ? "border-b-2 border-[#086280]" : ""} `}
                       onClick={() => {
