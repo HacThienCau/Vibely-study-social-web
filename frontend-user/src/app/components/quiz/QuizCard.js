@@ -29,7 +29,7 @@ function QuizCard({ singleQuiz }) {
     const successRate = calculateSuccessRate();
 
     return (
-        <div className="border border-gray-200 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 max-w-sm bg-blue-50">
+        <div className="h-full flex flex-col justify-between border border-gray-200 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 max-w-sm bg-blue-50">
             {/* Icon Section */}
             <div className="bg-[#1E75F0] w-full h-28 flex justify-center items-center rounded-md mb-4 relative">
                 <FontAwesomeIcon

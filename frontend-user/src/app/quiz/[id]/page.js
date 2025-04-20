@@ -42,7 +42,7 @@ function QuizDetailPage() {
     if (!quiz) return <p>Quiz not found.</p>;
 
     return (
-        <div className="relative poppins flex flex-col px-24 mt-[85px]">
+        <div className="relative poppins flex flex-col px-2 lg:px-24 mt-[85px]">
             <QuizStartHeader quizId={id} parentTimer={parentTimer} />
             <div className="mt-10 flex items-center justify-center">
                 <QuizStartQuestions

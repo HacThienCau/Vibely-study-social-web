@@ -63,9 +63,9 @@ const NotificationIcon = () => {
         onClick={toggleNotifications}
         onKeyDown={(e) => e.key === "Enter" && toggleNotifications()}
       >
-        <Bell size={24} className="min-w-[24px] min-h-[24px]" />
+        <Bell className="min-w-[16px] min-h-[16px] md:min-w-[24px] md:min-h-[24px]" />
         {newNotificationsCount > 0 && (
-          <div className="absolute -top-[10px] -right-1 bg-red-500 text-white text-xs flex items-center justify-center rounded-full w-5 h-5">
+          <div className="absolute -top-[10px] -right-1 bg-red-500 text-white text-xs flex items-center justify-center rounded-full h-3 w-3 md:w-5 md:h-5">
             {newNotificationsCount}
           </div>
         )}
@@ -73,7 +73,7 @@ const NotificationIcon = () => {
 
       {/* Popper hiển thị thông báo */}
       {isOpen && (
-        <div className="absolute top-8 right-1 bg-white shadow-lg rounded-lg p-4 w-90 z-50">
+        <div className="absolute top-8 right-1 translate-x-[12%] lg:translate-x-0 bg-white shadow-lg rounded-lg p-4 w-90 z-50">
           <PopperWrapper>
             <div className="flex justify-between items-center border-b pb-2">
               <span className="text-gray-800 font-bold">
