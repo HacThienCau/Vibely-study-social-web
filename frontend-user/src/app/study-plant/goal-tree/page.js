@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import toast from "react-hot-toast";
-import AchievementPopup from '@/app/components/AchievementPopup';
+import AchievementPopup from '@/app/components/plant-tree/AchievementPopup';
 
 const Cloud = ({ delay, position }) => {
     return (
