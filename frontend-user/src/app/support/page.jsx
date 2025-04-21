@@ -51,7 +51,7 @@ const SupportPage = () => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center p-10">
+        <div className="min-h-screen flex items-center justify-center p-2 lg:p-10 pt-14 ">
             <div className="max-w-7xl w-full flex md:gap-20">
                 {/* Hình ảnh bên trái */}
                 <div className="w-1/2 flex justify-center items-center">
@@ -64,8 +64,8 @@ const SupportPage = () => {
                 </div>
 
                 {/* Form bên phải */}
-                <div className="w-1/2 flex flex-col justify-center px-10">
-                    <p className="text-2xl font-bold mb-6 text-center">GỬI THẮC MẮC</p>
+                <div className="w-1/2 flex flex-col justify-center px-2 lg:px-10">
+                    <p className="text-xl md:text-2xl font-bold mb-6 text-center">GỬI THẮC MẮC</p>
                     <p className="mb-5">
                         Vui lòng cung cấp đầy đủ thông tin về vấn đề bạn gặp phải. Chúng tôi sẽ xử lý yêu cầu của bạn nhanh chóng và chính xác hơn.
                     </p>

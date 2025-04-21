@@ -41,7 +41,24 @@ export const MutualFriends = ({ id, isOwner }) => {
   const filteredFriends = mutualFriends.filter((friend) =>
     friend.username.toLowerCase().includes(searchQuery.toLowerCase())
   );
-
+  const Tabs = ({className}) =>{
+    return(
+      <div className={`flex flex-wrap gap-4 justify-end md:w-[260px] ${className}`}>
+          <p
+            className="text-[#086280] font-semibold cursor-pointer"
+            onClick={() => handleNavigation("/friends-list")}
+          >
+            Lời mời kết bạn
+          </p>
+          <p
+            className="text-[#086280] font-semibold cursor-pointer"
+            onClick={() => handleNavigation("/friends-list")}
+          >
+            Tìm bạn bè
+          </p>
+      </div>
+    )
+  }
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -50,42 +67,35 @@ export const MutualFriends = ({ id, isOwner }) => {
       className="mb-4"
     >
       <Card className="bg-white shadow-md rounded-lg border border-gray-200 p-4">
-        {/* Header + Search */}
-        <div className="flex justify-between items-center mb-4">
-          <p className="text-xl font-semibold dark:text-gray-300">Bạn bè</p>
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 md:gap-4 mb-4 relative">
+      {/* Trái: Tiêu đề */}
+      <div className="flex justify-between items-center">
+        <p className="text-xl font-semibold dark:text-gray-300 md:w-[160px]">Bạn bè</p>
+        <Tabs className="md:hidden"/>
+      </div>
+      
 
-          {/* Search + Tabs */}
-          <div className="flex items-center space-x-6">
-            <div className="relative flex items-center">
-              <input
-                type="text"
-                placeholder="Tìm kiếm..."
-                value={searchQuery}
-                onChange={handleSearchChange}
-                className="px-6 py-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#086280]"
-              />
-              <button className="ml-2 p-2 bg-[#086280] text-white rounded-lg hover:bg-[#064d5f]">
-                <Search className="h-5 w-5" />
-              </button>
-            </div>
-            {isOwner && (
-  <div className="flex space-x-4">
-    <p
-      className="text-[#086280] font-semibold cursor-pointer"
-      onClick={() => handleNavigation("/friends-list")}
-    >
-      Lời mời kết bạn
-    </p>
-    <p
-      className="text-[#086280] font-semibold cursor-pointer"
-      onClick={() => handleNavigation("/friends-list")}
-    >
-      Tìm bạn bè
-    </p>
-  </div>
-)}
-          </div>
-        </div>
+      {/* Giữa: Thanh tìm kiếm */}
+      <div className="relative flex items-center w-full md:flex-1">
+        <input
+          type="text"
+          placeholder="Tìm kiếm..."
+          value={searchQuery}
+          onChange={handleSearchChange}
+          className="w-full px-6 py-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#086280]"
+        />
+        <button className="ml-2 p-2 bg-[#086280] text-white rounded-lg hover:bg-[#064d5f]">
+          <Search className="h-5 w-5" />
+        </button>
+      </div>
+
+      {/* Phải: Tabs điều hướng */}
+      {isOwner && (
+        <Tabs className="hidden md:inline-flex"/>
+      )}
+      
+    </div>
+
 
         <CardContent>
           {/* Danh sách bạn bè */}

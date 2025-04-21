@@ -1,12 +1,11 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./chatOnline.css";
 
-export default function ChatOnline({ onlineUsers, currentId, setCurrentChat, setSelectedFriend }) {
+export default function ChatOnline({ onlineUsers, currentId, setCurrentChat, setSelectedFriend, mode }) {
   const [friends, setFriends] = useState([]);
   const [onlineFriends, setOnlineFriends] = useState([]);
   const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8081';
-
 
   useEffect(() => {
     const getFriends = async () => {
@@ -53,8 +52,71 @@ export default function ChatOnline({ onlineUsers, currentId, setCurrentChat, set
       console.error("❌ Lỗi khi tạo hoặc lấy cuộc trò chuyện:", err);
     }
   }
+  const scrollRef = useRef(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(0);
+  const onMouseDown = (e) => {
+    setIsDragging(true);
+    setStartX(e.pageX - scrollRef.current.offsetLeft);
+    setScrollLeft(scrollRef.current.scrollLeft);
+  };
+  const onMouseMove = (e) => {
+    if (!isDragging) return;
+    e.preventDefault();
+    const x = e.pageX - scrollRef.current.offsetLeft;
+    const walk = (x - startX) * 1;
+    scrollRef.current.scrollLeft = scrollLeft - walk;
+  };
+  const endMouseDrag = () => setIsDragging(false);
 
+  const onTouchStart = (e) => {
+    setIsDragging(true);
+    setStartX(e.touches[0].pageX - scrollRef.current.offsetLeft);
+    setScrollLeft(scrollRef.current.scrollLeft);
+  };
+  const onTouchMove = (e) => {
+    if (!isDragging) return;
+    const x = e.touches[0].pageX - scrollRef.current.offsetLeft;
+    const walk = (x - startX) * 1;
+    scrollRef.current.scrollLeft = scrollLeft - walk;
+  };
+  const onTouchEnd = () => setIsDragging(false);
   return (
+    <>
+    {mode?
+    <div
+      ref={scrollRef}
+      className="overflow-x-auto whitespace-nowrap cursor-grab active:cursor-grabbing mr-10"
+      onMouseDown={onMouseDown}
+      onMouseMove={onMouseMove}
+      onMouseUp={endMouseDrag}
+      onMouseLeave={endMouseDrag}
+      onTouchStart={onTouchStart}
+      onTouchMove={onTouchMove}
+      onTouchEnd={onTouchEnd}
+    >
+      <div className="flex">
+      {onlineFriends.length > 0 ? (
+        <>
+          {onlineFriends.map((online) => (
+            <div className="flex flex-col items-center flex-shrink-0 cursor-pointer w-[84px]" key={online._id} onClick={() => { handleClick(online) }}>
+              <div className="relative flex items-center w-[72px]">
+                <img className="object-contain rounded-full w-16 h-16" src={online.profilePicture || "images/user_default.jpg"} alt={online.username} />
+                <div className="bg-[#4CAF50] rounded-full w-4 h-4 absolute bottom-1 right-1 border-white border"></div>
+              </div>
+              <p className="w-20 truncate text-center">{online.username}</p>
+            </div>
+          ))}
+        </>
+      ) : (
+        <div className="flex w-full text-center justify-center items-center h-full">
+          <p className="">Không có bạn bè nào đang online</p>
+        </div>
+      )}
+    </div>
+  </div>
+    :
     <div className="chatOnline h-full">
       <h1 className="text-xl font-bold mt-5 ml-2">Bạn bè online</h1>
 
@@ -76,5 +138,6 @@ export default function ChatOnline({ onlineUsers, currentId, setCurrentChat, set
         </div>
       )}
     </div>
+  }</>
   );
 }

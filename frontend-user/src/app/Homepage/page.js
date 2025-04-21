@@ -25,8 +25,8 @@ const Homepage = () => {
     <div className="flex flex-col min-h-screen text-foreground">
       <main className="flex flex-1">
         <LeftSideBar />
-        <div className="flex-1 px-4 py-6 md:ml-64 lg:mr-64 lg:max-w-2xl xl:max-w-3xl mxx-auto">
-          <div className="lg:ml-2 xl:ml-28">
+        <div className="flex w-full flex-1 px-1 md:px-16 py-6 md:ml-64 lg:mr-64 xl:mr-80 mt-14">
+          <div className="lg:ml-2 xl:ml-[104px]">
             <div className="-mt-8">
               <StorySection />
             </div>
