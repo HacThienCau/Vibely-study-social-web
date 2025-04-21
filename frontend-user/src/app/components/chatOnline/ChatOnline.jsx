@@ -118,9 +118,10 @@ export default function ChatOnline({ onlineUsers, currentId, setCurrentChat, set
   </div>
     :
     <div className="chatOnline h-full">
+      <h1 className="text-xl font-bold mt-5 ml-2">Bạn bè online</h1>
+
       {onlineFriends.length > 0 ? (
         <>
-          <h1 className="text-xl font-bold mt-5 ml-2">Bạn bè online</h1>
           {onlineFriends.map((online) => (
             <div className="chatOnlineFriend" key={online._id} onClick={() => { handleClick(online) }}>
               <div className="chatOnlineImgContainer">
