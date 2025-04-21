@@ -31,6 +31,16 @@ const authMiddleware = async (req, res, next) => {
         next();
     } catch (error) {
         console.error("Lỗi xác thực:", error.message);
+
+        // Nếu có socket.io instance, xóa user khỏi danh sách online
+        if (req.app.get('io')) {
+            const io = req.app.get('io');
+            const userId = req?.user?._id;
+            if (userId) {
+                io.emit("userOffline", userId);
+            }
+        }
+
         return response(res, 401, "Token không hợp lệ hoặc đã hết hạn");
     }
 };

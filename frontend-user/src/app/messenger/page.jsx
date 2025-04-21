@@ -39,15 +39,18 @@ const Messenger = () => {
 
     // Kết nối socket
     useEffect(() => {
-        socket.current = io("ws://localhost:8900");
-        socket.current.on("getMessage", (data) => {
-            setArrivalMessage({
-                sender: data.senderId,
-                text: data.text,
-                createdAt: Date.now(),
+        // Sử dụng socket từ window object nếu đã có
+        if (window.socket) {
+            socket.current = window.socket;
+
+            socket.current.on("getMessage", (data) => {
+                setArrivalMessage({
+                    sender: data.senderId,
+                    text: data.text,
+                    createdAt: Date.now(),
+                });
             });
         }
-        );
     }, []);
 
     // Thêm tin nhắn mới vào danh sách tin nhắn
@@ -59,15 +62,28 @@ const Messenger = () => {
 
     // Thêm user vào danh sách online
     useEffect(() => {
-        if (user?._id) {  // Dùng optional chaining để tránh lỗi
-            socket.current.emit("addUser", user._id);
+        if (user?._id && socket.current) {
+            // Lắng nghe sự kiện getUsers để cập nhật danh sách online users
             socket.current.on("getUsers", (users) => {
-                setOnlineUsers(user.followings.filter((f) => users.some((u) => u.userId === f)));
+                console.log("Messenger received online users:", users);
+                if (user.followings && Array.isArray(user.followings)) {
+                    setOnlineUsers(user.followings.filter((f) => users.some((u) => u.userId === f)));
+                } else {
+                    setOnlineUsers([]);
+                }
             });
+
+            // Yêu cầu cập nhật danh sách online users
+            socket.current.emit("requestOnlineUsers");
         }
+
+        // Cleanup function
+        return () => {
+            if (socket.current) {
+                socket.current.off("getUsers");
+            }
+        };
     }, [user]);
-
-
 
     // Kiểm tra xác thực người dùng
     useEffect(() => {
@@ -168,10 +184,19 @@ const Messenger = () => {
 
     // Nhận tin nhắn từ socket
     useEffect(() => {
-        socket.current.on("getMessage", (data) => {
-            setMessages([...messages, data]);
+        // Kiểm tra môi trường browser
+        if (typeof window === 'undefined') return;
+
+        if (socket.current) {
+            socket.current.on("getMessage", (data) => {
+                setMessages([...messages, data]);
+            });
+
+            // Cleanup function
+            return () => {
+                socket.current.off("getMessage");
+            };
         }
-        );
     }, [messages]);
 
 
