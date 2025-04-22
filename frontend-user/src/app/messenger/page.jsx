@@ -457,7 +457,10 @@ const Messenger = () => {
             {selectedFriend && (
                 <div className="flex items-center justify-between gap-4 pr-4 pl-0 py-2 border-b border-gray-300">
                     <div className="flex items-center gap-4">
-                        <button className="md:hidden" onClick={() => setOpenChat(false)}>
+                        <button className="md:hidden" onClick={() => {
+                            setOpenChat(false)
+                            setCurrentChat(null)
+                        }}>
                             <ChevronLeft size={25} />
                         </button>
                         <img

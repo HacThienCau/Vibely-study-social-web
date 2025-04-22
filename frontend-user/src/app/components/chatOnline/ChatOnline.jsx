@@ -132,7 +132,7 @@ export default function ChatOnline({ onlineUsers, currentId, setCurrentChat, set
           ))}
         </>
       ) : (
-        <div className="flex justify-center items-center h-full">
+        <div className="flex justify-center items-center text-center h-full">
           <p className="">Không có bạn bè nào đang online</p>
         </div>
       )}
