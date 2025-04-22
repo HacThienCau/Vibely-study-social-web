@@ -1,13 +1,13 @@
 'use client';
-import React, { useEffect, useState, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { toast } from 'react-hot-toast';
-import { Camera } from 'lucide-react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { toPng } from 'html-to-image';
+import { Camera } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { toast } from 'react-hot-toast';
 import AchievementCapture from './AchievementCapture';
 import './AchievementPopup.css';
 
-const AchievementPopup = ({ isOpen, onClose, achievements }) => {
+const AchievementPopup = ({ isOpen, onClose, achievements, onShare }) => {
     const [showCameraView, setShowCameraView] = useState(false);
     const [capturedImage, setCapturedImage] = useState(null);
     const achievementRef = useRef(null);
@@ -277,6 +277,7 @@ const AchievementPopup = ({ isOpen, onClose, achievements }) => {
                             capturedImage={capturedImage}
                             onRetake={handleRetake}
                             onClose={onClose}
+                            onShare={onShare}
                         />
                     )}
                 </div>

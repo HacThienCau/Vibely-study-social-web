@@ -1,21 +1,21 @@
 'use client';
-import React from 'react';
 import { motion } from 'framer-motion';
-import { RefreshCw, Share2, Download } from 'lucide-react';
+import { Download, RefreshCw, Share2 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 
-const AchievementCapture = ({ capturedImage, onRetake, onClose }) => {
-    const handleShare = () => {
-        if (navigator.share) {
-            navigator.share({
-                title: 'Thành tích của tôi',
-                text: 'Xem thành tích tôi vừa đạt được!',
-                url: capturedImage
-            }).catch(console.error);
-        } else {
-            toast.success('Đã chụp ảnh thành tích!');
-        }
-    };
+const AchievementCapture = ({ capturedImage, onRetake, onClose, onShare }) => {
+
+    // const handleShare = () => {
+    //     if (navigator.share) {
+    //         navigator.share({
+    //             title: 'Thành tích của tôi',
+    //             text: 'Xem thành tích tôi vừa đạt được!',
+    //             url: capturedImage
+    //         }).catch(console.error);
+    //     } else {
+    //         toast.success('Đã chụp ảnh thành tích!');
+    //     }
+    // };
 
     const handleDownload = () => {
         if (capturedImage) {
@@ -53,7 +53,7 @@ const AchievementCapture = ({ capturedImage, onRetake, onClose }) => {
                         <RefreshCw className="w-5 h-5 mr-2" /> Chụp lại
                     </button>
                     <button
-                        onClick={handleShare}
+                        onClick={() => onShare(capturedImage)}
                         className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full flex items-center"
                     >
                         <Share2 className="w-5 h-5 mr-2" /> Chia sẻ
