@@ -364,7 +364,6 @@ const Messenger = () => {
         };
     }, [currentChat, messages, user]);
 
-    const [openChat, setOpenChat] = useState(window.matchMedia("(min-width: 768px)").matches)   //<md
     return (
         <div className="pt-14 messenger">
             {/* Sidebar danh sách hội thoại */}
@@ -403,7 +402,6 @@ const Messenger = () => {
                                         setSelectedFriend(friend);
                                         // Đánh dấu đã đọc ngay khi click vào conversation
                                         await markMessagesAsRead();
-                                        setOpenChat(true)
                                     } catch (err) {
                                         console.error("Lỗi tạo hoặc lấy hội thoại:", err);
                                     }
