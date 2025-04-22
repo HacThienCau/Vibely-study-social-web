@@ -6,6 +6,10 @@
     border-radius: 8px; 
     width: 90%;
     gap: 10px; 
+    @media screen and (min-width: 738px) and (max-width: 1200px)  {
+        padding: 10px 5px;
+        gap: 5px;
+    }
 }
 
 .conversation:hover {
@@ -20,11 +24,21 @@
     border-radius: 50%;
     object-fit: cover;
     margin-right: 10px; 
+    @media screen and (min-width: 738px) and (max-width: 1200px)  {
+        margin-right: 5px; 
+        width: 40px;
+        height: 40px;
+    }
 }
 
 .conversationName {
     font-weight: 500;
     font-size: 15px;
     white-space: nowrap; 
+    overflow: hidden;
+    text-overflow: ellipsis;
     flex: 1;
+    @media screen and (min-width: 738px) and (max-width: 1200px)  {
+        font-size: 12px;
+    }
 }
