@@ -36,29 +36,41 @@ const Messenger = () => {
     const [chatColor, setChatColor] = useState("#30BDFF");
     const [showColorModal, setShowColorModal] = useState(false);
     const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8081';
+    const [isViewingChat, setIsViewingChat] = useState(false);
 
     // Kết nối socket
     useEffect(() => {
-        // Sử dụng socket từ window object nếu đã có
         if (window.socket) {
             socket.current = window.socket;
 
+            // Lắng nghe tin nhắn mới
             socket.current.on("getMessage", (data) => {
-                setArrivalMessage({
-                    sender: data.senderId,
-                    text: data.text,
-                    createdAt: Date.now(),
-                });
+                setMessages(prev => [...prev, data]); // Cập nhật messages trực tiếp
+            });
+
+            // Lắng nghe sự kiện đã đọc
+            socket.current.on("messageRead", ({ messageId, userId }) => {
+                setMessages(prevMessages =>
+                    prevMessages.map(msg =>
+                        msg._id === messageId
+                            ? {
+                                ...msg,
+                                readBy: [...(msg.readBy || []), userId],
+                                isRead: true
+                            }
+                            : msg
+                    )
+                );
             });
         }
-    }, []);
 
-    // Thêm tin nhắn mới vào danh sách tin nhắn
-    useEffect(() => {
-        arrivalMessage &&
-            currentChat?.members.includes(arrivalMessage.sender) &&
-            setMessages((prev) => [...prev, arrivalMessage]);
-    }, [arrivalMessage, currentChat]);
+        return () => {
+            if (socket.current) {
+                socket.current.off("getMessage");
+                socket.current.off("messageRead");
+            }
+        };
+    }, []);
 
     // Thêm user vào danh sách online
     useEffect(() => {
@@ -116,23 +128,6 @@ const Messenger = () => {
         getFriends();
     }, [user]);
 
-    // Lấy danh sách hội thoại của user
-    // useEffect(() => {
-    //     if (!user || !user._id) return;
-
-    //     const getConversations = async () => {
-    //         try {
-    //             const res = await axios.get(`https://vibely-study-social-web.onrender.com/conversation/${user._id}`);
-    //             console.log("📨 Danh sách hội thoại:", res.data);
-    //             setConversations(res.data);
-    //         } catch (err) {
-    //             console.error("❌ Lỗi khi lấy hội thoại:", err);
-    //         }
-    //     };
-
-    //     getConversations();
-    // }, [user]);
-
     // Lấy tin nhắn khi currentChat thay đổi
     useEffect(() => {
         if (!currentChat || !currentChat._id) return;
@@ -154,7 +149,7 @@ const Messenger = () => {
         console.log("🔄 Cập nhật CurrentChat:", currentChat);
     }, [currentChat]);
 
-    // Gửi tin nhắn mới
+    // Gửi tin nhắn
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -164,41 +159,22 @@ const Messenger = () => {
             conversationId: currentChat._id,
         };
 
-        // Gửi tin nhắn qua socket
-        socket.current.emit("sendMessage", {
-            senderId: user._id,
-            receiverId: currentChat.members.find((member) => member !== user._id),
-            text: newMessage,
-        });
-
-
         try {
             const res = await axios.post(`${API_URL}/message`, message);
-            setMessages([...messages, res.data]);
+            setMessages(prev => [...prev, res.data]); // Cập nhật messages với response từ server
             setNewMessage("");
+
+            // Gửi tin nhắn qua socket với đầy đủ thông tin
+            socket.current.emit("sendMessage", {
+                senderId: user._id,
+                receiverId: currentChat.members.find(member => member !== user._id),
+                text: newMessage,
+                messageId: res.data._id // Gửi kèm ID tin nhắn
+            });
         } catch (err) {
             console.error("❌ Lỗi khi gửi tin nhắn:", err);
         }
     };
-
-
-    // Nhận tin nhắn từ socket
-    useEffect(() => {
-        // Kiểm tra môi trường browser
-        if (typeof window === 'undefined') return;
-
-        if (socket.current) {
-            socket.current.on("getMessage", (data) => {
-                setMessages([...messages, data]);
-            });
-
-            // Cleanup function
-            return () => {
-                socket.current.off("getMessage");
-            };
-        }
-    }, [messages]);
-
 
     // Cuộn xuống cuối cùng khi có tin nhắn mới
     useEffect(() => {
@@ -328,6 +304,66 @@ const Messenger = () => {
         setShowColorModal(false);
     };
 
+    const markMessagesAsRead = async () => {
+        if (!currentChat || !user) return;
+
+        try {
+            const unreadMessages = messages.filter(msg =>
+                msg.sender !== user._id && // Tin nhắn của người khác gửi
+                !msg.readBy?.includes(user._id) // Chưa được đánh dấu là đã đọc
+            );
+
+            console.log("Tin nhắn chưa đọc:", unreadMessages);
+
+            // Gọi API markMessageAsRead cho từng tin nhắn chưa đọc
+            for (const msg of unreadMessages) {
+                try {
+                    await axios.post(`${API_URL}/message/read`, {
+                        messageId: msg._id,
+                        userId: user._id
+                    });
+
+                    // Cập nhật state messages ngay lập tức
+                    setMessages(prev => prev.map(m =>
+                        m._id === msg._id
+                            ? {
+                                ...m,
+                                readBy: [...(m.readBy || []), user._id],
+                                isRead: true
+                            }
+                            : m
+                    ));
+                } catch (err) {
+                    console.error(`Lỗi khi đánh dấu tin nhắn ${msg._id} đã đọc:`, err);
+                }
+            }
+        } catch (err) {
+            console.error("Lỗi khi đánh dấu tin nhắn đã đọc:", err);
+        }
+    };
+
+    useEffect(() => {
+        if (!currentChat || !messages.length || !user) return;
+
+        // Đánh dấu đã đọc khi người dùng đang xem chat
+        const handleVisibility = () => {
+            if (document.visibilityState === 'visible') {
+                markMessagesAsRead();
+            }
+        };
+
+        // Đánh dấu đã đọc khi component mount và có tin nhắn
+        markMessagesAsRead();
+
+        // Theo dõi khi user switch tab/window
+        document.addEventListener('visibilitychange', handleVisibility);
+
+        // Cleanup
+        return () => {
+            document.removeEventListener('visibilitychange', handleVisibility);
+        };
+    }, [currentChat, messages, user]);
+
     return (
         <div className="pt-14 messenger">
             {/* Sidebar danh sách hội thoại */}
@@ -360,6 +396,8 @@ const Messenger = () => {
                                         });
                                         setCurrentChat(res.data);
                                         setSelectedFriend(friend);
+                                        // Đánh dấu đã đọc ngay khi click vào conversation
+                                        await markMessagesAsRead();
                                     } catch (err) {
                                         console.error("Lỗi tạo hoặc lấy hội thoại:", err);
                                     }
@@ -433,7 +471,7 @@ const Messenger = () => {
                             <div className="chatBoxTop">
                                 {messages.length > 0 ? (
                                     messages.map((msg) => (
-                                        <div key={msg._id} ref={scrollRef}>
+                                        <div key={msg._id} ref={scrollRef} data-message-id={msg._id}>
                                             <Message message={msg} own={msg.sender === user._id} />
                                         </div>
                                     ))

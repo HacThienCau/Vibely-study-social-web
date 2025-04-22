@@ -1,4 +1,5 @@
 const Message = require('../model/Message');
+const Conversation = require('../model/Conversation');
 
 // Thêm tin nhắn mới
 const addMessage = async (req, res) => {
@@ -33,12 +34,18 @@ const markMessageAsRead = async (req, res) => {
             return res.status(404).json({ message: "Không tìm thấy tin nhắn" });
         }
 
-        if (!message.readBy.includes(userId)) {
+        // Nếu userId chưa có trong readBy và không phải người gửi
+        if (!message.readBy.includes(userId) && message.sender.toString() !== userId) {
             message.readBy.push(userId);
-            if (message.readBy.length === 2) { // Nếu cả 2 người đã đọc
-                message.isRead = true;
-            }
+            message.isRead = true; // Set isRead = true khi người nhận đọc tin nhắn
             await message.save();
+
+            // Emit sự kiện messageRead qua socket
+            req.app.get('io').emit("messageRead", {
+                messageId: message._id,
+                userId: userId,
+                isRead: true
+            });
         }
 
         res.status(200).json(message);
