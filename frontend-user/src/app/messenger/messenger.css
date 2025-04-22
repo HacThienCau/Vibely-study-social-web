@@ -24,6 +24,9 @@
     padding: 10px;
     height: 100%;
     margin-left: 10px;
+    @media screen and (min-width: 738px) and (max-width: 1200px)  {
+        padding: 10px 5px;
+    }
 }
 
 .chatBoxWrapper,
@@ -35,6 +38,11 @@
 .chatMenuInput {
     width: 90%;
     padding: 10px 0;
+    @media screen and (min-width: 738px) and (max-width: 1200px)  {
+        width: 95%;
+        padding: 3px 0;
+        font-size: x-small;
+    }
 }
 
 .chatBoxBottom {
