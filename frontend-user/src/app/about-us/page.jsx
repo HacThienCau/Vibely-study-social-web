@@ -17,8 +17,8 @@ const About = () => {
             <div className="my-10 mt-20">
                 <Heading title="Về chúng tôi" />
             </div>
-            <div className="flex items-center justify-between mb-10">
-                <div className="w-1/ ml-20 pr-10 flex items-center justify-end">
+            <div className="flex flex-col md:flex-row items-center justify-between mb-2 md:mb-10 w-full">
+                <div className="w-1/2 lg:ml-20 lg:pr-10 flex items-center justify-end">
                     <Image
                         src={WHY_CHOOSE.picture}
                         alt="Về chúng tôi"
@@ -28,7 +28,7 @@ const About = () => {
                     />
                 </div>
 
-                <div className="w-1/2 pr-28 pl-10">
+                <div className="md:w-1/2 pr-2 lg:pr-20 pl-2 lg:pl-10">
                     <p className="text-2xl font-bold my-3">
                         {WHY_CHOOSE.title}
                     </p>
@@ -60,10 +60,10 @@ const About = () => {
             </div>
 
             {/* about us */}
-            <div className="flex items-start justify-center px-4 mx-20">
-                <div className="flex-1 mx-5">
-                    <div className="px-5 mb-16 left-element">
-                        <p className="text-2xl font-bold py-5">
+            <div className="flex items-start justify-center lg:px-4 lg:mx-20">
+                <div className="flex-1 mx-1 lg:mx-5">
+                    <div className="lg:px-5 md:mb-10 lg:mb-16 left-element">
+                        <p className="text-xl lg:text-2xl font-bold py-5">
                             {ABOUT.text[0].title}
                         </p>
                         <p className="pl-3 leading-6 text-base">
@@ -71,7 +71,7 @@ const About = () => {
                         </p>
                     </div>
 
-                    <div className="px-5 my-16 left-element">
+                    <div className="lg:px-5 my-8 md:my-14 lg:my-16 left-element">
                         <Image
                             src={ABOUT.img[1]}
                             alt="Nội dung chất lượng"
@@ -81,8 +81,8 @@ const About = () => {
                         />
                     </div>
 
-                    <div className="px-5 left-element">
-                        <p className="text-2xl font-bold py-5">
+                    <div className="lg:px-5 left-element">
+                        <p className="text-xl lg:text-2xl font-bold py-5">
                             {ABOUT.text[2].title}
                         </p>
                         <p className="pl-3 leading-6 text-base">
@@ -93,8 +93,8 @@ const About = () => {
 
                 <Line />
 
-                <div className="flex-1 ml-20">
-                    <div className="px-10 mb-8 right-element">
+                <div className="flex-1 ml-10 lg:ml-20">
+                    <div className="mt-36 md:mt-8 lg:mt-0 lg:px-10 mb-16 md:mb-10 right-element">
                         <Image
                             src={ABOUT.img[0]}
                             alt="Cộng đồng năng động"
@@ -104,14 +104,14 @@ const About = () => {
                         />
                     </div>
 
-                    <div className="px-10 my-16 right-element text-right">
-                        <p className="text-2xl font-bold py-5">
+                    <div className="px-5 lg:px-10 my-16 md:my-8 right-element text-right">
+                        <p className="text-xl lg:text-2xl font-bold py-5">
                             {ABOUT.text[1].title}
                         </p>
                         <p className="pr-3 text-base">{ABOUT.text[1].desc}</p>
                     </div>
 
-                    <div className="px-10 mt-16 right-element">
+                    <div className="lg:px-10 mt-16 right-element">
                         <Image
                             src={ABOUT.img[2]}
                             alt="Cá nhân hóa trải nghiệm"

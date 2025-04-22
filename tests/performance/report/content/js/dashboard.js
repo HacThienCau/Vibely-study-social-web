@@ -133,7 +133,7 @@ $(document).ready(function() {
         widgets: ['zebra']
     });
 
-    var data = {"OkPercent": 100.0, "KoPercent": 0.0};
+    var data = {"OkPercent": 90.71428571428571, "KoPercent": 9.285714285714286};
     var dataset = [
         {
             "label" : "FAIL",
@@ -173,7 +173,7 @@ $(document).ready(function() {
     });
 
     // Creates APDEX table
-    createTable($("#apdexTable"), {"supportsControllersDiscrimination": true, "overall": {"data": [0.38125, 500, 1500, "Total"], "isController": false}, "titles": ["Apdex", "T (Toleration threshold)", "F (Frustration threshold)", "Label"], "items": [{"data": [1.0, 500, 1500, "Delete Users"], "isController": false}, {"data": [0.0, 500, 1500, "Create Post"], "isController": false}, {"data": [0.0, 500, 1500, "Register"], "isController": false}, {"data": [0.2, 500, 1500, "Get All Posts"], "isController": false}, {"data": [0.95, 500, 1500, "JSR223 Sampler"], "isController": false}, {"data": [0.0, 500, 1500, "Login"], "isController": false}, {"data": [0.6, 500, 1500, "Add Comment To Post"], "isController": false}, {"data": [0.3, 500, 1500, "Create Story"], "isController": false}]}, function(index, item){
+    createTable($("#apdexTable"), {"supportsControllersDiscrimination": true, "overall": {"data": [0.15357142857142858, 500, 1500, "Total"], "isController": false}, "titles": ["Apdex", "T (Toleration threshold)", "F (Frustration threshold)", "Label"], "items": [{"data": [0.95, 500, 1500, "Delete Users"], "isController": false}, {"data": [0.0, 500, 1500, "Create Post"], "isController": false}, {"data": [0.005, 500, 1500, "Register"], "isController": false}, {"data": [0.0, 500, 1500, "Get All Posts"], "isController": false}, {"data": [0.0, 500, 1500, "Login"], "isController": false}, {"data": [0.075, 500, 1500, "Add Comment To Post"], "isController": false}, {"data": [0.045, 500, 1500, "Create Story"], "isController": false}]}, function(index, item){
         switch(index){
             case 0:
                 item = item.toFixed(3);
@@ -187,7 +187,7 @@ $(document).ready(function() {
     }, [[0, 0]], 3);
 
     // Create statistics table
-    createTable($("#statisticsTable"), {"supportsControllersDiscrimination": true, "overall": {"data": ["Total", 80, 0, 0.0, 6110.037500000005, 1, 42563, 1605.0, 32104.500000000004, 37139.65, 42563.0, 1.2740679396728831, 4.586411294015066, 1.1991511273510536], "isController": false}, "titles": ["Label", "#Samples", "FAIL", "Error %", "Average", "Min", "Max", "Median", "90th pct", "95th pct", "99th pct", "Transactions/s", "Received", "Sent"], "items": [{"data": ["Delete Users", 10, 0, 0.0, 298.1, 244, 358, 286.0, 357.6, 358.0, 358.0, 1.070434596446157, 0.5749404570755726, 0.5730588337615071], "isController": false}, {"data": ["Create Post", 10, 0, 0.0, 3506.4, 2000, 6817, 3112.0, 6646.6, 6817.0, 6817.0, 1.4669209329617134, 1.438270133489805, 3.947220643244829], "isController": false}, {"data": ["Register", 10, 0, 0.0, 35838.7, 29770, 42563, 34869.5, 42528.3, 42563.0, 42563.0, 0.23298075578957178, 0.23284424362797634, 0.09128113205349239], "isController": false}, {"data": ["Get All Posts", 10, 0, 0.0, 1828.3999999999999, 464, 3298, 1799.0, 3223.7000000000003, 3298.0, 3298.0, 2.59000259000259, 59.48355753043253, 1.3132122507122506], "isController": false}, {"data": ["JSR223 Sampler", 10, 0, 0.0, 52.5, 1, 509, 2.0, 458.3000000000002, 509.0, 509.0, 1.1111111111111112, 0.005316840277777778, 0.0], "isController": false}, {"data": ["Login", 10, 0, 0.0, 5021.199999999999, 3191, 5784, 5544.0, 5765.3, 5784.0, 5784.0, 1.1706860220088973, 1.5383546007960665, 0.3499482337274643], "isController": false}, {"data": ["Add Comment To Post", 10, 0, 0.0, 695.4999999999999, 114, 1603, 594.0, 1552.5000000000002, 1603.0, 1603.0, 2.849002849002849, 3.2885950854700856, 1.719974180911681], "isController": false}, {"data": ["Create Story", 10, 0, 0.0, 1639.5, 899, 4217, 1328.5, 3981.500000000001, 4217.0, 4217.0, 2.197319270490002, 1.8496964952757635, 5.497589815425181], "isController": false}]}, function(index, item){
+    createTable($("#statisticsTable"), {"supportsControllersDiscrimination": true, "overall": {"data": ["Total", 700, 65, 9.285714285714286, 26411.190000000024, 91, 339337, 11288.5, 84876.4, 93212.7999999999, 106588.49, 1.377120519685938, 65.27827148504743, 1.4836782938263686], "isController": false}, "titles": ["Label", "#Samples", "FAIL", "Error %", "Average", "Min", "Max", "Median", "90th pct", "95th pct", "99th pct", "Transactions/s", "Received", "Sent"], "items": [{"data": ["Delete Users", 100, 0, 0.0, 343.30999999999983, 230, 1587, 273.5, 421.30000000000007, 652.1499999999994, 1586.77, 1.0039253481111146, 0.5392177162706181, 0.5390706568934535], "isController": false}, {"data": ["Create Post", 100, 28, 28.0, 38339.16999999999, 3405, 110504, 16144.5, 93615.40000000001, 102399.49999999997, 110483.98999999999, 0.3615498920773572, 0.31164612084082044, 0.973674337776179], "isController": false}, {"data": ["Register", 100, 0, 0.0, 28723.05, 1476, 104993, 15586.5, 83143.7, 93399.8, 104986.48, 0.492865768008083, 0.49416050327755734, 0.19389262303161733], "isController": false}, {"data": ["Get All Posts", 100, 1, 1.0, 32982.89, 1788, 339337, 10513.0, 86804.5, 91751.19999999997, 337003.0699999988, 0.26671005150171095, 87.0166312678529, 0.13566008820768177], "isController": false}, {"data": ["Login", 100, 0, 0.0, 37381.73, 2398, 108104, 13829.5, 93960.80000000002, 102097.34999999998, 108094.45, 0.3917712369393264, 0.516701881187537, 0.11742424613419732], "isController": false}, {"data": ["Add Comment To Post", 100, 28, 28.0, 23324.349999999995, 91, 98956, 4111.5, 79084.6, 81605.99999999999, 98882.22999999997, 0.27174651485094703, 0.2757802521807658, 0.16271087954156363], "isController": false}, {"data": ["Create Story", 100, 8, 8.0, 23783.830000000005, 859, 106804, 11397.0, 82257.20000000001, 91635.59999999998, 106779.86999999998, 0.27917208725802756, 0.2287248186777293, 0.7010272834880877], "isController": false}]}, function(index, item){
         switch(index){
             // Errors pct
             case 3:
@@ -217,7 +217,7 @@ $(document).ready(function() {
     }, [[0, 0]], 0, summaryTableHeader);
 
     // Create error table
-    createTable($("#errorsTable"), {"supportsControllersDiscrimination": false, "titles": ["Type of error", "Number of errors", "% in errors", "% in all samples"], "items": []}, function(index, item){
+    createTable($("#errorsTable"), {"supportsControllersDiscrimination": false, "titles": ["Type of error", "Number of errors", "% in errors", "% in all samples"], "items": [{"data": ["520", 1, 1.5384615384615385, 0.14285714285714285], "isController": false}, {"data": ["502/Bad Gateway", 1, 1.5384615384615385, 0.14285714285714285], "isController": false}, {"data": ["500/Internal Server Error", 35, 53.84615384615385, 5.0], "isController": false}, {"data": ["404/Not Found", 28, 43.07692307692308, 4.0], "isController": false}]}, function(index, item){
         switch(index){
             case 2:
             case 3:
@@ -228,7 +228,7 @@ $(document).ready(function() {
     }, [[1, 1]]);
 
         // Create top5 errors by sampler
-    createTable($("#top5ErrorsBySamplerTable"), {"supportsControllersDiscrimination": false, "overall": {"data": ["Total", 80, 0, "", "", "", "", "", "", "", "", "", ""], "isController": false}, "titles": ["Sample", "#Samples", "#Errors", "Error", "#Errors", "Error", "#Errors", "Error", "#Errors", "Error", "#Errors", "Error", "#Errors"], "items": [{"data": [], "isController": false}, {"data": [], "isController": false}, {"data": [], "isController": false}, {"data": [], "isController": false}, {"data": [], "isController": false}, {"data": [], "isController": false}, {"data": [], "isController": false}, {"data": [], "isController": false}]}, function(index, item){
+    createTable($("#top5ErrorsBySamplerTable"), {"supportsControllersDiscrimination": false, "overall": {"data": ["Total", 700, 65, "500/Internal Server Error", 35, "404/Not Found", 28, "520", 1, "502/Bad Gateway", 1, "", ""], "isController": false}, "titles": ["Sample", "#Samples", "#Errors", "Error", "#Errors", "Error", "#Errors", "Error", "#Errors", "Error", "#Errors", "Error", "#Errors"], "items": [{"data": [], "isController": false}, {"data": ["Create Post", 100, 28, "500/Internal Server Error", 27, "502/Bad Gateway", 1, "", "", "", "", "", ""], "isController": false}, {"data": [], "isController": false}, {"data": ["Get All Posts", 100, 1, "520", 1, "", "", "", "", "", "", "", ""], "isController": false}, {"data": [], "isController": false}, {"data": ["Add Comment To Post", 100, 28, "404/Not Found", 28, "", "", "", "", "", "", "", ""], "isController": false}, {"data": ["Create Story", 100, 8, "500/Internal Server Error", 8, "", "", "", "", "", "", "", ""], "isController": false}]}, function(index, item){
         return item;
     }, [[0, 0]], 0);
 

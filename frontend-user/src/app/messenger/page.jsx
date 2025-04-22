@@ -2,7 +2,7 @@
 import { Input } from "@/components/ui/input";
 import { checkUserAuth } from "@/service/auth.service";
 import axios from "axios";
-import { Search } from "lucide-react";
+import { ChevronLeft, Search } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { io } from "socket.io-client";
 import ChatOnline from "../components/chatOnline/ChatOnline";
@@ -364,6 +364,7 @@ const Messenger = () => {
         };
     }, [currentChat, messages, user]);
 
+    const [openChat, setOpenChat] = useState(window.matchMedia("(min-width: 768px)").matches)   //<md
     return (
         <div className="pt-14 messenger">
             {/* Sidebar danh sách hội thoại */}
@@ -382,7 +383,11 @@ const Messenger = () => {
                             onChange={searchFriend}
                         />
                     </div>
-
+                    <div className="md:hidden w-screen">
+                        <div className="p-2 h-[100%]">
+                            {user && <ChatOnline onlineUsers={onlineUsers} currentId={user._id} setCurrentChat={setCurrentChat} setSelectedFriend={setSelectedFriend} mode={"mobile"} />}
+                        </div>
+                    </div>
                     {/* Danh sách hội thoại */}
                     {displayedFriends.length > 0 ? (
                         displayedFriends.map((friend) => (
@@ -398,6 +403,7 @@ const Messenger = () => {
                                         setSelectedFriend(friend);
                                         // Đánh dấu đã đọc ngay khi click vào conversation
                                         await markMessagesAsRead();
+                                        setOpenChat(true)
                                     } catch (err) {
                                         console.error("Lỗi tạo hoặc lấy hội thoại:", err);
                                     }
@@ -413,8 +419,7 @@ const Messenger = () => {
                 </div>
             </div>
 
-            {/* Khung chat */}
-            <div className="chatBox">
+            <div className="hidden md:block chatBox">
                 <div className="chatBoxWrapper">
                     {currentChat ? (
                         <>
@@ -508,9 +513,97 @@ const Messenger = () => {
                     )}
                 </div>
             </div>
+            {openChat && (
+                <div className="fixed inset-0 z-50 bg-white w-full h-full md:hidden">
+                    <div className="chatBoxWrapper overflow-y-auto h-[calc(100%-64px)]">
 
+                        {/* Hiển thị ảnh + tên người đang chat */}
+                        {selectedFriend && (
+                            <div className="flex items-center justify-between gap-4 pr-4 pl-0 py-2 border-b border-gray-300">
+                                <div className="flex items-center gap-4">
+                                    <button className="md:hidden" onClick={() => setOpenChat(false)}>
+                                        <ChevronLeft size={25} />
+                                    </button>
+                                    <img
+                                        src={selectedFriend.profilePicture || "/images/user_default.jpg"}
+                                        alt="avatar"
+                                        className="w-10 h-10 rounded-full object-cover"
+                                    />
+                                    <span className="font-medium">
+                                        {friendNickname || selectedFriend?.username}
+                                    </span>
+                                </div>
+                                <div className="relative">
+                                    <button onClick={() => setShowOptions(!showOptions)}>
+                                        <PiDotsThreeVerticalBold size={25} />
+                                    </button>
+                                    {showOptions && (
+                                        <div className="absolute right-0 mt-2 w-48 bg-white border rounded shadow-lg">
+                                            <button
+                                                className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                                                onClick={() => handleOptionClick("changeColor")}
+                                            >
+                                                Đổi màu đoạn chat
+                                            </button>
+                                            <div className="relative">
+                                                <button
+                                                    className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                                                    onClick={() => {
+                                                        handleOptionClick("setNickname");
+                                                        setShowNicknameOptions(false);
+                                                    }}
+                                                >
+                                                    Đặt biệt danh
+                                                </button>
+
+                                            </div>
+                                            <button
+                                                className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                                                onClick={() => handleOptionClick("deleteChat")}
+                                            >
+                                                Xóa đoạn chat
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Danh sách tin nhắn */}
+                        <div className="chatBoxTop">
+                            {messages.length > 0 ? (
+                                messages.map((msg) => (
+                                    <div key={msg._id} ref={scrollRef}>
+                                        <Message message={msg} own={msg.sender === user._id} />
+                                    </div>
+                                ))
+                            ) : (
+                                <div className="flex justify-center items-center h-full">
+                                    <p className="">Chưa có tin nhắn nào</p>
+                                </div>
+                            )}
+                        </div>
+                        {/* Gửi tin nhắn */}
+                        <div className="chatBoxBottom">
+                            <textarea className="chatMessageInput"
+                                placeholder="Aa"
+                                onChange={(e) => setNewMessage(e.target.value)}
+                                value={newMessage}
+                                onKeyDown={(e) => e.key === "Enter" && handleSubmit(e)}
+                            ></textarea>
+                            <button
+                                onClick={handleSubmit}
+                                className="chatSubmitButton flex items-center justify-center"
+                                style={{ color: chatColor }}
+                            >
+                                <IoSend size={24} />
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
             {/* Danh sách bạn bè online */}
-            <div className="chatOnline">
+            <div className="hidden md:block chatOnline">
                 <div className="chatOnlineWrapper">
                     {user && <ChatOnline onlineUsers={onlineUsers} currentId={user._id} setCurrentChat={setCurrentChat} setSelectedFriend={setSelectedFriend} />}
                 </div>
