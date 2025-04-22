@@ -9,17 +9,7 @@ services:
       - /app/node_modules
     env_file:
       - ./backend/.env
-
-  socket:
-    image: vonhatphuongahihi/socket
-    ports:
-      - "8900:8900"
-    volumes:
-      - ./socket:/app
-      - /app/node_modules
-    depends_on:
-      - backend
-
+      
   frontend-user:
     image: vonhatphuongahihi/frontend-user
     ports:

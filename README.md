@@ -219,9 +219,7 @@ Setting Up Environment Variables
     -   Create a `.env` file in the `frontend-user` directory.
     -   Add your environment variables:
         ```env
-        URL="http://localhost:3000" 
         NEXT_PUBLIC_BACKEND_URL="http://localhost:8000" 
-        PUBLIC_FOLDER="http://localhost:8080/images"
 3.  **Frontend-admin**:
     -   Create a `.env` file in the `frontend-admin` directory.
     -   Add your environment variables:

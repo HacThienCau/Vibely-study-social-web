@@ -8,4 +8,3 @@ data:
   FRONTEND_URL: "http://localhost:3000"
   NEXT_PUBLIC_BACKEND_URL: "https://vibely-study-social-web.onrender.com"
   URL: "http://localhost:3000"
-  PUBLIC_FOLDER: "https://vibely-study-social-web.onrender.com/images"
