@@ -37,6 +37,7 @@ const Messenger = () => {
     const [showColorModal, setShowColorModal] = useState(false);
     const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8081';
     const [isViewingChat, setIsViewingChat] = useState(false);
+    const [openChat, setOpenChat] = useState(false);
 
     // Kết nối socket
     useEffect(() => {
