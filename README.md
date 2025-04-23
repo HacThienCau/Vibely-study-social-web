@@ -52,12 +52,14 @@ Features
 -   Manage account and profile settings
 -   Help center and submit inquiries
 -   Interact with AI Chatbot for study support
-
+-   🌱 Upcoming Feature (in development):
+Grow a Learning Tree - Complete your learning goals to grow your tree and unlock achievement badges
 ### **Admin Features**:
 -   View statistical reports
 -   Manage users
 -   Manage posts
 -   Manage study materials
+-   Manage quizs
 -   Manage inquiries
 -   Change password
 -   Admin account management
@@ -66,10 +68,11 @@ Features
 Tech Stack
 ----------
 
--   **Frontend**: Next.js, React.js, Zustand
--   **Backend**: Node.js, Express.js, JWT (for authentication), Swagger (for API documentation)
+-   **Frontend**: HTML, Tailwind CSS, React.js, Next.js, Zustand
+-   **Backend**: Node.js, Express.js, JWT (Authentication), Swagger (API Docs), Google OAuth, Socket.io, Nodemailer, Python (AI Chatbot)
 -   **Package Manager**: npm (for frontend and backend dependencies), pip (for chatbot backend dependencies)
 -   **Database**: MongoDB
+-   **DevOps & Tools**: Docker, GitHub Actions (CI/CD), Cloudinary (Media Management)
 
 * * * * *
 
@@ -179,9 +182,9 @@ Running the Project
         cd frontend-user
         npm install
     -   **Frontend-admin**:
-            ```bash
-            cd frontend-admin
-            npm install
+        ```bash
+        cd frontend-admin
+        npm install
 * * * * *
 
 Setting Up Environment Variables
