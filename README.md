@@ -24,11 +24,11 @@ Table of Contents
   - [Setting Up Environment Variables](#setting-up-environment-variables)
   - [Running the Project](#running-the-project-1)
     - [Local Development](#local-development)
+    - [Local Development](#local-development-1)
     - [Using Docker](#using-docker)
       - [Access the Application](#access-the-application)
     - [Using Docker Compose](#using-docker-compose)
   - [CI/CD Pipeline](#cicd-pipeline)
-    - [**Phase 1: Initial Setup and Deployment**](#phase-1-initial-setup-and-deployment)
 
 * * * * *
 Features
@@ -174,11 +174,6 @@ Running the Project
         ```bash
         cd backend
         npm install
-    -   **Socket**:
-
-        ```bash
-        cd socket
-        npm install
     -   **Frontend-user**:
         ```bash
         cd frontend-user
@@ -230,31 +225,28 @@ Running the Project
 
 ### Local Development
 
-1. **Backend Setup:**
-```bash
-cd backend
-npm install
-nodemon
-```
-2. **Socket Setup:**
-```bash
-cd socket
-npm install
-nodemon
-```
-3. **Frontend User Setup:**
-```bash
-cd frontend-user
-npm install
-npm run dev
-```
+### Local Development
 
-4. **Frontend Admin Setup:**
-```bash
-cd frontend-admin
-npm install
-npm run dev
-```
+1.  **Backend Setup:**
+    ```bash
+    cd backend
+    npm install
+    nodemon
+    ```
+
+2.  **Frontend User Setup:**
+    ```bash
+    cd frontend-user
+    npm install
+    npm run dev
+    ```
+
+3.  **Frontend Admin Setup:**
+    ```bash
+    cd frontend-admin
+    npm install
+    npm run dev
+    ```
 
 ### Using Docker
 
@@ -277,15 +269,7 @@ docker build -t backend ./backend --build-arg NODE_ENV=production \
 # Run backend container
 docker run -p 8081:8081 backend
 ```
-2. **Build and Run Socket:**
-```bash
-# Build sọcket image
-docker build -t socket ./socket
-
-# Run socket container
-docker run -p 8900:8900 socket
-```
-3. **Build and Run Frontend User:**
+2. **Build and Run Frontend User:**
 ```bash
 # Build frontend-user image
 docker build -t frontend-user ./frontend-user \
@@ -295,7 +279,7 @@ docker build -t frontend-user ./frontend-user \
 docker run -p 3000:3000 frontend-user
 ```
 
-4. **Build and Run Frontend Admin:**
+3. **Build and Run Frontend Admin:**
 ```bash
 # Build frontend-admin image
 docker build -t frontend-admin ./frontend-admin \
@@ -311,7 +295,7 @@ docker run -p 3001:3001 frontend-admin
 - Frontend Admin: http://localhost:3001
 - Backend API: http://localhost:8081/api-docs
 
-* * * * *
+---
 
 ### Using Docker Compose
 
@@ -329,39 +313,41 @@ This will start all services:
 - Backend: http://localhost:8081
 - Frontend User: http://localhost:3000
 - Frontend Admin: http://localhost:3001
-- Socket: http://localhost:8900
 
-* * * * *
+---
 
-CI/CD Pipeline
-----------
-### **Phase 1: Initial Setup and Deployment**
+## CI/CD Pipeline
 
-**Step 1: Launch EC2 (Ubuntu 22.04):**
+CI/CD (Continuous Integration / Continuous Deployment) is an automated software development process that:
+- CI: Continuously integrates code, tests, and builds after each push
+- CD: Automatically deploys software after successful builds
 
-- Provision an EC2 instance on AWS with Ubuntu 22.04.
-- Connect to the instance using SSH.
+Docker helps package the entire application (source code, libraries, environment...) into a container, making it easy to run the application anywhere without environment issues.
 
-**Step 2: Clone the Code:**
+Combining Docker + CI/CD provides:
+- Consistent application builds
+- Quick and automated deployment
+- Easy scalability
 
-- Update all the packages and then clone the code.
-- Clone your application's code repository onto the EC2 instance:
-    
-    ```bash
-    git clone https://github.com/vonhatphuongahihi/Vibely-study-social-web
-    ```
+Implementation Process:
 
-**Step 3: Install Docker and Run the App Using a Container:**
+1. Dockerfile for Each Component
+   - Each directory (backend, frontend-user, frontend-admin) has its own Dockerfile
+   - These files describe how to build each image with its corresponding environment
 
-- Set up Docker on the EC2 instance:
-    
-    ```bash
-    
-    sudo apt-get update
-    sudo apt-get install docker.io -y
-    sudo usermod -aG docker $USER  # Replace with your system's username, e.g., 'ubuntu'
-    newgrp docker
-    sudo chmod 777 /var/run/docker.sock
-    ```
- 
-* * * * *
+2. Docker Compose Configuration
+   - Runs all application services synchronously
+   - Manages communication between services like frontend and backend
+
+3. GitHub Actions Workflow
+   - Located at: .github/workflows/docker-ci-cd.yml
+   - Automatically builds and pushes Docker images when changes are pushed to main branch
+
+4. Environment Variables
+   - Configure in GitHub Repository → Settings → Secrets → Actions
+   - Required variables: DOCKER_USERNAME, DOCKER_PASSWORD, MONGO_URI_ATLAS, JWT_SECRET, CLOUDINARY_API_KEY, EMAIL_USER, etc.
+
+Result: Each push to main automatically:
+- Builds Docker images for backend and frontend
+- Pushes to Docker Hub
+- Allows running the entire system on any server using docker-compose up
