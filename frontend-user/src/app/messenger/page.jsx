@@ -11,6 +11,7 @@ import Message from "../components/message/Message";
 import "./messenger.css";
 import { PiDotsThreeVerticalBold } from "react-icons/pi";
 import { IoSend } from "react-icons/io5";
+import LeftSideBar from "../components/LeftSideBar";
 
 
 const Messenger = () => {
@@ -366,6 +367,9 @@ const Messenger = () => {
 
     return (
         <div className="pt-14 messenger">
+            <div className="md:hidden">
+            <LeftSideBar/>
+            </div>
             {/* Sidebar danh sách hội thoại */}
             <div className="chatMenu">
                 <div className="chatMenuWrapper">
