@@ -1,4 +1,5 @@
 const express = require('express');
+require('dotenv').config();
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const path = require('path');
@@ -6,7 +7,6 @@ const { connect } = require('mongoose');
 const connectDb = require('./config/db');
 const http = require('http');
 const { Server } = require('socket.io');
-require('dotenv').config();
 const authRoute = require('./routes/authRoute');
 const postRoute = require('./routes/postRoute');
 const swaggerUi = require('swagger-ui-express');
@@ -75,6 +75,7 @@ const corsOptions = {
 
 
 app.use(cors(corsOptions));
+connectDb();
 app.use(passport.initialize())
 //API Route
 app.use('/auth', authRoute);
