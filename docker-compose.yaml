@@ -1,6 +1,6 @@
 services:
   backend:
-    image: vonhatphuongahihi/backend
+    image: vonhatphuongahihi/vibely-backend
     ports:
       - "8081:8081"
     volumes:
@@ -11,7 +11,7 @@ services:
       - ./backend/.env
       
   frontend-user:
-    image: vonhatphuongahihi/frontend-user
+    image: vonhatphuongahihi/vibely-frontend-user
     ports:
       - "3000:3000"
     volumes:
@@ -24,7 +24,7 @@ services:
       - backend
 
   frontend-admin:
-    image: vonhatphuongahihi/frontend-admin
+    image: vonhatphuongahihi/vibely-frontend-admin
     ports:
       - "3001:3001"
     volumes:
