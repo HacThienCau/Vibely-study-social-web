@@ -17,21 +17,29 @@ const loginAdmin = async (req, res) => {
             return response(res, 400, "Email hoặc mật khẩu không chính xác");
         }
 
+        // Cập nhật thời gian đăng nhập cuối
+        admin.lastLogin = new Date();
+        await admin.save();
+
         const token = jwt.sign(
-            { id: admin._id, role: "admin" },
+            {
+                id: admin._id,
+                role: "admin",
+                iat: Math.floor(Date.now() / 1000)
+            },
             process.env.JWT_SECRET,
-            { expiresIn: "1d" }
+            { expiresIn: "24h" }
         );
 
         // Lưu token vào cookie
-        res.cookie("auth_token", token, {
+        res.cookie("admin_token", token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             sameSite: "Strict",
             maxAge: 24 * 60 * 60 * 1000 // 24 hours
         });
 
-        // Trả về token trong response để frontend có thể lưu vào localStorage
+        // Trả về token trong response
         return response(res, 200, "Đăng nhập thành công", {
             token,
             admin: {
@@ -47,7 +55,7 @@ const loginAdmin = async (req, res) => {
 };
 
 const logoutAdmin = (req, res) => {
-    res.clearCookie("auth_token", {
+    res.clearCookie("admin_token", {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: "Strict",

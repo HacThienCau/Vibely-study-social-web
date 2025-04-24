@@ -1,64 +1,68 @@
 const Inquiry = require("../model/Inquiry");
-const response = require("../utils/responseHandler");
 const User = require("../model/User");
+const asyncHandler = require("express-async-handler");
+const response = require("../utils/responseHandler");
 const nodemailer = require("nodemailer");
 
-// Tạo thắc mắc mới
-const createInquiry = async (req, res) => {
-    try {
-        const { message } = req.body;
-        if (!message) return response(res, 400, "Vui lòng điền đầy đủ thông tin.");
+// @desc    Create a new inquiry
+// @route   POST /api/inquiries
+// @access  Private
+const createInquiry = asyncHandler(async (req, res) => {
+    const { subject, message } = req.body;
 
-        const userId = req.user.userId;
-        if (!userId) return response(res, 401, "Bạn cần đăng nhập để gửi thắc mắc.");
-
-        const newInquiry = new Inquiry({ userId, message });
-        await newInquiry.save();
-
-        return response(res, 201, "Thắc mắc đã được gửi!", newInquiry);
-    } catch (error) {
-        return response(res, 500, "Lỗi server", error.message);
+    if (!subject || !message) {
+        res.status(400);
+        throw new Error("Please fill in all fields");
     }
-};
 
-// API lấy danh sách thắc mắc
-const getInquiries = async (req, res) => {
-    try {
-        const { query, status } = req.query;
-        let filter = {};
+    const inquiry = await Inquiry.create({
+        user: req.user._id,
+        subject,
+        message,
+        status: "pending"
+    });
 
-        // Lọc theo status nếu có
-        if (status) {
-            filter.status = status;
-        }
+    res.status(201).json({
+        success: true,
+        data: inquiry
+    });
+});
 
-        // Nếu có query, tìm theo message hoặc username/email của User
-        if (query) {
-            const users = await User.find({
-                $or: [
-                    { username: { $regex: query, $options: "i" } },
-                    { email: { $regex: query, $options: "i" } }
-                ]
-            }).select("_id");
+// @desc    Get user's inquiries
+// @route   GET /api/inquiries
+// @access  Private
+const getUserInquiries = asyncHandler(async (req, res) => {
+    const inquiries = await Inquiry.find({ user: req.user._id })
+        .sort({ createdAt: -1 });
 
-            const userIds = users.map(user => user._id);
+    res.status(200).json({
+        success: true,
+        data: inquiries
+    });
+});
 
-            filter.$or = [
-                { message: { $regex: query, $options: "i" } },
-                { userId: { $in: userIds } }
-            ];
-        }
+// @desc    Get single inquiry
+// @route   GET /api/inquiries/:id
+// @access  Private
+const getInquiry = asyncHandler(async (req, res) => {
+    const inquiry = await Inquiry.findById(req.params.id);
 
-        // Lấy danh sách thắc mắc và populate thông tin user
-        const inquiries = await Inquiry.find(filter)
-            .populate("userId", "username email")
-            .sort({ createdAt: -1 });
-
-        return response(res, 200, "Lấy danh sách thắc mắc thành công!", inquiries);
-    } catch (error) {
-        return response(res, 500, "Lỗi server", error.message);
+    if (!inquiry) {
+        res.status(404);
+        throw new Error("Inquiry not found");
     }
-};
+
+    // Check if the inquiry belongs to the user
+    if (inquiry.user.toString() !== req.user._id.toString()) {
+        res.status(403);
+        throw new Error("Not authorized to access this inquiry");
+    }
+
+    res.status(200).json({
+        success: true,
+        data: inquiry
+    });
+});
 
 // API cập nhật thắc mắc và gửi email phản hồi
 const updateInquiry = async (req, res) => {
@@ -103,7 +107,7 @@ const sendResponseEmail = async (to, subject, response, username) => {
         console.error("Không có địa chỉ email người nhận!");
         return;
     }
-    
+
     try {
         let transporter = nodemailer.createTransport({
             service: "gmail",
@@ -154,9 +158,10 @@ const deleteInquiry = async (req, res) => {
     }
 };
 
-module.exports = { 
-    createInquiry, 
-    getInquiries, 
+module.exports = {
+    createInquiry,
+    getUserInquiries,
+    getInquiry,
     updateInquiry,
     deleteInquiry
 };

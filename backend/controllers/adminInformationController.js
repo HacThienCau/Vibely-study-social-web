@@ -44,7 +44,7 @@ const updateAdminInfo = async (req, res) => {
 // Xử lý upload ảnh đại diện
 const uploadProfilePicture = async (req, res) => {
     try {
-        const adminId = req.user.id;
+        const adminId = req.admin._id;
         const file = req.file;
 
         if (!file) {
