@@ -1,18 +1,13 @@
 const express = require("express");
+const authMiddleware = require("../middleware/authMiddleware");
 const {
-    createQuiz,
     getQuizzes,
-    updateQuiz,
-    deleteQuiz,
     getQuizById
 } = require("../controllers/quizController");
 
 const router = express.Router();
 
-router.post("/", createQuiz);
-router.get("/", getQuizzes);
-router.put("/:id", updateQuiz);
-router.delete("/:id", deleteQuiz);
-router.get("/:id", getQuizById);
+router.get("/", authMiddleware, getQuizzes);
+router.get("/:id", authMiddleware, getQuizById);
 
 module.exports = router;
