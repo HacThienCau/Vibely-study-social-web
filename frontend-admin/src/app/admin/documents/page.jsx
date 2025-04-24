@@ -60,13 +60,13 @@ const Documents = () => {
             if (!token) return;
 
             try {
-                const levelsRes = await axios.get(`${API_URL}/documents/levels`, {
+                const levelsRes = await axios.get(`${API_URL}/admin/documents/levels`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
 
                 setLevels(levelsRes.data.data);
 
-                const docsRes = await axios.get(`${API_URL}/documents`, {
+                const docsRes = await axios.get(`${API_URL}/admin/documents`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
 
@@ -88,7 +88,7 @@ const Documents = () => {
             }
 
             try {
-                const res = await axios.get(`${API_URL}/documents/subjects/${selectedLevelId}`, {
+                const res = await axios.get(`${API_URL}/admin/documents/subjects/${selectedLevelId}`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
 
@@ -106,7 +106,7 @@ const Documents = () => {
         const fetchFilteredDocs = async () => {
             if (!token) return;
 
-            let url = `${API_URL}/documents?`;
+            let url = `${API_URL}/admin/documents?`;
             if (query) url += `query=${query}&`;
             if (selectedLevelId) url += `level=${selectedLevelId}&`;
             if (selectedSubjectId) url += `subject=${selectedSubjectId}`;
@@ -136,7 +136,7 @@ const Documents = () => {
     // Gọi API thêm cấp học
     const addLevel = async (levelName) => {
         try {
-            const res = await axios.post(`${API_URL}/documents/levels`, { name: levelName }, {
+            const res = await axios.post(`${API_URL}/admin/documents/levels`, { name: levelName }, {
                 headers: { Authorization: `Bearer ${token}` },
             });
 
@@ -152,7 +152,7 @@ const Documents = () => {
     // Gọi API thêm môn học
     const addSubject = async ({ subjectName, levelId }) => {
         try {
-            const res = await axios.post(`${API_URL}/documents/subjects`, { name: subjectName, levelId }, {
+            const res = await axios.post(`${API_URL}/admin/documents/subjects`, { name: subjectName, levelId }, {
                 headers: { Authorization: `Bearer ${token}` },
             });
 
@@ -170,7 +170,7 @@ const Documents = () => {
     // Gọi API lấy danh sách môn học theo cấp học
     const fetchSubjectsByLevel = async (levelId) => {
         try {
-            const res = await axios.get(`${API_URL}/documents/subjects/${levelId}`, {
+            const res = await axios.get(`${API_URL}/admin/documents/subjects/${levelId}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
 
@@ -184,7 +184,7 @@ const Documents = () => {
     // Gọi API thêm tài liệu
     const addDocument = async (document) => {
         try {
-            const res = await axios.post(`${API_URL}/documents`, {
+            const res = await axios.post(`${API_URL}/admin/documents`, {
                 title: document.title,
                 level: document.levelId,
                 subject: document.subjectId,
@@ -208,7 +208,7 @@ const Documents = () => {
     // Gọi API cập nhật tài liệu
     const updateDocument = async (document) => {
         try {
-            const res = await axios.put(`${API_URL}/documents/${document._id}`, {
+            const res = await axios.put(`${API_URL}/admin/documents/${document._id}`, {
                 title: document.title,
                 level: document.level,
                 subject: document.subject,
@@ -231,7 +231,7 @@ const Documents = () => {
     // Gọi API xóa tài liệu
     const deleteDocument = async () => {
         try {
-            await axios.delete(`${API_URL}/documents/${selectedDocument._id}`, {
+            await axios.delete(`${API_URL}/admin/documents/${selectedDocument._id}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
 

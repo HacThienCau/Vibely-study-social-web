@@ -45,7 +45,7 @@ const SupportPage = () => {
                 toast.error("Gửi thất bại, vui lòng thử lại.");
             }
         } catch (error) {
-            toast.error(error);
+            toast.error(error.message || "Đã xảy ra lỗi khi gửi thắc mắc.");
         }
 
         setLoading(false);

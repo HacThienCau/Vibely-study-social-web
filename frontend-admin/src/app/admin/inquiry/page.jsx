@@ -1,11 +1,11 @@
 'use client';
 
+import Sidebar from '@/app/components/sidebar/Sidebar';
 import DeleteInquiryPopup from "@/app/components/support/popup/DeleteInquiryPopup";
 import ResponseInquiryPopup from "@/app/components/support/popup/ResponseInquiryPopup";
-import SupportTable from "@/app/components/support/SupportTable";
-import Sidebar from '@/app/components/sidebar/Sidebar';
 import SearchBar from "@/app/components/support/SearchBar";
-import { getInquiries, updateInquiry, deleteInquiry } from '@/service/inquiryAdmin.service';
+import SupportTable from "@/app/components/support/SupportTable";
+import { deleteInquiry, getInquiries, updateInquiry } from '@/service/inquiryAdmin.service';
 import { useEffect, useState } from 'react';
 import toast from "react-hot-toast";
 
@@ -56,11 +56,11 @@ const Inquiry = () => {
     const handleUpdateInquiry = async (inquiry) => {
         try {
             const data = await updateInquiry(inquiry.inquiryId, {
-                status: "responded",
+                status: "Đã phản hồi",
                 response: inquiry.response,
             });
 
-            const updatedInquiry = data.data;
+            const updatedInquiry = data.inquiry;
             setInquiries((prev) => prev.map((inquiry) => (inquiry._id === updatedInquiry._id ? updatedInquiry : inquiry)));
             toast.success("Phản hồi thắc mắc thành công!");
             setSelectedInquiry(null);
