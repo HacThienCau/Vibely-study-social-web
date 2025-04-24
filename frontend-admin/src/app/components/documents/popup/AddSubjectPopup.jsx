@@ -19,7 +19,7 @@ const AddSubjectPopup = ({ levels, addSubject, onClose }) => {
         if (!subjectName.trim()) newErrors.subjectName = "Tên môn học không được để trống";
         if (!selectedLevelId) newErrors.level = "Vui lòng chọn cấp học";
         setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
+        return !newErrors.subjectName && !newErrors.level;
     };
     
     const handleSubmit = () => {
@@ -79,7 +79,7 @@ const AddSubjectPopup = ({ levels, addSubject, onClose }) => {
                 <div className="flex justify-center">
                     <button
                         className="px-5 py-[10px] bg-[#086280] text-white rounded-lg hover:bg-[#07556F] cursor-pointer text-[16px] transition-all duration-200"
-                        onClick={handleSubmit}
+                        onClick={() => handleSubmit()}
                     >
                         Thêm môn học
                     </button>
