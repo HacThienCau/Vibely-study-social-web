@@ -17,7 +17,7 @@ function Page() {
           const result = await getSinglePost(postId);
           setPost(result);
         } catch (error) {
-          console.error(error);
+          //console.error(error);
         } finally {
           setLoading(false);
         }

@@ -17,7 +17,6 @@ const PostComments = ({post, onComment, commentInputRef}) => {
     const {fetchPosts,handleReplyComment, handleDeleteComment, handleDeleteReply, handleLikeComment} = usePostStore()
     const handleCommentSubmit = async() =>{
         if(commentText.trim()){
-            //console.log("handleCommentSubmit: ",commentText)
             onComment({text : commentText})
             setCommentText("")
         }
@@ -26,10 +25,10 @@ const PostComments = ({post, onComment, commentInputRef}) => {
         <div className="mt-2">
             <h3 className="font-semibold mb-3">Bình luận</h3>
             <div className="max-h-60 overflow-y-auto pr-2">
+                {/*Danh sách các cmt*/}
                 {visibleComments?.map((comment, index) => (
                     <PostComment key={index} comment={comment} 
                     onReply={async(replyText)=>{
-                        console.log("PostComments/onReply:",post?._id,comment?._id,replyText)
                         await handleReplyComment(post?._id,comment?._id,replyText)
                         await fetchPosts()
                     }}
@@ -47,6 +46,7 @@ const PostComments = ({post, onComment, commentInputRef}) => {
                     }}
                     />
                 ))}
+                {/*Tùy chỉnh hiển thị số lượng cmt*/}
                 {post?.comments?.length > 2 && (
                     <p
                         className="w-40 mt-2 text-blue-500 cursor-pointer text-[16px] hover:underline"
@@ -60,6 +60,7 @@ const PostComments = ({post, onComment, commentInputRef}) => {
                     </p>
                 )}
             </div>
+            {/*Viết bình luận*/}
             <div className="flex items-center space-x-2 mt-4">
                 <Avatar className='w-8 h-8'>
                     {user?.profilePicture ? (
