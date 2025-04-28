@@ -9,8 +9,8 @@ const {
     saveDocument
 } = require("../controllers/documentController");
 
-router.get("/levels", getLevels);
-router.get("/subjects/:levelId", getSubjectsByLevel);
+router.get("/levels", authMiddleware, getLevels);
+router.get("/subjects/:levelId", authMiddleware, getSubjectsByLevel);
 
 router.post("/save", authMiddleware, saveDocument);
 

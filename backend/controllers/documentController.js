@@ -10,7 +10,6 @@ const getLevels = async (req, res) => {
         const levels = await Level.find().select("name");
         return response(res, 200, "Lấy danh sách cấp học thành công", levels);
     } catch (error) {
-        console.error("Lấy danh sách cấp học thất bại:", error);
         return response(res, 500, "Lấy danh sách cấp học thất bại", error.message);
     }
 };
@@ -23,7 +22,6 @@ const getSubjectsByLevel = async (req, res) => {
 
         return response(res, 200, "Lấy danh sách môn học thành công", subjects);
     } catch (error) {
-        console.error("Lấy danh sách môn học thất bại:", error);
         return response(res, 500, "Lấy danh sách môn học thất bại", error.message);
     }
 };
@@ -45,7 +43,6 @@ const getFilteredDocuments = async (req, res) => {
 
         return response(res, 200, "Lấy danh sách tài liệu thành công", documents);
     } catch (error) {
-        console.error("Lỗi khi lấy danh sách tài liệu:", error);
         return response(res, 500, "Lấy danh sách tài liệu thất bại", error.message);
     }
 };
@@ -61,7 +58,6 @@ const getDocumentById = async (req, res) => {
 
         return response(res, 200, "Lấy tài liệu theo ID thành công", document);
     } catch (error) {
-        console.error("Lấy tài liệu thất bại:", error);
         return response(res, 500, "Lấy tài liệu thất bại", error.message);
     }
 };
@@ -76,25 +72,21 @@ const saveDocument = async (req, res) => {
             return res.status(400).json({ message: "Thiếu documentId" });
         }
 
-        // Tìm user theo ID
         const user = await User.findById(userId);
         if (!user) {
             return res.status(404).json({ message: "Người dùng không tồn tại" });
         }
 
-        // Kiểm tra nếu tài liệu đã được lưu
         if (user.savedDocuments.includes(documentId)) {
             return res.status(400).json({ message: "Tài liệu đã được lưu trước đó" });
         }
 
-        // Thêm documentId vào danh sách savedDocuments
         user.savedDocuments.push(documentId);
         await user.save();
 
         res.status(200).json({ message: "Lưu tài liệu thành công", savedDocuments: user.savedDocuments });
     } catch (error) {
-        console.error("Lỗi khi lưu tài liệu:", error);
-        res.status(500).json({ message: "Lỗi server" });
+        res.status(500).json({ message: "Lỗi khi lưu tài liệu" });
     }
 };
 

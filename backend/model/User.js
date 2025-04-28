@@ -49,17 +49,13 @@ const userSchema = new mongoose.Schema({
         default: 0,
     },
 
-    // 🔥 Sửa lại bio thành ObjectId
     bio: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Bio',
         default: null
     },
 
-
-    // Danh sách tài liệu đã lưu
     savedDocuments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Document' }],
-
 
     verificationCode: {
         type: String,

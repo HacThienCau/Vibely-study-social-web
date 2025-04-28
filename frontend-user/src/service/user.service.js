@@ -3,10 +3,9 @@ import axiosInstance from "./url.service";
 // Lấy danh sách yêu cầu kết bạn
 export const getAllFriendsRequest = async() =>{
     try {
-         const response = await axiosInstance.get('/users/friend-request')
-         return response?.data;
+        const response = await axiosInstance.get('/users/friend-request')
+        return response?.data;
     } catch (error) {
-        console.log(error);
         throw error;   
     }
 }
@@ -14,31 +13,29 @@ export const getAllFriendsRequest = async() =>{
 //  Lấy danh sách gợi ý kết bạn
 export const getAllFriendsSuggestion = async() =>{
     try {
-         const response = await axiosInstance.get('/users/user-to-request')
-         return response?.data;
+        const response = await axiosInstance.get('/users/user-to-request')
+        return response?.data;
     } catch (error) {
-        console.log(error);
         throw error;   
     }
 }
 
+// Gửi lời mời kết bạn
 export const followUser = async(userId) =>{
     try {
-         const response = await axiosInstance.post('/users/follow', {userIdToFollow:userId})
-         return response?.data;
+        const response = await axiosInstance.post('/users/follow', {userIdToFollow:userId})
+        return response?.data;
     } catch (error) {
-        console.log(error);
         throw error;   
     }
 }
 
-
+// Hủy kết bạn
 export const UnfollowUser = async(userId) =>{
     try {
-         const response = await axiosInstance.post('/users/unfollow', {userIdToUnfollow:userId})
-         return response?.data;
+        const response = await axiosInstance.post('/users/unfollow', {userIdToUnfollow:userId})
+        return response?.data;
     } catch (error) {
-        console.log(error);
         throw error;   
     }
 }
@@ -46,10 +43,9 @@ export const UnfollowUser = async(userId) =>{
 // Xóa một yêu cầu kết bạn
 export const deleteUserFromRequest = async(userId) =>{
     try {
-         const response = await axiosInstance.post('/users/friend-request/remove', {requestSenderId:userId})
-         return response?.data;
+        const response = await axiosInstance.post('/users/friend-request/remove', {requestSenderId:userId})
+        return response?.data;
     } catch (error) {
-        console.log(error);
         throw error;   
     }
 }
@@ -57,10 +53,9 @@ export const deleteUserFromRequest = async(userId) =>{
 //  Lấy thông tin hồ sơ người dùng
 export const fetchUserProfile = async(userId) =>{
     try {
-         const response = await axiosInstance.get(`/users/profile/${userId}`)
-         return response?.data?.data;
+        const response = await axiosInstance.get(`/users/profile/${userId}`)
+        return response?.data?.data;
     } catch (error) {
-        console.log(error);
         throw error;   
     }
 }
@@ -68,10 +63,9 @@ export const fetchUserProfile = async(userId) =>{
 // Lấy danh sách bạn chung
 export const getMutualFriends = async(userId) =>{
     try {
-         const response = await axiosInstance.get(`/users/mutual-friends/${userId}`)
-         return response?.data?.data;
+        const response = await axiosInstance.get(`/users/mutual-friends/${userId}`)
+        return response?.data?.data;
     } catch (error) {
-        console.log(error);
         throw error;   
     }
 }
@@ -79,10 +73,9 @@ export const getMutualFriends = async(userId) =>{
 // Cập nhật hồ sơ người dùng
 export const updateUserProfile = async(userId,updateData) =>{
     try {
-         const response = await axiosInstance.put(`/users/profile/${userId}`,updateData)
-         return response?.data?.data;
+        const response = await axiosInstance.put(`/users/profile/${userId}`,updateData)
+        return response?.data?.data;
     } catch (error) {
-        console.log(error);
         throw error;   
     }
 }
@@ -90,10 +83,9 @@ export const updateUserProfile = async(userId,updateData) =>{
 // Cập nhật ảnh bìa hồ sơ
 export const updateUserCoverPhoto = async(userId,updateData) =>{
     try {
-         const response = await axiosInstance.put(`/users/profile/cover-picture/${userId}`,updateData)
-         return response?.data?.data;
+        const response = await axiosInstance.put(`/users/profile/cover-picture/${userId}`,updateData)
+        return response?.data?.data;
     } catch (error) {
-        console.log(error);
         throw error;   
     }
 }
@@ -101,20 +93,19 @@ export const updateUserCoverPhoto = async(userId,updateData) =>{
 // Tạo hoặc cập nhật tiểu sử (Bio) của người dùng
 export const createOrUpdateUserBio = async(userId,bioData) =>{
     try {
-         const response = await axiosInstance.put(`/users/bio/${userId}`,bioData)
-         return response?.data?.data;
+        const response = await axiosInstance.put(`/users/bio/${userId}`,bioData)
+        return response?.data?.data;
     } catch (error) {
-        console.log(error);
         throw error;   
     }
 }
 
+// Lấy tất cả người dùng
 export const getAllUsers = async() =>{
     try {
-         const response = await axiosInstance.get('/users')
-         return response?.data?.data;
+        const response = await axiosInstance.get('/users')
+        return response?.data?.data;
     } catch (error) {
-        console.log(error);
         throw error;   
     }
 }
@@ -125,7 +116,6 @@ export const getSavedDocuments = async() =>{
         const response = await axiosInstance.get('/users/saved')
         return response?.data?.data;
     } catch (error) {
-        console.log(error);
         throw error;   
     }
 }
@@ -136,7 +126,6 @@ export const getSavedDocumentById = async(documentId) =>{
         const response = await axiosInstance.get(`/users/saved/${documentId}`)
         return response?.data?.data;
     } catch (error) {
-        console.log(error);
         throw error;   
     }
 }
@@ -147,7 +136,6 @@ export const unsaveDocument = async(documentId) =>{
         const response = await axiosInstance.delete(`/users/saved/${documentId}`)
         return response?.data?.data;
     } catch (error) {
-        console.log(error);
         throw error;   
     }
 }

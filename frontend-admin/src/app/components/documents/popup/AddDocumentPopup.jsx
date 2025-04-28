@@ -22,7 +22,7 @@ const AddDocumentPopup = ({ levels, fetchSubjects, addDocument, onClose }) => {
             fetchSubjects(formData.levelId)
                 .then((data) => {
                     setSubjects(data || []);
-                    setFormData((prev) => ({ ...prev, subjectId: "" })); // Reset subject khi đổi level
+                    setFormData((prev) => ({ ...prev, subjectId: "" }));
                 })
                 .finally(() => setLoadingSubjects(false));
         } else {
@@ -34,9 +34,9 @@ const AddDocumentPopup = ({ levels, fetchSubjects, addDocument, onClose }) => {
         const { name, value } = e.target;
         setFormData((prev) => ({
             ...prev,
-            [name]: name === "pages" ? Number(value) : value, // Ép kiểu nếu là pages
+            [name]: name === "pages" ? Number(value) : value,
         }));
-        setErrors((prev) => ({ ...prev, [name]: "" })); // Xóa lỗi khi nhập vào
+        setErrors((prev) => ({ ...prev, [name]: "" }));
     };
 
     const validate = () => {
@@ -55,7 +55,6 @@ const AddDocumentPopup = ({ levels, fetchSubjects, addDocument, onClose }) => {
 
     const handleSubmit = () => {
         if (validate()) {
-            console.log(formData);
             addDocument(formData);
         }
     };
