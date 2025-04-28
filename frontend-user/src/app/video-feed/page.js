@@ -11,13 +11,14 @@ const Page = () => {
     useEffect(()=>{
       fetchPosts()  //tải các bài viết
     },[fetchPosts])
-    const videoPost = posts?.filter(post => post.mediaType === "video")
+    const videoPost = posts?.filter(post => post.mediaType === "video") //lấy bài viết có mediaType là video
 
     return (
         <div className='mt-12 min-h-screen'>
             <LeftSideBar/>
             <main className='ml-0 md:ml-64 p-6'>
                 <div className='max-w-3xl mx-auto mt-3'>
+                  {/*danh sách các video*/}
                     {videoPost.map((post) => (
                         <VideoCard
                             key={post?._id}
