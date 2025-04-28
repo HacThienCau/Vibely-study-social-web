@@ -38,8 +38,6 @@ const SavedDocumentDetail = () => {
         const storedToken = localStorage.getItem("token");
         if (storedToken) {
             setToken(storedToken);
-        } else {
-            console.error("Lỗi: Không tìm thấy token");
         }
     }, []);
 
@@ -56,7 +54,7 @@ const SavedDocumentDetail = () => {
 
                     setDocument(result.data.data);
                 } catch (err) {
-                    console.error("Lỗi khi lấy chi tiết tài liệu:", err);
+                    toast.error("Lỗi khi lấy chi tiết tài liệu");
                 }
             };
 
@@ -78,14 +76,12 @@ const SavedDocumentDetail = () => {
             );
 
             toast.success("Bỏ lưu tài liệu thành công!");
-            console.log("Bỏ lưu tài liệu thành công:", response.data);
 
             // Chuyển hướng về trang tài liệu đã lưu
             router.replace("/saved");
 
         } catch (error) {
             toast.error(error.response?.data?.message || error.message);
-            console.error("Lỗi khi bỏ lưu tài liệu:", error.response?.data?.message || error.message);
         }
     };
 
@@ -105,9 +101,8 @@ const SavedDocumentDetail = () => {
         <div className="flex h-screen p-5 bg-background pt-16 justify-center lg:justify-between">
             {/* Thanh bên */}
             <div className="md:hidden">
-            <LeftSideBar/>
+                <LeftSideBar/>
             </div>  
-            {/* Nút mở rộng khi màn hình nhỏ*/}
             <Button
                 variant="bigIcon"
                 className="flex lg:hidden hover:bg-gray-100 absolute left-0 top-15"
@@ -124,13 +119,12 @@ const SavedDocumentDetail = () => {
                 }
                 lg:translate-x-0 lg:static lg:w-1/5 rounded-xl shadow-lg overflow-auto flex flex-col h-[calc(100vh-3.5rem)]`}
             >
-                {/*Nút đóng sidebar*/}
                 <Button variant="bigIcon" className="lg:hidden absolute top-1 right-0" onClick={() => setSidebarOpen(false)}>
                     <AiOutlineClose style={{ width: 24, height: 24, color: "black" }} />
                 </Button>
 
                 <div className="min-h-0 flex-1">
-                    <h2 className="text-xl font-bold">{document.title}</h2>
+                    <p className="text-xl font-bold">{document.title}</p>
                     <div className="mt-5 space-y-3">
                         <p className="flex items-center">
                             <span className="mr-3"><BookMarked size={20} /></span>

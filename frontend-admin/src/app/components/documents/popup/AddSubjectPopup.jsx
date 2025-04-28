@@ -6,7 +6,6 @@ const AddSubjectPopup = ({ levels, addSubject, onClose }) => {
     const [selectedLevelId, setSelectedLevelId] = useState("");
     const [errors, setErrors] = useState({ subjectName: "", level: "" });
 
-    // Khi người dùng nhập dữ liệu, lỗi sẽ biến mất
     const handleChange = (field, value) => {
         if (field === "subjectName") setSubjectName(value);
         if (field === "level") setSelectedLevelId(value);

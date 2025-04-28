@@ -1,15 +1,15 @@
-//import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { AnimatePresence, motion } from "framer-motion";
 import { UserMinus, UserPlus } from "lucide-react";
 
 const FriendRequest = ({ friend, onAction }) => {
-    // Tạo chữ viết tắt từ username
-    const userPlaceholder = friend?.username
+  // Tạo chữ viết tắt từ username
+  const userPlaceholder = friend?.username
     ?.split(" ")
     .map((name) => name[0])
     .join("");
+
   return (
     <AnimatePresence>
       <motion.div

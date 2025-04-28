@@ -9,7 +9,6 @@ const getInquiries = async (req, res) => {
         const { query, status } = req.query;
         let filter = {};
 
-        // Lọc theo status nếu có
         if (status) {
             filter.status = status;
         }
@@ -31,7 +30,6 @@ const getInquiries = async (req, res) => {
             ];
         }
 
-        // Lấy danh sách thắc mắc và populate thông tin user
         const inquiries = await Inquiry.find(filter)
             .populate("userId", "username email")
             .sort({ createdAt: -1 });
@@ -47,7 +45,6 @@ const updateInquiry = async (req, res) => {
     try {
         const { status, response } = req.body;
 
-        // Kiểm tra dữ liệu đầu vào
         if (!status || !response) {
             return res.status(400).json({ success: false, message: "Thiếu thông tin cần thiết." });
         }
@@ -61,13 +58,16 @@ const updateInquiry = async (req, res) => {
         if (!updatedInquiry)
             return res.status(404).json({ success: false, message: "Không tìm thấy thắc mắc." });
 
-        // Gửi email phản hồi
-        await sendResponseEmail(
-            updatedInquiry.userId.email,
-            "Phản hồi từ Vibely",
-            response,
-            updatedInquiry.userId?.username
-        );
+        try {
+            await sendResponseEmail(
+                updatedInquiry.userId.email,
+                "Phản hồi từ Vibely",
+                response,
+                updatedInquiry.userId?.username
+            );
+        } catch (error) {
+            return res.status(500).json({ success: false, message: "Không thể gửi email phản hồi." });
+        }
 
         return res.status(200).json({
             success: true,
@@ -82,7 +82,6 @@ const updateInquiry = async (req, res) => {
 // Hàm gửi email bằng Nodemailer
 const sendResponseEmail = async (to, subject, response, username) => {
     if (!to) {
-        console.error("Không có địa chỉ email người nhận!");
         return;
     }
     
@@ -90,8 +89,8 @@ const sendResponseEmail = async (to, subject, response, username) => {
         let transporter = nodemailer.createTransport({
             service: "gmail",
             auth: {
-                user: process.env.EMAIL_USER, // Email gửi đi
-                pass: process.env.EMAIL_PASS, // Mật khẩu ứng dụng
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS,
             },
         });
 
@@ -118,9 +117,8 @@ const sendResponseEmail = async (to, subject, response, username) => {
         };
 
         let info = await transporter.sendMail(mailOptions);
-        console.log("Email đã được gửi:", info.response);
     } catch (error) {
-        console.error("Gửi email thất bại:", error);
+        throw new Error("Không thể gửi email phản hồi.");
     }
 };
 

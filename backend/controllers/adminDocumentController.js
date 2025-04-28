@@ -16,7 +16,6 @@ const createLevel = async (req, res) => {
         await newLevel.save();
         return response(res, 201, "Tạo cấp học thành công", newLevel);
     } catch (error) {
-        console.error("Lỗi khi tạo cấp học:", error);
         return response(res, 500, "Lỗi khi tạo cấp học", error.message);
     }
 };
@@ -37,7 +36,6 @@ const createSubject = async (req, res) => {
         await newSubject.save();
         return response(res, 201, "Tạo môn học thành công", newSubject);
     } catch (error) {
-        console.error("Lỗi khi tạo môn học:", error);
         return response(res, 500, "Lỗi khi tạo môn học", error.message);
     }
 };
@@ -68,7 +66,6 @@ const createDocument = async (req, res) => {
         
         return response(res, 201, "Tạo tài liệu thành công", populatedDocument);
     } catch (error) {
-        console.error("Lỗi khi tạo tài liệu:", error);
         return response(res, 400, "Tạo tài liệu thất bại", error.message);
     }
 };
@@ -79,7 +76,6 @@ const getLevels = async (req, res) => {
         const levels = await Level.find().select("name");
         return response(res, 200, "Lấy danh sách cấp học thành công", levels);
     } catch (error) {
-        console.error("Lấy danh sách cấp học thất bại:", error);
         return response(res, 500, "Lấy danh sách cấp học thất bại", error.message);
     }
 };
@@ -92,7 +88,6 @@ const getSubjectsByLevel = async (req, res) => {
 
         return response(res, 200, "Lấy danh sách môn học thành công", subjects);
     } catch (error) {
-        console.error("Lấy danh sách môn học thất bại:", error);
         return response(res, 500, "Lấy danh sách môn học thất bại", error.message);
     }
 };
@@ -114,7 +109,6 @@ const getFilteredDocuments = async (req, res) => {
 
         return response(res, 200, "Lấy danh sách tài liệu thành công", documents);
     } catch (error) {
-        console.error("Lỗi khi lấy danh sách tài liệu:", error);
         return response(res, 500, "Lấy danh sách tài liệu thất bại", error.message);
     }
 };
@@ -144,7 +138,6 @@ const updateDocument = async (req, res) => {
 
         return response(res, 200, "Cập nhật tài liệu thành công", updatedDocument);
     } catch (error) {
-        console.error("Cập nhật tài liệu thất bại:", error);
         return response(res, 500, "Cập nhật tài liệu thất bại", error.message);
     }
 };
@@ -157,7 +150,6 @@ const deleteDocument = async (req, res) => {
 
         return response(res, 200, "Xóa tài liệu thành công");
     } catch (error) {
-        console.error("Xóa tài liệu thất bại:", error);
         return response(res, 500, "Xóa tài liệu thất bại", error.message);
     }
 };

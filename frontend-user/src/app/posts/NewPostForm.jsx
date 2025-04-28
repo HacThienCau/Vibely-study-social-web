@@ -11,6 +11,7 @@ import { motion } from 'framer-motion'
 import { ImageIcon, Smile, XIcon } from 'lucide-react'
 import dynamic from 'next/dynamic'
 import { useEffect, useRef, useState } from 'react'
+import { toast } from 'react-hot-toast'
 
 const Picker = dynamic(() => import('emoji-picker-react'), { ssr: false })
 
@@ -69,7 +70,7 @@ const NewPostForm = ({ isPostFormOpen, setIsPostFormOpen, defaultImage = null, d
           setSelectedFile(file);
         })
         .catch(err => {
-          //console.error("Lỗi khi xử lý ảnh base64:", err);
+          toast.error("Lỗi khi xử lý ảnh base64");
         });
     }
   

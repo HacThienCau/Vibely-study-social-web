@@ -43,9 +43,9 @@ const UpdateDocumentPopup = ({ levels, fetchSubjects, document, updateDocument, 
         const { name, value } = e.target;
         setFormData((prev) => ({
             ...prev,
-            [name]: name === "pages" ? Number(value) : value, // Ép kiểu nếu là pages
+            [name]: name === "pages" ? Number(value) : value,
         }));
-        setErrors((prev) => ({ ...prev, [name]: "" })); // Xóa lỗi khi nhập vào
+        setErrors((prev) => ({ ...prev, [name]: "" }));
     };
 
     const validate = () => {
@@ -62,7 +62,6 @@ const UpdateDocumentPopup = ({ levels, fetchSubjects, document, updateDocument, 
         return Object.keys(newErrors).length === 0;
     };
 
-    // Gửi dữ liệu cập nhật
     const handleSubmit = () => {
         if (validate()) {
             updateDocument(formData);

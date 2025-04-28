@@ -24,7 +24,7 @@ const Inquiry = () => {
                 const data = await getInquiries(query, status);
                 setInquiries(data.data);
             } catch (err) {
-                console.error("Lỗi khi lọc thắc mắc", err);
+                toast.error("Lỗi khi lấy danh sách thắc mắc");
             }
         };
 
@@ -48,7 +48,6 @@ const Inquiry = () => {
             closeModal();
         } catch (err) {
             toast.error("Xóa thắc mắc thất bại!");
-            console.error("Lỗi khi xóa thắc mắc", err);
         }
     }
 
@@ -67,11 +66,9 @@ const Inquiry = () => {
             closeModal();
         } catch (err) {
             toast.error("Phản hồi thắc mắc thất bại!");
-            console.error("Lỗi khi phản hồi thắc mắc", err);
         }
     }
 
-    // Mở và đóng modal
     const openModal = (type) => {
         setModalType(type);
     };
@@ -80,16 +77,11 @@ const Inquiry = () => {
 
     return (
         <div className="flex flex-row w-full min-h-screen bg-[#F4F7FE]">
-            {/* Sidebar */}
             <Sidebar />
             {/* Nội dung chính */}
             <div className="w-full md:w-4/5 md:ml-52 py-6 px-6 overflow-y-auto">
                 <h1 className="text-2xl font-semibold text-[#333]">Quản lý thắc mắc</h1>
-
-                {/* Tìm kiếm và lọc */}
                 <SearchBar onSearch={handleSearch} initialQuery={query} initialStatus={status} />
-
-                {/* Inquiry Table */}
                 <SupportTable inquiries={inquiries} openModal={openModal} setSelectedInquiry={setSelectedInquiry} />
             </div>
 
