@@ -16,7 +16,7 @@ import { formatedDate } from '@/lib/utils'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import userStore from '@/store/userStore'
-
+// code tương tự như post (khác cách hiển thị 1 xíu)
 const VideoCard = ({post, onReact, onComment, onShare, onDelete, onEdit}) => {
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false)
   const [showComments, setShowComments] = useState(false)
@@ -104,7 +104,7 @@ const [reaction,setReaction] = useState(null)
   const handleReactionDetail =()=>{
     setReactDetailOpen(true);
   }
-  const InteractInfo = ({className}) =>{
+  const InteractInfo = ({className}) =>{  //dòng thể hiện các thông tin như số lượt react, số lượt cmt, số lượt chia sẻ
     return(
       <div className={`flex ml-2 text-gray-500 ${className}`}>
             <Button
@@ -152,7 +152,7 @@ const [reaction,setReaction] = useState(null)
           </div>
 )}
 
-  const ReactionChosser = () =>{
+  const ReactionChosser = () =>{  //bảng chọn reaction
     return(
       <div className={"absolute bottom-10 bg-white flex shadow gap-1 transition-all opacity-100 scale-100 translate-y-0 rounded-2xl"}
             onMouseEnter={()=>setIsChoosing(true)}  //đang chọn
@@ -197,7 +197,7 @@ const [reaction,setReaction] = useState(null)
       </div>
     )
   }
-  const ReactionDetail = () => {
+  const ReactionDetail = () => {  //bảng chi tiết những người dùng đã react, phân loại theo cảm xúc
     return(
       <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-80 z-50">
           <div className="bg-white p-6 h-96 rounded-lg shadow-lg flex flex-col">
@@ -275,7 +275,7 @@ const [reaction,setReaction] = useState(null)
     </div>
     )
   }
-  const InteractButton = () =>{
+  const InteractButton = () =>{ // các nút react, cmt, share
     return(
       <div className="flex">
             <Button

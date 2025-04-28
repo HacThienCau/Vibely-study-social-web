@@ -13,9 +13,10 @@ const StorySection = () => {
   const containerRef = useRef();
   const {stories, fetchStories, handleReactStory, handleDeleteStory} = usePostStore()
   useEffect(()=>{
-    fetchStories()
+    fetchStories()  //tải các story
   },[fetchStories])
  
+  // các hàm hỗ trợ lướt ngang cho các story
   useEffect(() => {
     const container = containerRef.current;
     if (container) {
@@ -60,7 +61,8 @@ const StorySection = () => {
               containerRef.current?.offsetWidth,
           }}
         >
-          <StoryCard isAddStory={true}/>
+          <StoryCard isAddStory={true}/>  {/*Card Thêm tin */}
+           {/*Danh sách các story*/}
           {stories?.map((story) => (
             <StoryCard story={story} key={story._id} 
             onReact={async(reactType) => {
@@ -73,7 +75,7 @@ const StorySection = () => {
             }} />
           ))}
         </motion.div>
-        {/* left side scrollbutton  */}
+        {/*Nút scroll trái  */}
         {scrollPosition > 0 && (
           <Button
             size="icon"
@@ -85,7 +87,7 @@ const StorySection = () => {
           </Button>
         )}
 
-        {/* right side scrollbutton  */}
+        {/*Nút scroll phải */}
 
         {scrollPosition < maxScroll && (
           <Button

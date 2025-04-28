@@ -8,6 +8,7 @@ import userStore from '@/store/userStore'
 
 const ShowStoryPreview = ({file,fileType,onClose,onPost,isNewStory,userStory,avatar,isLoading,onReact,reaction, reactions, onDelete}) => {
     const userPlaceholder = userStory?.username?.split(" ").map((name) => name[0]).join(""); //tên người dùng viết tắt
+    //xóa tin (dành cho người đăng tin)
     const handleDeleteStory = () =>{
         onDelete();
         onClose();
@@ -65,6 +66,7 @@ const ShowStoryPreview = ({file,fileType,onClose,onPost,isNewStory,userStory,ava
         {/*tym*/}
         {!isNewStory && (
             <div>
+                {/*Chỉ người đăng tin mới xem được số lượt tim và có thể xóa story*/}
                 {user._id===userStory._id && (
                     <div>
                         <div className='absolute bottom-20 left-5 transform flex gap-5'>
