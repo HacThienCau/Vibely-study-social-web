@@ -33,12 +33,9 @@ export const createQuiz = async (quizData) => {
 // Update quiz
 export const updateQuiz = async (quizId, quizData) => {
     try {
-        console.log('Updating quiz with data:', quizData); // Debug log
         const response = await axiosInstance.put(`/admin/quiz/${quizId}`, quizData);
-        console.log('Update response from server:', response); // Debug log
         return response.data;
     } catch (error) {
-        console.error('Error in updateQuiz:', error.response || error); // Debug log
         throw error;
     }
 };

@@ -1,10 +1,11 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
-import Sidebar from '../../components/sidebar/Sidebar'
-import ProfilePictureSection from '../../components/account/ProfilePictureSection'
-import ProfileDetailsSection from '../../components/account/ProfileDetailsSection'
 import { getAdminById, updateAdminInfo } from '@/service/accountAdmin.service'
+import { useEffect, useState } from 'react'
+import { toast } from 'react-hot-toast'
+import ProfileDetailsSection from '../../components/account/ProfileDetailsSection'
+import ProfilePictureSection from '../../components/account/ProfilePictureSection'
+import Sidebar from '../../components/sidebar/Sidebar'
 
 const AccountPage = () => {
     const [userData, setUserData] = useState(null);
@@ -59,31 +60,27 @@ const AccountPage = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await updateAdminInfo(adminId, userData);
-            alert("Cập nhật thành công!");
+            const updatedData = await updateAdminInfo(adminId, userData);
+            toast.success("Cập nhật thành công!");
 
-            // Gọi lại API để cập nhật dữ liệu mới nhất
-            const updatedData = await getAdminById(adminId);
-            setUserData(updatedData);
+            setUserData(updatedData.data);
             localStorage.setItem("adminData", JSON.stringify(updatedData));
         } catch (error) {
-            alert("Cập nhật thất bại!");
-            console.error(error);
+            toast.error("Lỗi khi cập nhật thông tin admin!");
         }
     };
 
 
     // Hàm xử lý khi cập nhật ảnh
-    const handlePictureUpdate = async (file) => {
-        const imageUrl = URL.createObjectURL(file);
-        setUserData(prev => ({ ...prev, avatar: imageUrl }));
-
+    const handlePictureUpdate = async (imageUrl) => {
         try {
-            await updateAdminInfo(adminId, { ...userData, avatar: imageUrl });
-            alert("Cập nhật ảnh thành công!");
+            const updatedUser = { ...userData, profilePicture: imageUrl };
+            setUserData(updatedUser);
+    
+            await updateAdminInfo(adminId, updatedUser);
+            toast.success("Cập nhật ảnh thành công!");
         } catch (error) {
-            alert("Lỗi khi cập nhật ảnh!");
-            console.error(error);
+            toast.error("Lỗi khi cập nhật ảnh!");
         }
     };
 

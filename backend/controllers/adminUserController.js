@@ -91,3 +91,43 @@ exports.searchUsers = async (req, res) => {
         });
     }
 }; 
+
+// Lấy danh sách bạn chung
+exports.getAllFriends = async (req, res) => {
+    try {
+        const { userId } = req.params;
+
+        const user = await User.findById(userId)
+        .select('followers followings')
+        .populate('followings', 'username profilePicture email followerCount followingCount')
+        .populate('followers','username profilePicture email followerCount followingCount')
+
+        if(!user){
+            res.status(404).json({
+                success: false,
+                message: 'Người dùng không tồn tại'
+            })
+        }
+
+        // Tạo một tập hợp id người dùng mà người đăng nhập đang theo dõi
+        const followingUserId = new Set(user.followings.map(user => user._id.toString()))
+
+        // Lọc người theo dõi của người đăng nhập để chỉ lấy những người được theo dõi bởi người đăng nhập
+        const mutualFriends = user.followers.filter(follower => 
+            followingUserId.has(follower._id.toString())
+        )
+
+        res.status(200).json({
+            success: true,
+            message: 'Lấy danh sách bạn chung thành công',
+            data: mutualFriends
+        })
+
+   } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Lỗi khi lấy danh sách bạn chung',
+            error: error.message
+        })
+   }
+}
