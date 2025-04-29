@@ -13,7 +13,7 @@ const updateAdminPassword = async (req, res) => {
         }
 
         // Lấy token từ cookies
-        const token = req.cookies.auth_token;
+        const token = req.cookies.admin_token;
         if (!token) {
             return response(res, 401, "Bạn cần đăng nhập để thực hiện thao tác này");
         }
