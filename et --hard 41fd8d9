@@ -1,0 +1,152 @@
+[33mc54b200[m[33m ([m[1;36mHEAD -> [m[1;32mphuongahihi[m[33m, [m[1;31morigin/phuongahihi[m[33m)[m Merge branch 'phuongahihi' of https://github.com/vonhatphuongahihi/Vibely-study-social-web into phuongahihi
+[33mef9eb76[m fix
+[33m34f21e8[m Merge branch 'main' into phuongahihi
+[33m41fd8d9[m clean code phuong
+[33me8c4c48[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Merge pull request #177 from vonhatphuongahihi/giaminh
+[33m8b55df4[m fix admin
+[33mf073b58[m Merge pull request #176 from vonhatphuongahihi/giaminh
+[33m1fbc16f[m clean code & fix friends
+[33meaf1964[m Merge pull request #175 from vonhatphuongahihi/huonguyen
+[33m628121c[m clean code video,story
+[33m7a55b96[m Merge pull request #174 from vonhatphuongahihi/huonguyen
+[33md81f327[m clean code FE post
+[33mfac273d[m sao m xoa ham cua t?
+[33mf5d7b5b[m Merge pull request #173 from vonhatphuongahihi/giaminh
+[33m87c631f[m Merge branch 'main' into giaminh
+[33m73afe8e[m fix admin document & inquiry
+[33m8257c87[m Merge pull request #172 from vonhatphuongahihi/phuongahihi
+[33m153b252[m add quizAdmin: add, edit, update
+[33m093403b[m Merge pull request #171 from vonhatphuongahihi/phuongahihi
+[33m6ba1b37[m fix admin
+[33mb2cc443[m Update README.md
+[33mfa2df84[m Update README.md
+[33m4230a01[m Merge pull request #170 from vonhatphuongahihi/phuongahihi
+[33m08f6a87[m README
+[33mb4a2e33[m Merge pull request #169 from vonhatphuongahihi/phuongahihi
+[33m95eb512[m stupid bugs of me, stupidddddd
+[33m2010d18[m Merge pull request #168 from vonhatphuongahihi/phuongahihi
+[33m9c1532e[m fix bugs
+[33m039c91d[m Merge pull request #167 from vonhatphuongahihi/phuongahihi
+[33m9bb0875[m buid ci cd
+[33m18a3084[m Merge pull request #166 from vonhatphuongahihi/huonguyen
+[33md41e80c[m[33m ([m[1;31morigin/huonguyen[m[33m)[m fix
+[33m366ad5d[m fix LeftSideBar appearance
+[33mdc959f1[m Merge pull request #165 from vonhatphuongahihi/phuongahihi
+[33mab9ead1[m trigger CI/CD
+[33md13f893[m Merge pull request #164 from vonhatphuongahihi/giaminh
+[33mc4b02f9[m[33m ([m[1;31morigin/giaminh[m[33m)[m add share achievements
+[33m7a24acf[m Merge branch 'main' of https://github.com/vonhatphuongahihi/Vibely-study-social-web into phuongahihi
+[33m2d15520[m Merge branch 'phuongahihi' of https://github.com/vonhatphuongahihi/Vibely-study-social-web into phuongahihi
+[33md175a52[m fix
+[33mc56c369[m Merge pull request #163 from vonhatphuongahihi/phuongahihi
+[33m4046614[m Merge branch 'main' into phuongahihi
+[33m41a8391[m fix conflict
+[33m7460225[m add messenger
+[33m33935f7[m Merge pull request #162 from vonhatphuongahihi/huonguyen
+[33m271cf12[m fix responsive Messenger
+[33mf6ac338[m Merge pull request #160 from vonhatphuongahihi/phuongahihi
+[33m12c6804[m Merge branch 'main' into phuongahihi
+[33m15ac4ba[m Merge pull request #161 from vonhatphuongahihi/giaminh
+[33m95a444c[m fix performance test
+[33m42f44cb[m update logic socket
+[33m403ff1a[m Merge pull request #159 from vonhatphuongahihi/phuongahihi
+[33mf0e93e5[m add take capture achievements
+[33m6f1aee8[m Merge pull request #158 from vonhatphuongahihi/phuongahihi
+[33m9103c57[m add constraint login user
+[33mca69162[m Merge pull request #157 from vonhatphuongahihi/huonguyen
+[33m237dbe3[m responsive Messenger
+[33m69333f8[m Merge pull request #156 from vonhatphuongahihi/phuongahihi
+[33m89b2328[m add achievement tree stage to do list
+[33m6efe818[m responsive AboutUs
+[33m263ee29[m responsive Support
+[33m61cea07[m responsive Profile, ChangePassword, Support, FAQ
+[33mb3c2c21[m responsive Quiz
+[33m2e5b385[m responsive FriendList, VideoFeed
+[33m4b16660[m responsive HomePage, Notification
+[33m8d99ed7[m Merge pull request #155 from vonhatphuongahihi/huonguyen
+[33m58580c3[m responsive adminSetting, adminAccount
+[33m272bade[m responsive adminSupport
+[33mae7cd49[m responsive adminDocument
+[33mc4f11c0[m Merge pull request #154 from vonhatphuongahihi/phuongahihi
+[33m55250e5[m add front vibely plant page 3
+[33mfd5a61b[m responsive adminPost
+[33m7b447a3[m Merge pull request #153 from vonhatphuongahihi/phuongahihi
+[33md562f3f[m add vibely plant pag 2 + model
+[33me91e383[m responsive login,sidebar,dashboard,user
+[33m3669dd9[m end fix features
+[33m505e8ce[m Merge pull request #152 from vonhatphuongahihi/phuongahihi
+[33m76f3671[m Merge branch 'main' of https://github.com/vonhatphuongahihi/Vibely-study-social-web into phuongahihi
+[33m4ec4182[m add study plant page 1
+[33m821af49[m Merge pull request #151 from vonhatphuongahihi/huonguyen
+[33m4e726e3[m Merge branch 'main' into huonguyen
+[33m890a425[m add createPost into UserProfile
+[33m19c0188[m fix
+[33m7904599[m fix video-feed
+[33m2a5c170[m Merge pull request #150 from vonhatphuongahihi/thuyduong
+[33m87154f7[m[33m ([m[1;31morigin/thuyduong[m[33m)[m Fix tab video from user profile
+[33m98a368f[m update totalComment
+[33me461e87[m Merge pull request #149 from vonhatphuongahihi/phuongahihi
+[33m9e36faa[m add READEME
+[33me20350c[m Delete frontend-admin/.env
+[33m2b39d7a[m Delete frontend-user/.env
+[33m28de502[m Merge pull request #148 from vonhatphuongahihi/phuongahihi
+[33mfadd395[m finallllllllllllll
+[33m6ba78a7[m Merge pull request #147 from vonhatphuongahihi/phuongahihi
+[33m020575d[m build vercel last
+[33m84e1202[m Merge pull request #146 from vonhatphuongahihi/phuongahihi
+[33m4fcf61d[m fix favicon
+[33m5396a5e[m Merge pull request #145 from vonhatphuongahihi/phuongahihi
+[33m917e54d[m fix front quiz
+[33m9d9f9e7[m Merge pull request #144 from vonhatphuongahihi/phuongahihi
+[33madc65e7[m fix cors
+[33m54477f8[m Merge pull request #143 from vonhatphuongahihi/giaminh
+[33m4e5a19f[m fix dashboard admin
+[33m4410b69[m Merge pull request #142 from vonhatphuongahihi/giaminh
+[33mbfeeded[m fix admin document 2
+[33mf34ef76[m Merge pull request #141 from vonhatphuongahihi/phuongahihi
+[33mb4b815c[m fix token
+[33m9ef02bd[m add cors final
+[33mcdd3ad4[m Merge pull request #140 from vonhatphuongahihi/phuongahihi
+[33m30ed694[m add cors
+[33m06ab17a[m Merge pull request #139 from vonhatphuongahihi/phuongahihi
+[33m44027fd[m fix
+[33m9c9c53a[m phuong
+[33m7a13893[m Merge pull request #138 from vonhatphuongahihi/giaminh
+[33mc99c67b[m fix ui
+[33mfcbed9b[m Merge pull request #137 from vonhatphuongahihi/phuongahihi
+[33mc03eeb7[m fix
+[33m2ee8045[m Merge pull request #136 from vonhatphuongahihi/phuongahihi
+[33m7eff445[m fix before build docker
+[33m6726855[m Merge pull request #135 from vonhatphuongahihi/phuongahihi
+[33mbbb66b7[m fix
+[33m4ef3a12[m add video call
+[33m7fa709b[m Merge pull request #134 from vonhatphuongahihi/giaminh
+[33ma65f116[m responsive header
+[33mcf891d9[m Delete backend/.env
+[33mf4da6d0[m Merge pull request #133 from vonhatphuongahihi/phuongahihi
+[33m2990b65[m add change color chat
+[33m66ee181[m Merge pull request #132 from vonhatphuongahihi/phuongahihi
+[33mca7b602[m add delete chat and set nickname
+[33mc34744a[m Merge pull request #131 from vonhatphuongahihi/huonguyen
+[33m6fa2e21[m test user ok
+[33m80799ba[m Merge pull request #130 from vonhatphuongahihi/phuongahihi
+[33mdf51680[m Merge branch 'main' into phuongahihi
+[33md036243[m chảng port to 8081
+[33m1ef2bdf[m test quiz, schedule oke
+[33m1a580ff[m test message,forgotP oke
+[33md83d358[m Merge pull request #129 from vonhatphuongahihi/huonguyen
+[33m882e97f[m Merge branch 'main' into huonguyen
+[33mbdd8134[m test chatbot, conversation, document ok
+[33m37689d2[m index default
+[33m2254dfa[m test auth+post ok
+[33m98101a2[m Merge pull request #128 from vonhatphuongahihi/giaminh
+[33m7aa6525[m fix messenger
+[33mbec77a8[m Merge pull request #127 from vonhatphuongahihi/thuyduong
+[33m33377fe[m Login Admin
+[33m718746d[m Merge pull request #126 from vonhatphuongahihi/thuyduong
+[33m4eaea08[m Fix UI UserProfile
+[33ma4d368c[m Merge pull request #125 from vonhatphuongahihi/giaminh
+[33mb30513e[m fix swagger
+[33m1e1ca38[m Create .env
+[33mc10039e[m Create .env
+[33m64b1ae5[m Merge pull request #124 from vonhatphuo
