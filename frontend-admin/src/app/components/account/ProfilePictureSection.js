@@ -11,23 +11,26 @@ const ProfilePictureSection = ({ userData, onPictureUpdate }) => {
         fileInputRef.current.click();
     };
 
-    const handleFileChange = async (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
+const handleFileChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
 
-        try {
-            const res = await uploadProfilePicture(file);
-
-            const imageUrl = res?.data?.profilePicture;
-            if (imageUrl) {
-                onPictureUpdate(imageUrl);
-            } else {
-                alert("API không trả về URL ảnh hợp lệ!");
-            }
-        } catch (error) {
-            alert("Có lỗi khi tải ảnh lên!");
+    try {
+        const res = await uploadProfilePicture(file);
+        
+        // Nếu response là object chứa data.profilePicture
+        const imageUrl = res?.data?.profilePicture || res?.profilePicture;
+        
+        if (imageUrl) {
+            onPictureUpdate(imageUrl);
+        } else {
+            alert("API không trả về URL ảnh hợp lệ!");
         }
-    };
+    } catch (error) {
+        alert("Có lỗi khi tải ảnh lên!");
+    }
+};
+
 
 
 

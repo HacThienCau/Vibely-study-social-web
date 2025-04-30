@@ -7,7 +7,10 @@ const {
 
 const router = express.Router();
 
+// Route lấy tất cả các quiz
 router.get("/", authMiddleware, getQuizzes);
+
+// Route lấy quiz theo ID
 router.get("/:id", authMiddleware, getQuizById);
 
 module.exports = router;

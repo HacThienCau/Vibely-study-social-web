@@ -1,11 +1,16 @@
 from fastapi import APIRouter, Depends, HTTPException, Request, FastAPI
 from fastapi.responses import StreamingResponse
 from typing import AsyncGenerator
-from backend.models.chat import Chat
+from models.chat import Chat, HistoryItem, Part, Role
 from datetime import datetime
 from pymongo import MongoClient
 from bson import ObjectId
 import time 
+import sys
+import os
+
+# Thêm thư mục gốc vào sys.path
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 from llm_integration.openai_client import get_llmTitle
 from core.ai.ai_service import get_answer_stream
@@ -13,11 +18,15 @@ from llama_index.core import PromptTemplate
 import yaml
 import warnings
 import csv
-import os
 warnings.filterwarnings("ignore", category=ResourceWarning)
 
 # Load YAML configuration file
-def load_config(config_file="../configs/api_keys.yaml"):
+def load_config(config_file=None):
+    if config_file is None:
+        # Sử dụng đường dẫn tương đối từ thư mục gốc của dự án
+        base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+        config_file = os.path.join(base_dir, "configs", "api_key.yaml")
+    
     with open(config_file, "r") as file:
         return yaml.safe_load(file)
 
@@ -25,8 +34,8 @@ def load_config(config_file="../configs/api_keys.yaml"):
 config = load_config()
 url = config["mongodb"]["url"]
 client = MongoClient(url, connect=False)
-db = client["StudyWeb"]  # Changed database name
-chat_collection = db["chats"]
+db = client["StudyWeb"]
+chat_collection = db["chatbots"]  # Đổi tên collection thành chatbots
 user_chats_collection = db["userchats"]
 
 router = APIRouter()
@@ -74,18 +83,32 @@ async def create_chat_stream(request: Request):
         
         gpt_response = "".join(gpt_response_parts)
 
-    new_chat = {
-        "user": user_id,
-        "history": [{"role": "user", "parts": [{"text": question}]},
-                   {"role": "model", "parts": [{"text": gpt_response}]},],
-        "created_at": datetime.utcnow(),
-        "updated_at": datetime.utcnow(),
-    }
-    result = chat_collection.insert_one(new_chat)
+    # Tạo history items với _id
+    user_message = HistoryItem(
+        role=Role.USER,
+        parts=[Part(text=question, _id=str(ObjectId()))],
+        _id=str(ObjectId())
+    )
+    
+    model_message = HistoryItem(
+        role=Role.MODEL,
+        parts=[Part(text=gpt_response, _id=str(ObjectId()))],
+        _id=str(ObjectId())
+    )
+
+    new_chat = Chat(
+        user=user_id,
+        history=[user_message, model_message],
+        created_at=datetime.utcnow(),
+        updated_at=datetime.utcnow(),
+        __v=0
+    )
+
+    result = chat_collection.insert_one(new_chat.dict(by_alias=True))
     chat_id = str(result.inserted_id)
     
     # Generate a title for the chat using GPT
-    title_prompt = f"học viên: {question} trợ giảng: {gpt_response}"  # Changed from khách hàng to học viên
+    title_prompt = f"học viên: {question} trợ giảng: {gpt_response}"
     title = await generate_gpt_response(title_prompt)
     print(title)
 
@@ -140,21 +163,39 @@ async def add_question_stream(chat_id: str, request: Request):
 
         print("final answer: " + gpt_response)
         if not add:
-            new_items = [
-                {"role": "user", "parts": [{"text": question}]},
-                {"role": "model", "parts": [{"text": gpt_response}]},
-            ]
+            # Tạo history items với _id
+            user_message = HistoryItem(
+                role=Role.USER,
+                parts=[Part(text=question, _id=str(ObjectId()))],
+                _id=str(ObjectId())
+            )
+            
+            model_message = HistoryItem(
+                role=Role.MODEL,
+                parts=[Part(text=gpt_response, _id=str(ObjectId()))],
+                _id=str(ObjectId())
+            )
+
             result = chat_collection.update_one(
                 {"_id": ObjectId(chat_id), "user": user_id},
-                {"$push": {"history": {"$each": new_items}}, "$set": {"updated_at": datetime.utcnow()}},
+                {
+                    "$push": {"history": {"$each": [user_message.dict(), model_message.dict()]}},
+                    "$set": {"updated_at": datetime.utcnow()}
+                },
             )
         else:
-            new_items = [
-                {"role": "model", "parts": [{"text": gpt_response}]},
-            ]
+            model_message = HistoryItem(
+                role=Role.MODEL,
+                parts=[Part(text=gpt_response, _id=str(ObjectId()))],
+                _id=str(ObjectId())
+            )
+            
             result = chat_collection.update_one(
                 {"_id": ObjectId(chat_id), "user": user_id},
-                {"$push": {"history": {"$each": new_items}}, "$set": {"updated_at": datetime.utcnow()}},
+                {
+                    "$push": {"history": model_message.dict()},
+                    "$set": {"updated_at": datetime.utcnow()}
+                },
             )
 
         if result.matched_count == 0:

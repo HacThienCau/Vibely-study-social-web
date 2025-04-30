@@ -3,19 +3,39 @@ const authMiddleware = require("../middleware/authMiddleware");
 const router = express.Router();
 const {
     getFilteredDocuments,
+    createDocument,
     getDocumentById,
+    updateDocument,
+    deleteDocument,
     getLevels,
     getSubjectsByLevel,
+    createLevel,
+    createSubject,
     saveDocument
 } = require("../controllers/documentController");
 
-router.get("/levels", authMiddleware, getLevels);
-router.get("/subjects/:levelId", authMiddleware, getSubjectsByLevel);
+// Route lấy danh sách tài liệu theo level
+router.get("/levels", getLevels);
 
+// Route lấy danh sách môn học theo levelId
+router.get("/subjects/:levelId", getSubjectsByLevel);
+
+// Route tạo mới level và subject
+router.post("/levels", authMiddleware, createLevel);
+router.post("/subjects", authMiddleware, createSubject);
+
+// Route lưu tài liệu
 router.post("/save", authMiddleware, saveDocument);
 
-router.get("/", authMiddleware, getFilteredDocuments);
+// Route lấy danh sách tài liệu, tạo mới tài liệu, cập nhật tài liệu, xóa tài liệu
+router.route("/")
+    .get(authMiddleware, getFilteredDocuments)
+    .post(authMiddleware, createDocument);
 
-router.get("/:id", authMiddleware, getDocumentById);
+// Route lấy tài liệu theo ID, cập nhật tài liệu, xóa tài liệu
+router.route("/:id")
+    .get(authMiddleware, getDocumentById)
+    .put(authMiddleware, updateDocument)
+    .delete(authMiddleware, deleteDocument);
 
 module.exports = router;

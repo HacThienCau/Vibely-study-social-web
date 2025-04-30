@@ -89,7 +89,7 @@ app.use('/conversation', conversationRoute);
 app.use('/message', messageRoute);
 app.use('/users', userRoute);
 app.use('/schedules', scheduleRoute);
-app.use('/chats', chatbotRoute);
+app.use('/chatbot', chatbotRoute);
 app.use("/documents", documentRoute);
 app.use('/inquiry', inquiryRoute);
 app.use('/quizzes', quizRoute);
@@ -106,7 +106,7 @@ app.use('/learning-trees', learningTreeRoute);
 app.use('/learning-goals', learningGoalRoute);
 
 
-// ✅ API lấy danh ngôn ngẫu nhiên
+// API lấy danh ngôn ngẫu nhiên
 app.get('/quotations/random', async (req, res) => {
     try {
         const count = await Quotation.countDocuments();
@@ -121,10 +121,10 @@ app.get('/quotations/random', async (req, res) => {
     }
 });
 
-// Error handling middleware
+// Quản lý lỗi
 app.use((err, req, res, next) => {
     console.error(err.stack);
-    res.status(500).json({ message: 'Something went wrong!' });
+    res.status(500).json({ message: 'Lỗi' });
 });
 
 const PORT = process.env.PORT || 8081;
@@ -141,11 +141,7 @@ const io = new Server(server, {
             "http://localhost:3002",
             "http://localhost:3003",
             "https://vibely-study-social-web.onrender.com",
-            "http://54.79.253.210:3001",
-            "http://54.79.253.210:3000",
-            "http://54.79.253.210:3002",
-            "http://54.79.253.210:3003",
-            "https://vibely-study-social-web.vercel.app",
+            "https://vibely-study-social-web-user.vercel.app",
             "https://vibelyadmin.netlify.app",
             "https://vibelyuser.netlify.app",
             "https://vibely-study-social-web-admin.vercel.app",
@@ -176,40 +172,30 @@ const getUser = (userId) => {
 };
 
 io.on("connection", (socket) => {
-    console.log(`⚡ Người dùng kết nối: ${socket.id}`);
-
     socket.on("addUser", (userId) => {
-        console.log(`👤 Thêm người dùng: ${userId}`);
         // Xóa người dùng cũ nếu đã tồn tại
         users = users.filter(user => user.userId !== userId);
         // Thêm người dùng mới
         addUser(userId, socket.id);
-        console.log(`📋 Danh sách người dùng online:`, users);
         // Gửi danh sách người dùng online cho tất cả các client
         io.emit("getUsers", users);
     });
 
     // Xử lý yêu cầu cập nhật danh sách online users
     socket.on("requestOnlineUsers", () => {
-        console.log(`📋 Yêu cầu cập nhật danh sách online users từ: ${socket.id}`);
         // Gửi danh sách người dùng online cho client yêu cầu
         socket.emit("getUsers", users);
     });
 
     socket.on("sendMessage", ({ senderId, receiverId, text }) => {
-        console.log(`📨 Gửi tin nhắn từ ${senderId} đến ${receiverId}: ${text}`);
         const user = getUser(receiverId);
         if (user) {
             io.to(user.socketId).emit("getMessage", { senderId, text });
-        } else {
-            console.log(`❌ Người nhận ${receiverId} không online`);
         }
     });
 
     socket.on("disconnect", () => {
-        console.log(`❌ Người dùng ngắt kết nối: ${socket.id}`);
         removeUser(socket.id);
-        console.log(`📋 Danh sách người dùng online sau khi ngắt kết nối:`, users);
         io.emit("getUsers", users);
     });
 });

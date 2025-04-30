@@ -1,9 +1,16 @@
 from llama_index.vector_stores.weaviate import WeaviateVectorStore
 import weaviate
 import yaml
+import os
 
-# Tải file yaml
-def load_config(config_file="../configs/api_keys.yaml"):
+# Load file yaml
+def load_config(config_file=None):
+    if config_file is None:
+        # Lấy đường dẫn đến thư mục gốc của dự án (chatbot-backend)
+        base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        config_file = os.path.join(base_dir, "configs", "api_key.yaml")
+    
+    # Đọc file yaml
     with open(config_file, "r") as file:
         return yaml.safe_load(file)
 

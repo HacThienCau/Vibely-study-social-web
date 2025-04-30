@@ -4,16 +4,16 @@ const { loginAdmin, logoutAdmin, checkAuth } = require("../controllers/adminAuth
 const { updateAdminPassword } = require("../controllers/adminUpdatePassword");
 const adminAuthMiddleware = require("../middleware/adminAuthMiddleware");
 
-// Đăng nhập admin
+// Route đăng nhập admin
 router.post("/login", loginAdmin);
 
-// Kiểm tra xác thực admin
+// Route kiểm tra xác thực admin
 router.get("/check-auth", adminAuthMiddleware, checkAuth);
 
-// Đăng xuất admin
+// Route đăng xuất admin
 router.post("/logout", logoutAdmin);
 
-// Cập nhật mật khẩu admin
+// Route cập nhật mật khẩu admin
 router.put("/update-password", adminAuthMiddleware, updateAdminPassword);
 
 module.exports = router;

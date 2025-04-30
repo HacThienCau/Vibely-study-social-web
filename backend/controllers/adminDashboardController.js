@@ -42,7 +42,7 @@ const groupByTime = async (Model, timeUnit) => {
     ]);
 };
 
-// API lấy dữ liệu tổng quan
+// Lấy dữ liệu tổng quan
 const getAdminDashboard = async (req, res) => {
     try {
         const totalUsers = await User.countDocuments();
@@ -72,7 +72,7 @@ const getAdminDashboard = async (req, res) => {
         return res.status(500).json({ error: error.message });
     }
 };
-// API lấy dữ liệu thống kê theo thời gian
+// Lấy dữ liệu thống kê theo thời gian
 const getDashboardStats = async (req, res) => {
     try {
         const { timeUnit = "month" } = req.query;

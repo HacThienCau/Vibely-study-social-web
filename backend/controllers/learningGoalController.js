@@ -128,7 +128,6 @@ const toggleGoalCompletion = async (req, res) => {
 
         // Nếu mục tiêu được hoàn thành, cập nhật cây và kiểm tra achievement
         if (goal.is_completed) {
-            console.log('Goal completed, checking achievements...'); // Debug log
 
             // Đếm tổng số mục tiêu đã hoàn thành
             const completedCount = await LearningGoal.countDocuments({
@@ -136,14 +135,11 @@ const toggleGoalCompletion = async (req, res) => {
                 is_completed: true
             });
 
-            console.log('Completed goals count:', completedCount); // Debug log
-
             // Cập nhật cây
             const tree = await LearningTree.findOne({ user_id: req.user.user_id });
             if (tree) {
                 tree.completed_goals_count = completedCount;
                 await tree.save();
-                console.log('Tree updated with growth stage:', tree.growth_stage); // Debug log
             }
 
             // Kiểm tra và tạo achievement Rookie ngay khi hoàn thành 1 mục tiêu
@@ -161,7 +157,6 @@ const toggleGoalCompletion = async (req, res) => {
                     unlocked_at: Date.now()
                 });
                 newAchievements.push(rookieAchievement);
-                console.log('Created Rookie achievement:', rookieAchievement); // Debug log
             }
 
             // Kiểm tra các achievement khác
@@ -174,7 +169,6 @@ const toggleGoalCompletion = async (req, res) => {
                 details: ACHIEVEMENT_DETAILS[achievement.type]
             }));
 
-            console.log('New achievements with details:', achievementsWithDetails); // Debug log
 
             res.json({
                 goal,
@@ -189,11 +183,11 @@ const toggleGoalCompletion = async (req, res) => {
         }
 
     } catch (error) {
-        console.error('Error in toggleGoalCompletion:', error); // Debug log
         res.status(400).json({ message: error.message });
     }
 };
 
+// Trạng thái hiển thị của mục tiêu
 const toggleGoalVisibility = async (req, res) => {
     try {
         const goal = await LearningGoal.findById(req.params.id);

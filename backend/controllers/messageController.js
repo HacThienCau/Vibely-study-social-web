@@ -60,7 +60,7 @@ const getUnreadMessageCount = async (req, res) => {
         const { userId } = req.params;
         const messages = await Message.find({
             readBy: { $nin: [userId] },
-            sender: { $ne: userId } // Không đếm tin nhắn do chính user gửi
+            sender: { $ne: userId }
         });
 
         // Nhóm số tin nhắn chưa đọc theo conversationId

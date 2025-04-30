@@ -1,5 +1,5 @@
 from odmantic import Model
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, ConfigDict
 from typing import List, Optional
 from datetime import datetime
 
@@ -11,6 +11,8 @@ class CalendarEvent(BaseModel):
 
 # Schema Pydantic để validate request
 class UserSchema(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    
     username: str
     email: EmailStr
     gender: str
@@ -28,15 +30,10 @@ class UserSchema(BaseModel):
     following_count: int = 0
     bio: Optional[str] = None
     calendar_events: List[CalendarEvent] = []
-    read_documents: List[str] = []
-    purchased_documents: List[str] = []
     saved_documents: List[str] = []
     role: str = "user"
     created_at: datetime = datetime.utcnow()
     updated_at: datetime = datetime.utcnow()
-
-    class Config:
-        orm_mode = True
 
 # Model ODMantic để lưu vào MongoDB
 class User(UserSchema, Model):

@@ -10,20 +10,28 @@ const QuizCard = ({ quiz, onDelete }) => {
     const router = useRouter();
     const [showDropdown, setShowDropdown] = useState(false);
 
-    // Tính toán success rate
-    const calculateSuccessRate = () => {
-        let correctQuestions = 0;
-        let totalAttempts = 0;
+    // Kiểm tra nếu quiz không tồn tại
+    if (!quiz) {
+        return null;
+    }
 
-        quiz?.quizQuestions?.forEach((question) => {
+    // Tính toán success rate với kiểm tra null/undefined
+    const calculateSuccessRate = () => {
+    let correctQuestions = 0;
+    let totalAttempts = 0;
+
+    const questions = quiz?.quizQuestions;
+    if (Array.isArray(questions)) {
+        questions.forEach((question) => {
             totalAttempts += question.statistics?.totalAttempts || 0;
             correctQuestions += question.statistics?.correctAttempts || 0;
         });
+    }
 
-        return totalAttempts > 0
-            ? Math.ceil((correctQuestions / totalAttempts) * 100)
-            : 0;
-    };
+    return totalAttempts > 0
+        ? Math.ceil((correctQuestions / totalAttempts) * 100)
+        : 0;
+};
 
     // Xử lý click vào nút edit
     const handleEdit = (e) => {

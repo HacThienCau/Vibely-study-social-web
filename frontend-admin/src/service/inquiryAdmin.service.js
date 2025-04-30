@@ -14,6 +14,7 @@ export const getInquiries = async (query = '', status = '') => {
     }
 };
 
+
 // Cập nhật thắc mắc
 export const updateInquiry = async (inquiryId, data) => {
     try {
@@ -26,6 +27,7 @@ export const updateInquiry = async (inquiryId, data) => {
         throw error;
     }
 };
+
 
 // Xóa thắc mắc
 export const deleteInquiry = async (inquiryId) => {

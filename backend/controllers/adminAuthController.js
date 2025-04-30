@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const Admin = require("../model/Admin");
 const response = require("../utils/responseHandler");
 
+// Đăng nhập cho admin
 const loginAdmin = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -36,7 +37,7 @@ const loginAdmin = async (req, res) => {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             sameSite: "Strict",
-            maxAge: 24 * 60 * 60 * 1000 // 24 hours
+            maxAge: 24 * 60 * 60 * 1000
         });
 
         // Trả về token trong response
@@ -54,6 +55,7 @@ const loginAdmin = async (req, res) => {
     }
 };
 
+// Đăng xuất cho admin
 const logoutAdmin = (req, res) => {
     res.clearCookie("admin_token", {
         httpOnly: true,
@@ -63,6 +65,7 @@ const logoutAdmin = (req, res) => {
     return response(res, 200, "Đăng xuất thành công");
 };
 
+// Kiểm tra xác thực admin
 const checkAuth = (req, res) => {
     return response(res, 200, "Đã xác thực", {
         admin: {
