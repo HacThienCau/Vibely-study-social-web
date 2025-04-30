@@ -1,6 +1,6 @@
 const express = require('express');
 const authMiddleware = require('../middleware/authMiddleware');
-const { registerUser, loginUser, logoutUser, deleteAccount, changePassword } = require('../controllers/authController');
+const { registerUser, loginUser, logoutUser, deleteAccount, changePassword, verifyOTP, sendOTP } = require('../controllers/authController');
 const passport = require('passport');
 const {generateToken} = require('../utils/generateToken');
 const router = express.Router();
@@ -10,6 +10,12 @@ router.post('/login', loginUser);
 router.post('/change-password', authMiddleware, changePassword);
 router.get('/logout', logoutUser);
 router.delete('/deleteAccount', authMiddleware ,deleteAccount);
+
+// Route gửi OTP
+router.post('/send-otp', sendOTP);
+
+// Route xác thực OTP
+router.post('/verify-otp', verifyOTP);
 
 //Google oauth routes
 router.get('/google',passport.authenticate('google',{
