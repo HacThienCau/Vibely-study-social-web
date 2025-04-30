@@ -193,7 +193,6 @@ const GoalTreePage = () => {
     const fetchData = async () => {
         try {
             if (!token) {
-                console.log('No token found, redirecting to login');
                 router.push('/user-login');
                 return;
             }
@@ -230,7 +229,6 @@ const GoalTreePage = () => {
 
         try {
             if (!token) {
-                console.log('No token found, redirecting to login');
                 router.push('/user-login');
                 return;
             }
@@ -271,7 +269,6 @@ const GoalTreePage = () => {
     const handleToggleGoal = async (id) => {
         try {
             if (!token) {
-                console.log('No token found, redirecting to login');
                 router.push('/user-login');
                 return;
             }
@@ -316,7 +313,6 @@ const GoalTreePage = () => {
             if (!goal.is_completed) {
                 // Nếu mục tiêu chưa hoàn thành thì xóa khỏi database
                 if (!token) {
-                    console.log('No token found, redirecting to login');
                     router.push('/user-login');
                     return;
                 }

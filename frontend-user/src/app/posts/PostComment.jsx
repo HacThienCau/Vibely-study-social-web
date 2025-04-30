@@ -8,8 +8,9 @@ import { AiOutlineDelete } from "react-icons/ai";
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 
-function PostComment({ comment, onReply, onDeleteComment, onDeleteReply , likeComment }) {
-  const [showAllReplies, setShowAllReplies] = useState(false); //xem tất cả hoặc 2 cái đầu
+function PostComment({ comment, onReply, onDeleteComment, onDeleteReply, likeComment }) {
+  const [showAllReplies, setShowAllReplies] = useState(false); //xem tất cả/2 cái đầu
+
   const [showReplies, setShowReplies] = useState(false); //mở xem replies
   const [replyText, setReplyText] = useState("");
   const { user } = userStore();
@@ -58,7 +59,6 @@ function PostComment({ comment, onReply, onDeleteComment, onDeleteReply , likeCo
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-
   //like cmt
   const handleLikeComment = () =>{
     likeComment()
@@ -106,9 +106,8 @@ function PostComment({ comment, onReply, onDeleteComment, onDeleteReply , likeCo
               <Button
                 onClick={() => setDropdownOpen(!dropdownOpen)}
                 variant="ghost"
-                className={`hover:bg-gray-100 ${
-                  comment?.user?._id === user?._id ? "flex" : "hidden"
-                }`} //chủ cmt mới có option này
+                className={`hover:bg-gray-100 ${comment?.user?._id === user?._id ? "flex" : "hidden"
+                  }`} //chủ cmt mới có option này
               >
                 <MoreHorizontal className="h-4 w-4" />
               </Button>
@@ -172,8 +171,8 @@ function PostComment({ comment, onReply, onDeleteComment, onDeleteReply , likeCo
             <Button
               variant="ghost"
               size="sm"
-              className={`px-2 hover:underline ${comment?.reactions?.find((react=>react?.user.toString() == user?._id))?"text-[#54C8FD]":""}`}
-              onClick={() => {handleLikeComment()}}
+              className={`px-2 hover:underline ${comment?.reactions?.find((react => react?.user.toString() == user?._id)) ? "text-[#54C8FD]" : ""}`}
+              onClick={() => { handleLikeComment() }}
             >
               Thích
             </Button>
@@ -242,9 +241,8 @@ function PostComment({ comment, onReply, onDeleteComment, onDeleteReply , likeCo
                         )
                       } //lưu id reply thay vì true/false
                       variant="ghost"
-                      className={`hover:bg-gray-100 ${
-                        reply?.user?._id === user?._id ? "flex" : "hidden"
-                      }`} //chủ reply mới có option này
+                      className={`hover:bg-gray-100 ${reply?.user?._id === user?._id ? "flex" : "hidden"
+                        }`} //chủ reply mới có option này
                     >
                       <MoreHorizontal className="h-4 w-4" />
                     </Button>      
@@ -276,7 +274,7 @@ function PostComment({ comment, onReply, onDeleteComment, onDeleteReply , likeCo
                     variant="ghost"
                     size="sm"
                     className="px-2 hover:underline"
-                    onClick={() => {}}
+                    onClick={() => { }}
                   >
                     Phản hồi
                   </Button>
