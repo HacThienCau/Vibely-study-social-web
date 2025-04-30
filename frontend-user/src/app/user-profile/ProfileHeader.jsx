@@ -37,10 +37,10 @@ const ProfileHeader = ({
 
   const { fetchMutualFriends, mutualFriends } = userFriendStore();
   useEffect(() => {
-      if (id) {
-        fetchMutualFriends(id);
-      }
-    }, [id, fetchMutualFriends]);
+    if (id) {
+      fetchMutualFriends(id);
+    }
+  }, [id, fetchMutualFriends]);
 
   const [profilePictureFile, setProfilePictureFile] = useState(null);
   const [coverPhotoFile, setCoverPhotoFile] = useState(null);
@@ -213,15 +213,11 @@ const ProfileHeader = ({
           <div className="mt-4 mdLmt-0 text-center md:text-left flex-grow">
             <h1 className="text-3xl font-bold">{profileData?.username}</h1>
             <p className="text-gray-400 font-semibold">
-            {mutualFriends.length} người bạn
+              {mutualFriends.length} người bạn
             </p>
           </div>
           {isOwner && (
             <div className="flex flex-col">
-              <Button className="mt-4 md:mt-0 bg-[#086280] text-white cursor-pointer">
-                <SquarePlus className="w-4 h-4 mr-2" />
-                Thêm tin
-              </Button>
               <Button
                 className="mt-4 md:mt-1 font-semibold cursor-pointer edit-profile"
                 onClick={() => setIsEditProfileModel(true)}
