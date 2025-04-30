@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import {registerUser } from "@/service/auth.service";
+import { registerUser } from "@/service/auth.service";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { motion } from "framer-motion";
@@ -19,15 +19,15 @@ const Page = () => {
     setIsLoading(true);
 
     try {
-        const tempData = JSON.parse(localStorage.getItem("tempRegisterData"));
+      const tempData = JSON.parse(localStorage.getItem("tempRegisterData"));
       const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/verify-otp`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-            email: tempData.email,
-            otp: otp,
+          email: tempData.email,
+          otp: otp,
         }),
       });
 
@@ -43,7 +43,7 @@ const Page = () => {
         toast.error(data.message || "Mã OTP không chính xác");
       }
     } catch (error) {
-        console.error('verifyOTP ERROR:', error.message);
+      console.error('verify OTP ERROR:', error.message);
       toast.error("Có lỗi xảy ra, vui lòng thử lại");
     } finally {
       setIsLoading(false);
@@ -51,18 +51,18 @@ const Page = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F9FDFF] flex items-center justify-center p-4">
+    <div className="w-full h-screen bg-[#F9FDFF] flex items-center justify-center p-4">
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5 }}
       >
-        <Card className="w-full max-w-md dark:text-white border-[#0E42D2]">
+        <Card className="w-full max-w-xl dark:text-white border-[#0E42D2] p-12">
           <CardHeader>
             <CardTitle className="flex justify-center">
-              <img src="/images/logo.png" alt="Vibely" className="w-20" />
+              <img src="/images/logo1.png" alt="Vibely" className="w-28" />
             </CardTitle>
-            <CardDescription className="text-center text-[#1CA2C1]">
+            <CardDescription className="text-center text-[#1CA2C1] text-lg mb-4">
               Xác thực email của bạn
             </CardDescription>
           </CardHeader>

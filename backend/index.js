@@ -50,7 +50,7 @@ app.use(cookieParser());
 
 
 const corsOptions = {
-    origin: function (origin, callback) {
+    origin: (origin, callback) => {
         const allowedOrigins = [
             "http://localhost:3000",
             "http://localhost:3001",
@@ -65,15 +65,15 @@ const corsOptions = {
         if (!origin || allowedOrigins.includes(origin)) {
             callback(null, true);
         } else {
-            callback(new Error('Not allowed by CORS'));
+            callback(new Error('Not allowed by CORS'), false);
         }
     },
     credentials: true,
     optionsSuccessStatus: 200,
 };
 
-
 app.use(cors(corsOptions));
+
 connectDb();
 app.use(passport.initialize())
 //API Route
@@ -140,7 +140,7 @@ const io = new Server(server, {
             "https://vibely-study-social-web-user.vercel.app",
             "https://vibelyadmin.netlify.app",
             "https://vibelyuser.netlify.app",
-            "https://vibely-study-social-web-admin.vercel.app",
+            "https://vibely-study-social-web-admin.vercel.app"
         ],
         methods: ["GET", "POST"],
         credentials: true
