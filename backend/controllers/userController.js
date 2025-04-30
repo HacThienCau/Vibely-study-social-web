@@ -6,7 +6,6 @@ const followUser =  async(req,res) =>{
     const {userIdToFollow} = req.body;
     const userId = req?.user?.userId;
 
-    //Ngăn người dùng theo dõi chính mình
     if(userId === userIdToFollow){
         return response(res,400,'Bạn không được phép theo dõi chính mình');
     }
@@ -14,27 +13,20 @@ const followUser =  async(req,res) =>{
         const userToFollow = await User.findById(userIdToFollow)
         const currentUser = await User.findById(userId);
 
-        // Kiểm tra cả hai người dùng có tồn tại trong cơ sở dữ liệu không
         if(!userToFollow || !currentUser){
             return response(res,404,'Người dùng không tồn tại')
         }
 
-        // Kiểm tra xem currentUser đã theo dõi userToFollow chưa
         if(currentUser.followings.includes(userIdToFollow)){
             return response(res,404, 'Bạn đã theo dõi người dùng này');
         }
 
-        // Thêm người dùng vào danh sách theo dõi của người dùng hiện tại
         currentUser.followings.push(userIdToFollow);
-
-        // Thêm id currentUser vào danh sách người theo dõi của userToFollow
         userToFollow.followers.push(currentUser)
 
-        // Cập nhật số lượng người theo dõi và người đang theo dõi
         currentUser.followingCount +=1;
         userToFollow.followerCount +=1;
 
-        // Lưu thay đổi của currentUser và userToFollow
         await currentUser.save()
         await userToFollow.save()
         
@@ -50,7 +42,6 @@ const unfollowUser =  async(req,res) =>{
     const {userIdToUnfollow} = req.body;
     const userId = req?.user?.userId;
 
-    //Ngăn người dùng bỏ theo dõi chính mình
     if(userId === userIdToUnfollow){
         return response(res,400,'Bạn không được phép bỏ theo dõi chính mình');
     }
@@ -58,27 +49,24 @@ const unfollowUser =  async(req,res) =>{
         const userToUnfollow = await User.findById(userIdToUnfollow)
         const currentUser = await User.findById(userId);
 
-        // Kiểm tra cả hai người dùng có tồn tại trong cơ sở dữ liệu không
         if(!userToUnfollow || !currentUser){
             return response(res,404,'Người dùng không tồn tại')
         }
 
-        // Kiểm tra xem currentUser đã theo dõi userToUnfollow chưa
         if(!currentUser.followings.includes(userIdToUnfollow)){
             return response(res,404, 'Bạn chưa theo dõi người dùng này');
         }
 
-        // Xóa người dùng khỏi danh sách theo dõi và cập nhật số lượng người theo dõi
         currentUser.followers = currentUser.followers.filter(id => id.toString() !== userIdToUnfollow)
         currentUser.followings = currentUser.followings.filter(id => id.toString() !== userIdToUnfollow)
         userToUnfollow.followers = userToUnfollow.followers.filter(id => id.toString() !== userId)
+        userToUnfollow.followings = userToUnfollow.followings.filter(id => id.toString() !== userId)
 
-        // Cập nhật số lượng người theo dõi và người đang theo dõi
         currentUser.followerCount -=1;
         currentUser.followingCount -=1;
         userToUnfollow.followerCount -=1;
+        userToUnfollow.followingCount -=1;
 
-        // Lưu thay đổi của currentUser và userToUnfollow
         await currentUser.save()
         await userToUnfollow.save()
         
@@ -98,29 +86,21 @@ const deleteUserFromRequest = async (req, res) => {
         const requestSender = await User.findById(requestSenderId)
         const loggedInUser = await User.findById(loggedInUserId);
 
-        // Kiểm tra xem requestSender và loggedInUser có tồn tại không
         if(!requestSender || !loggedInUser){
             return response(res,404,'Người dùng không tồn tại')
         }
 
-        // Kiểm tra xem người gửi yêu cầu có theo dõi người đăng nhập không
         const isRequestSend = requestSender.followings.includes(loggedInUserId)
-
         if(!isRequestSend){
             return response(res, 404, 'Không tìm thấy yêu cầu kết bạn')
         }
 
-        // Xóa id của người đăng nhập khỏi danh sách theo dõi của người gửi yêu cầu
         requestSender.followings = requestSender.followings.filter(user => user.toString() !== loggedInUserId)
-
-        // Xóa id người gửi yêu cầu khỏi danh sách người theo dõi của người đăng nhập
         loggedInUser.followers = loggedInUser.followers.filter(user => user.toString() !== requestSenderId)
 
-        // Cập nhật số lượng người theo dõi và người đang theo dõi
         loggedInUser.followerCount = loggedInUser.followers.length;
         requestSender.followingCount= requestSender.followings.length
         
-        // Lưu thay đổi của 2 người dùng
         await loggedInUser.save()
         await requestSender.save()
 
@@ -136,7 +116,6 @@ const getAllFriendsRequest = async (req, res) => {
     try {
         const loggedInUserId = req.user.userId;
 
-        // Tìm người dùng đăng nhập và lấy danh sách người theo dõi và người đang theo dõi của họ
         const loggedInUser = await User.findById(loggedInUserId).select('followers followings')
         if(!loggedInUser){
             return response(res, 404, 'Người dùng không tồn tại')
@@ -145,8 +124,8 @@ const getAllFriendsRequest = async (req, res) => {
         // Tìm người dùng theo dõi người dùng đăng nhập nhưng không được theo dõi lại
         const userToFollowBack = await User.find({
             _id:{
-                $in:loggedInUser.followers, // người theo dõi người đăng nhập
-                $nin: loggedInUser.followings // trừ người đã được người đăng nhập theo dõi lại
+                $in:loggedInUser.followers,
+                $nin: loggedInUser.followings
             }
         }).select('username profilePicture email followerCount');
 
@@ -162,17 +141,15 @@ const getAllUserForRequest = async (req, res) => {
     try {
         const loggedInUserId = req.user.userId;
 
-        // Tìm người dùng đăng nhập và lấy danh sách người theo dõi và người đang theo dõi của họ
         const loggedInUser = await User.findById(loggedInUserId).select('followers followings')
         if(!loggedInUser){
             return response(res, 404, 'Người dùng không tồn tại')
         }
 
-        // Tìm người dùng không phải là người theo dõi hoặc người đang theo dõi của người dùng đăng nhập
         const userForFriendRequest = await User.find({
             _id:{
-                $ne:loggedInUser, // không phải là người đăng nhập
-                $nin: [...loggedInUser.followings, ...loggedInUser.followers] // loại trừ cả hai danh sách
+                $ne:loggedInUser,
+                $nin: [...loggedInUser.followings, ...loggedInUser.followers]
             }
         }).select('username profilePicture email followerCount');
 
@@ -183,12 +160,11 @@ const getAllUserForRequest = async (req, res) => {
     }
 }
 
-// Xây dựng API để lấy danh sách bạn chung
+// Lấy danh sách bạn chung
 const getAllMutualFriends = async (req, res) => {
     try {
         const ProfileUserId = req.params.userId;
 
-        // Tìm người dùng đăng nhập và lấy danh sách người theo dõi và người đang theo dõi của họ
         const loggedInUser = await User.findById(ProfileUserId)
         .select('followers followings')
         .populate('followings', 'username profilePicture email followerCount followingCount')
@@ -258,10 +234,10 @@ const getUserProfile = async(req, res) =>{
     }
 }
 
-// Lấy thông tin người dùng theo id
+// Lấy thông tin người dùng theo ID
 const getUsersByIds = async (req, res) => {
     try {
-      const { userIds } = req.body; // Lấy danh sách userId từ request
+      const { userIds } = req.body;
       if (!userIds || userIds.length === 0) {
         return res.status(400).json({ message: "Danh sách userId trống!" });
       }
@@ -276,9 +252,8 @@ const getUsersByIds = async (req, res) => {
   // Lấy danh sách bạn bè (followers + followings)
   const getUserMutualFriends = async (req, res) => {
     try {
-        const { userId } = req.params; // Lấy ID người dùng từ params
+        const { userId } = req.params;
 
-        // Tìm người dùng theo ID
         const user = await User.findById(userId)
             .select('followers followings')
             .populate('followings', 'username profilePicture email followerCount followingCount')
@@ -335,7 +310,6 @@ const getSavedDocumentById = async (req, res) => {
         const userId = req.user.userId;
         const documentId = req.params.id;
 
-        // Tìm user có tài liệu cần lấy
         const user = await User.findOne(
             { _id: userId, savedDocuments: documentId },
             { "savedDocuments.$": 1 }
@@ -347,7 +321,6 @@ const getSavedDocumentById = async (req, res) => {
             ]
         });
 
-        // Kiểm tra nếu không có user hoặc tài liệu
         if (!user || !user.savedDocuments.length) {
             return response(res, 404, "Tài liệu không tồn tại trong danh sách đã lưu");
         }
@@ -365,7 +338,6 @@ const unsaveDocument = async (req, res) => {
         const userId = req.user.userId;
         const documentId = req.params.id;
 
-        // Tìm người dùng theo ID
         const user = await User.findById(userId);
         if (!user) {
             return response(res, 404, 'Người dùng không tồn tại');
@@ -386,9 +358,7 @@ const unsaveDocument = async (req, res) => {
         return response(res, 500, 'Lỗi máy chủ nội bộ', error.message);
     }
 };
-
-
-  
+ 
 module.exports = {
     followUser,
     unfollowUser,

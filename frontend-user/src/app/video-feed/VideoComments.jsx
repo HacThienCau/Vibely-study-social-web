@@ -16,9 +16,9 @@ const VideoComments = ({post, onComment, commentInputRef}) => {
     const visibleComments = showAllComments ? post?.comments : post?.comments?.slice(0, 2);
     const userPlaceholder = user?.username?.split(" ").map((name) => name[0]).join(""); // tên người dùng viết tắt
     const {fetchPosts,handleReplyComment, handleDeleteComment, handleDeleteReply, handleLikeComment} = usePostStore()
+    //đăng cmt
     const handleCommentSubmit = async() =>{
         if(commentText.trim()){
-            //console.log("handleCommentSubmit: ",commentText)
             onComment({text : commentText})
             setCommentText("")
         }
@@ -31,7 +31,6 @@ const VideoComments = ({post, onComment, commentInputRef}) => {
                 {visibleComments?.map((comment, index) => (
                     <VideoComment key={index} comment={comment} 
                     onReply={async(replyText)=>{
-                        console.log("PostComments/onReply:",post?._id,comment?._id,replyText)
                         await handleReplyComment(post?._id,comment?._id,replyText)
                         await fetchPosts()
                     }}
@@ -49,6 +48,7 @@ const VideoComments = ({post, onComment, commentInputRef}) => {
                     }}
                     />
                 ))}
+                {/*Nút tùy chỉnh số lượng cmt hiển thị*/}
                 {post?.comments?.length > 2 && (
                     <p
                         className="w-40 mt-2 text-blue-500 cursor-pointer text-[16px] hover:underline"
@@ -63,6 +63,7 @@ const VideoComments = ({post, onComment, commentInputRef}) => {
                 )}
             </div>
             </ScrollArea>
+            {/*Component viết bình luận*/}
             <div className="flex items-center space-x-2 mt-4 mb-5">
                 <Avatar className='w-8 h-8'>
                     {user?.profilePicture ? (

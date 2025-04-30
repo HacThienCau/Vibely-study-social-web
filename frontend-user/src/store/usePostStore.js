@@ -143,9 +143,7 @@ export const usePostStore = create((set)=>({
     handleCommentPost: async(postId,commentText) =>{
         set({loading:true})
         try {
-            console.log("handleCommentPost: ",commentText)
             const newComment = await addCommentToPost(postId,commentText)
-            //console.log("handleCommentPost/newComment: ",newComment)
             set((state)=>({
                 posts: state.posts.map((post)=>
                 post?._id === postId

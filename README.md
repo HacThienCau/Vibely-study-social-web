@@ -24,11 +24,11 @@ Table of Contents
   - [Setting Up Environment Variables](#setting-up-environment-variables)
   - [Running the Project](#running-the-project-1)
     - [Local Development](#local-development)
-    - [Local Development](#local-development-1)
     - [Using Docker](#using-docker)
       - [Access the Application](#access-the-application)
-    - [Using Docker Compose](#using-docker-compose)
-  - [CI/CD Pipeline](#cicd-pipeline)
+  - [CI/CD Pipeline and Deployment](#cicd-pipeline-and-deployment)
+    - [Implementation Process](#implementation-process)
+    - [Deployment Process](#deployment-process)
 
 * * * * *
 Features
@@ -52,12 +52,14 @@ Features
 -   Manage account and profile settings
 -   Help center and submit inquiries
 -   Interact with AI Chatbot for study support
-
+-   🌱 Upcoming Feature (in development):
+Grow a Learning Tree - Complete your learning goals to grow your tree and unlock achievement badges
 ### **Admin Features**:
 -   View statistical reports
 -   Manage users
 -   Manage posts
 -   Manage study materials
+-   Manage quizs
 -   Manage inquiries
 -   Change password
 -   Admin account management
@@ -66,10 +68,11 @@ Features
 Tech Stack
 ----------
 
--   **Frontend**: Next.js, React.js, Zustand
--   **Backend**: Node.js, Express.js, JWT (for authentication), Swagger (for API documentation)
+-   **Frontend**: HTML, Tailwind CSS, React.js, Next.js, Zustand
+-   **Backend**: Node.js, Express.js, JWT (Authentication), Swagger (API Docs), Google OAuth, Socket.io, Nodemailer, Python (AI Chatbot)
 -   **Package Manager**: npm (for frontend and backend dependencies), pip (for chatbot backend dependencies)
 -   **Database**: MongoDB
+-   **DevOps & Tools**: Docker, GitHub Actions (CI/CD), Cloudinary (Media Management)
 
 * * * * *
 
@@ -179,9 +182,9 @@ Running the Project
         cd frontend-user
         npm install
     -   **Frontend-admin**:
-            ```bash
-            cd frontend-admin
-            npm install
+        ```bash
+        cd frontend-admin
+        npm install
 * * * * *
 
 Setting Up Environment Variables
@@ -214,19 +217,16 @@ Setting Up Environment Variables
     -   Create a `.env` file in the `frontend-user` directory.
     -   Add your environment variables:
         ```env
-        NEXT_PUBLIC_BACKEND_URL="http://localhost:8000" 
+        NEXT_PUBLIC_BACKEND_URL="http://localhost:8081" 
 3.  **Frontend-admin**:
     -   Create a `.env` file in the `frontend-admin` directory.
     -   Add your environment variables:
         ```env
-        NEXT_PUBLIC_BACKEND_URL="http://localhost:8000" 
+        NEXT_PUBLIC_BACKEND_URL="http://localhost:8081" 
 Running the Project
 -------------------
 
 ### Local Development
-
-### Local Development
-
 1.  **Backend Setup:**
     ```bash
     cd backend
@@ -297,26 +297,7 @@ docker run -p 3001:3001 frontend-admin
 
 ---
 
-### Using Docker Compose
-
-The easiest way to run the entire application:
-
-```bash
-# Start all services
-docker-compose up -d
-
-# Stop all services
-docker-compose down
-```
-
-This will start all services:
-- Backend: http://localhost:8081
-- Frontend User: http://localhost:3000
-- Frontend Admin: http://localhost:3001
-
----
-
-## CI/CD Pipeline
+## CI/CD Pipeline and Deployment
 
 CI/CD (Continuous Integration / Continuous Deployment) is an automated software development process that:
 - CI: Continuously integrates code, tests, and builds after each push
@@ -324,12 +305,7 @@ CI/CD (Continuous Integration / Continuous Deployment) is an automated software 
 
 Docker helps package the entire application (source code, libraries, environment...) into a container, making it easy to run the application anywhere without environment issues.
 
-Combining Docker + CI/CD provides:
-- Consistent application builds
-- Quick and automated deployment
-- Easy scalability
-
-Implementation Process:
+### Implementation Process
 
 1. Dockerfile for Each Component
    - Each directory (backend, frontend-user, frontend-admin) has its own Dockerfile
@@ -338,6 +314,8 @@ Implementation Process:
 2. Docker Compose Configuration
    - Runs all application services synchronously
    - Manages communication between services like frontend and backend
+   - Use `docker-compose up -d` to start all services in detached mode
+   - Use `docker-compose down` to stop all services
 
 3. GitHub Actions Workflow
    - Located at: .github/workflows/docker-ci-cd.yml
@@ -347,7 +325,25 @@ Implementation Process:
    - Configure in GitHub Repository → Settings → Secrets → Actions
    - Required variables: DOCKER_USERNAME, DOCKER_PASSWORD, MONGO_URI_ATLAS, JWT_SECRET, CLOUDINARY_API_KEY, EMAIL_USER, etc.
 
-Result: Each push to main automatically:
-- Builds Docker images for backend and frontend
-- Pushes to Docker Hub
-- Allows running the entire system on any server using docker-compose up
+### Deployment Process
+
+1. Automatic Deployment:
+   Each push to main branch automatically:
+   - Builds Docker images for backend and frontend
+   - Pushes images to Docker Hub
+   - Allows running the entire system on any server using docker-compose
+
+2. Manual Deployment:
+   To run the application on any server:
+   ```bash
+   # Start all services in detached mode
+   docker-compose up -d
+   
+   # Stop all services
+   docker-compose down
+   ```
+
+   This will start all services at:
+   - Backend: http://localhost:8081
+   - Frontend User: http://localhost:3000
+   - Frontend Admin: http://localhost:3001
