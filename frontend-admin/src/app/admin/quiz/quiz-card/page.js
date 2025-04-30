@@ -10,15 +10,22 @@ const QuizCard = ({ quiz, onDelete }) => {
     const router = useRouter();
     const [showDropdown, setShowDropdown] = useState(false);
 
-    // Tính toán success rate
+    // Kiểm tra nếu quiz không tồn tại
+    if (!quiz) {
+        return null;
+    }
+
+    // Tính toán success rate với kiểm tra null/undefined
     const calculateSuccessRate = () => {
         let correctQuestions = 0;
         let totalAttempts = 0;
 
-        quiz.quizQuestions?.forEach((question) => {
-            totalAttempts += question.statistics?.totalAttempts || 0;
-            correctQuestions += question.statistics?.correctAttempts || 0;
-        });
+        if (quiz.quizQuestions && Array.isArray(quiz.quizQuestions)) {
+            quiz.quizQuestions.forEach((question) => {
+                totalAttempts += (question.statistics?.totalAttempts || 0);
+                correctQuestions += (question.statistics?.correctAttempts || 0);
+            });
+        }
 
         return totalAttempts > 0
             ? Math.ceil((correctQuestions / totalAttempts) * 100)

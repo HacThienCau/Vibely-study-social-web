@@ -132,5 +132,69 @@ const putQuestion = async (req, res) => {
         res.status(500).send("Lỗi khi gửi câu hỏi");
     }
 }
+// Thêm hàm xử lý streaming response
+const streamChatbotResponse = async (req, res) => {
+    const userId = req.user.userId;
+    const { text, chatId } = req.body;
 
-module.exports = { createChat, getChats, getChatItem, putQuestion };
+    if (!userId) {
+        return res.status(400).json({ message: "Bạn cần đăng nhập" });
+    }
+
+    if (!text) {
+        return res.status(400).json({ message: "Bạn cần nhập nội dung câu hỏi" });
+    }
+
+    try {
+        // Thiết lập headers cho streaming response
+        res.setHeader('Content-Type', 'text/plain');
+        res.setHeader('Transfer-Encoding', 'chunked');
+        res.setHeader('Connection', 'keep-alive');
+        res.setHeader('Cache-Control', 'no-cache');
+        res.setHeader('X-Accel-Buffering', 'no');
+
+        // Gọi API từ chatbot backend
+        const chatbotBackendUrl = process.env.CHATBOT_BACKEND_URL || 'http://localhost:8082';
+        const response = await fetch(`${chatbotBackendUrl}/chatbot/${chatId || ''}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': req.headers.authorization
+            },
+            body: JSON.stringify({
+                text,
+                userId,
+                chatId
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(`Chatbot backend responded with status: ${response.status}`);
+        }
+
+        // Stream response từ chatbot backend
+        const reader = response.body.getReader();
+        const encoder = new TextEncoder();
+
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+
+            // Gửi dữ liệu về client
+            res.write(value);
+        }
+
+        res.end();
+    } catch (error) {
+        console.error("Lỗi khi xử lý streaming response:", error);
+        res.status(500).send("Lỗi khi xử lý câu trả lời từ chatbot");
+    }
+};
+
+module.exports = {
+    createChat,
+    getChats,
+    getChatItem,
+    putQuestion,
+    streamChatbotResponse
+};

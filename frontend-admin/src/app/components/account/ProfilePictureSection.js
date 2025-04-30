@@ -17,8 +17,6 @@ const ProfilePictureSection = ({ userData, onPictureUpdate }) => {
 
         try {
             const data = await uploadProfilePicture(file);
-            console.log("Dữ liệu trả về từ API:", data);
-
             if (data && data.profilePicture) {
                 onPictureUpdate(data.profilePicture);
             } else {

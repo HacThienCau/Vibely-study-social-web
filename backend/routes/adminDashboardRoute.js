@@ -3,6 +3,7 @@ const router = express.Router();
 const { getAdminDashboard, getTotalUsers, getTotalDocuments, getTotalInquiries, getTotalPosts, getDashboardStats } = require('../controllers/adminDashboardController');
 const adminAuthMiddleware = require('../middleware/adminAuthMiddleware');
 
+// Route lấy thông tin dashboard admin
 router.get('/dashboard', adminAuthMiddleware, getAdminDashboard);
 router.get('/dashboard/total-users', adminAuthMiddleware, getTotalUsers);
 router.get('/dashboard/total-documents', adminAuthMiddleware, getTotalDocuments);

@@ -24,7 +24,6 @@ const createTree = async (req, res) => {
 
         res.status(201).json(tree);
     } catch (error) {
-        console.error('Error creating tree:', error);
         res.status(400).json({ message: error.message });
     }
 };
@@ -32,18 +31,14 @@ const createTree = async (req, res) => {
 // Lấy thông tin cây
 const getTree = async (req, res) => {
     try {
-        console.log('Getting tree for user:', req.user.user_id); // Debug log
         const tree = await LearningTree.findOne({ user_id: req.user.user_id });
 
         if (!tree) {
-            console.log('No tree found for user:', req.user.user_id); // Debug log
             return res.status(404).json({ message: 'Bạn chưa có cây học tập' });
         }
 
-        console.log('Tree found:', tree); // Debug log
         res.json(tree);
     } catch (error) {
-        console.error('Error getting tree:', error); // Debug log
         res.status(500).json({ message: 'Lỗi khi lấy thông tin cây', error: error.message });
     }
 };
@@ -70,7 +65,6 @@ const updateTreeType = async (req, res) => {
 
         res.json(tree);
     } catch (error) {
-        console.error('Error updating tree:', error);
         res.status(400).json({ message: error.message });
     }
 };

@@ -5,6 +5,8 @@ import { BarChart, Bar, XAxis, ResponsiveContainer, Tooltip } from 'recharts'
 import dayjs from 'dayjs'
 
 const ChartSection = ({ userStats, postStats, timeRange }) => {
+
+    // Định nghĩa gradient cho các thanh biểu đồ
     const userGradient = {
         id: 'userGradient',
         colors: [
@@ -21,6 +23,7 @@ const ChartSection = ({ userStats, postStats, timeRange }) => {
         ]
     }
 
+    // Hàm định dạng ngày tháng dựa trên khoảng thời gian
     const formatDate = (date) => {
         if (timeRange === 'day') {
             return dayjs(date).format('DD/MM/YYYY');
@@ -32,6 +35,7 @@ const ChartSection = ({ userStats, postStats, timeRange }) => {
         return date;
     };
 
+    // Tooltip tùy chỉnh cho biểu đồ
     const CustomTooltip = ({ active, payload, label }) => {
         if (active && payload && payload.length) {
             return (
@@ -44,9 +48,12 @@ const ChartSection = ({ userStats, postStats, timeRange }) => {
         return null;
     };
 
+
+    // Chuyển đổi dữ liệu để thêm thuộc tính 'type' và định dạng ngày tháng
     const userStatsWithType = userStats.map(item => ({ ...item, type: 'user', date: formatDate(item.date) }));
     const postStatsWithType = postStats.map(item => ({ ...item, type: 'post', date: formatDate(item.date) }));
 
+    // Kết hợp dữ liệu người dùng và bài viết
     const totalUsers = userStats.reduce((sum, item) => sum + item.count, 0);
     const totalPosts = postStats.reduce((sum, item) => sum + item.count, 0);
 

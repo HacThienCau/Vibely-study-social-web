@@ -8,6 +8,7 @@ export const requireAuth = async () => {
             return;
         }
 
+        // Kiểm tra trạng thái xác thực của admin
         const { isAuthenticated } = await checkAdminAuth();
         if (!isAuthenticated) {
             redirect("/admin-login");

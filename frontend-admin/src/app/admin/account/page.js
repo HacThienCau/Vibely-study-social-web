@@ -19,7 +19,6 @@ const AccountPage = () => {
 
             try {
                 const data = await getAdminById(adminId);
-                console.log("Fetched data:", data);
                 if (data) {
                     setUserData(data?.admin || {});
                     localStorage.setItem("adminData", JSON.stringify(data));
@@ -37,7 +36,7 @@ const AccountPage = () => {
                 const parsedData = JSON.parse(storedData);
                 setUserData(parsedData);
             } catch (e) {
-                console.error("Error parsing stored data:", e);
+                console.error("Lỗi:", e);
             }
         }
 
@@ -91,12 +90,12 @@ const AccountPage = () => {
         <div className="flex w-full flex-row min-h-screen bg-[#F4F7FE]">
             <Sidebar />
             <div className="w-full md:w-4/5 md:ml-52 px-6 flex flex-col">
-                {/* Header Row */}
+                {/* Header*/}
                 <div className="w-full py-6 mb-[-15px] flex justify-between items-center">
                     <h1 className="text-2xl font-semibold text-[#333]">Tài khoản</h1>
                 </div>
 
-                {/* Content Area */}
+                {/* Content*/}
                 <div className="w-full flex-grow lg:mx-6 p-6">
                     <div className="max-w-6xl mx-auto">
                         <div className="flex flex-col md:flex-row gap-6 justify-center">

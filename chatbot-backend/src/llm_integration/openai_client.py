@@ -4,8 +4,14 @@ import os
 import openai
 
 # Load file yaml
-def load_config(config_file="./configs/api_keys.yaml"):
-    with open(config_file, "r") as file:
+def load_config():
+    # Lấy đường dẫn đến thư mục gốc của dự án (chatbot-backend)
+    base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    config_path = os.path.join(base_dir, "configs", "api_key.yaml")
+    config_path = os.path.abspath(config_path)  # resolve đường dẫn tuyệt đối
+
+    # Đọc file yaml
+    with open(config_path, "r") as file:
         return yaml.safe_load(file)
 
 # Tải API key từ file yaml

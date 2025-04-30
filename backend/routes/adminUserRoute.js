@@ -6,13 +6,14 @@ const {
   searchUsers,
 } = require("../controllers/adminUserController");
 const router = express.Router();
-// Lấy danh sách tất cả users
+
+// Route lấy danh sách tất cả users
 router.get("/", adminAuthMiddleware, getAllUsers);
 
-// Xóa user theo ID
+// Route xóa user theo ID
 router.delete("/:userId", adminAuthMiddleware, deleteUser);
 
-// Tìm kiếm users
+// Route tìm kiếm users
 router.get("/search", adminAuthMiddleware, searchUsers);
 
 module.exports = router;

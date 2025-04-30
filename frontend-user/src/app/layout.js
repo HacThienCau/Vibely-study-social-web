@@ -2,7 +2,6 @@ import { Roboto_Condensed } from "next/font/google";
 import { Toaster } from "react-hot-toast";
 import AuthWrapper from "./auth-wrapper";
 import { ContextProvider } from "./context/QuizContext";
-import { SocketProvider } from "./components/SocketProvider";
 import "./globals.css";
 
 const robotoCondensed = Roboto_Condensed({

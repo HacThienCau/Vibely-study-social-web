@@ -92,37 +92,3 @@ module.exports = {
     ACHIEVEMENT_TYPES,
     ACHIEVEMENT_DETAILS
 };
-
-// Cập nhật hàm kiểm tra achievement
-const checkAndUpdateAchievements = async (userId, completedCount) => {
-    const achievementChecks = [
-        { type: ACHIEVEMENT_TYPES.ROOKIE, threshold: 1 },
-        { type: ACHIEVEMENT_TYPES.TRAINEE, threshold: 5 },
-        { type: ACHIEVEMENT_TYPES.WARRIOR, threshold: 10 },
-        { type: ACHIEVEMENT_TYPES.ELITE, threshold: 20 },
-        { type: ACHIEVEMENT_TYPES.MASTER, threshold: 50 },
-        { type: ACHIEVEMENT_TYPES.GODKING, threshold: 100 }
-    ];
-
-    let newAchievements = [];
-
-    for (const check of achievementChecks) {
-        if (completedCount >= check.threshold) {
-            const existingAchievement = await Achievement.findOne({
-                user_id: userId,
-                type: check.type
-            });
-
-            if (!existingAchievement) {
-                const newAchievement = await Achievement.create({
-                    user_id: userId,
-                    type: check.type,
-                    goals_completed: completedCount
-                });
-                newAchievements.push(newAchievement);
-            }
-        }
-    }
-
-    return newAchievements;
-}; 

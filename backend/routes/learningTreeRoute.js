@@ -11,12 +11,12 @@ const {
 // Tất cả routes đều yêu cầu authentication
 router.use(auth);
 
-// Routes cho cây học tập
+// Route cho cây học tập
 router.post('/', createTree);
 router.get('/', getTree);
 router.patch('/type', updateTreeType);
 
-// Thêm route để kiểm tra cây hiện tại
+// Route để kiểm tra cây hiện tại
 router.get('/current', getTree);
 
 module.exports = router; 

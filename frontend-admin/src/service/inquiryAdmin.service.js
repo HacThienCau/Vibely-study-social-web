@@ -1,6 +1,6 @@
 import axiosInstance from './urlAdmin.service';
 
-// Get all inquiries with filtering
+// Lấy danh sách câu hỏi từ người dùng
 export const getInquiries = async (query = '', status = '') => {
     try {
         let url = `/admin/inquiry?`;
@@ -14,7 +14,7 @@ export const getInquiries = async (query = '', status = '') => {
     }
 };
 
-// Update inquiry status and response
+// Lấy chi tiết câu hỏi từ người dùng theo ID
 export const updateInquiry = async (inquiryId, data) => {
     try {
         const response = await axiosInstance.put(
@@ -27,7 +27,7 @@ export const updateInquiry = async (inquiryId, data) => {
     }
 };
 
-// Delete inquiry
+// Xóa câu hỏi từ người dùng theo ID
 export const deleteInquiry = async (inquiryId) => {
     try {
         const response = await axiosInstance.delete(

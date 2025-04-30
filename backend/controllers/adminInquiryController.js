@@ -3,9 +3,7 @@ const User = require("../model/User");
 const asyncHandler = require("express-async-handler");
 const nodemailer = require("nodemailer");
 
-// @desc    Get all inquiries with filtering and search
-// @route   GET /api/admin/inquiry
-// @access  Private/Admin
+// Lấy tất cả các yêu cầu hỗ trợ
 const getInquiries = asyncHandler(async (req, res) => {
     const { query, status } = req.query;
     let filter = {};
@@ -43,9 +41,7 @@ const getInquiries = asyncHandler(async (req, res) => {
     });
 });
 
-// @desc    Update inquiry status and send email response
-// @route   PUT /api/admin/inquiry/:id
-// @access  Private/Admin
+// Câp nhật trạng thái và phản hồi cho yêu cầu hỗ trợ
 const updateInquiry = asyncHandler(async (req, res) => {
     const { status, response } = req.body;
     const inquiry = await Inquiry.findById(req.params.id).populate("userId", "email");
@@ -90,9 +86,7 @@ const updateInquiry = asyncHandler(async (req, res) => {
     });
 });
 
-// @desc    Delete inquiry
-// @route   DELETE /api/admin/inquiry/:id
-// @access  Private/Admin
+// Xóa yêu cầu hỗ trợ
 const deleteInquiry = asyncHandler(async (req, res) => {
     const inquiry = await Inquiry.findById(req.params.id);
 

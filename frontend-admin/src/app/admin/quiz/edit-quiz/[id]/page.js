@@ -12,6 +12,7 @@ const EditQuizPage = () => {
     const params = useParams();
     const quizId = params.id;
 
+    // State để lưu thông tin quiz
     const [quiz, setQuiz] = useState({
         quizTitle: '',
         icon: '',
@@ -21,6 +22,7 @@ const EditQuizPage = () => {
     const [expandedQuestions, setExpandedQuestions] = useState([]);
     const [loading, setLoading] = useState(true);
 
+    // Lấy thông tin quiz từ API khi component mount
     useEffect(() => {
         const fetchQuiz = async () => {
             try {
@@ -45,6 +47,8 @@ const EditQuizPage = () => {
         }
     }, [quizId]);
 
+
+    // Hàm để mở/đóng câu hỏi
     const toggleQuestion = (index) => {
         setExpandedQuestions(prev => {
             if (prev.includes(index)) {
@@ -55,6 +59,7 @@ const EditQuizPage = () => {
         });
     };
 
+    // Hàm để lưu quiz
     const handleSave = async () => {
         try {
             if (!quiz.quizTitle || !quiz.icon) {
@@ -101,6 +106,8 @@ const EditQuizPage = () => {
         }
     };
 
+
+    // Hàm để thêm câu hỏi mới
     const handleAddQuestion = () => {
         setQuiz({
             ...quiz,
@@ -123,6 +130,8 @@ const EditQuizPage = () => {
         }
     };
 
+
+    // Hàm để cập nhật thông tin câu hỏi
     const handleQuestionChange = (index, field, value) => {
         const newQuestions = [...quiz.quizQuestions];
         if (field.startsWith('choice')) {
