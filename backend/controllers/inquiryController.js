@@ -1,6 +1,6 @@
 const Inquiry = require("../model/Inquiry");
 const response = require("../utils/responseHandler");
- 
+
 // Tạo thắc mắc mới
 const createInquiry = async (req, res) => {
     try {
