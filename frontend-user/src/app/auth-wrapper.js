@@ -17,7 +17,8 @@ export default function AuthWrapper({ children }) {
     const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8081';
 
     const publicPages = ["/user-login", "/forgot-password", "/reset-password"];
-    const isPublicPage = publicPages.includes(pathname);
+    // const isPublicPage = publicPages.includes(pathname);
+    const isPublicPage = publicPages.some((publicPath) => pathname.startsWith(publicPath));
 
     // Hàm kết nối socket
     const connectSocket = (userId) => {
