@@ -14,22 +14,24 @@ function VideoComment({ comment, onReply, onDeleteComment, onDeleteReply, likeCo
   const [replyText, setReplyText] = useState("");
   const { user } = userStore();
   const replyInputRef = useRef(null);
-  const visibleReplies = showAllReplies
+  const visibleReplies = showAllReplies //số lượng reply hiển thị
     ? comment?.replies
     : comment?.replies?.slice(0, 2);
   const userPlaceholder = user?.username
     ?.split(" ")
     .map((name) => name[0])
     .join(""); // tên người dùng viết tắt
+
+  // đăng reply 
   const handleReplySubmit = async () => {
     if (replyText.trim()) {
       onReply(replyText);
       setReplyText("");
     }
   };
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [dropdownReplyOpen, setDropdownReplyOpen] = useState(null);
-  const [popupOpen, setPopupOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);  //dropdown cmt
+  const [dropdownReplyOpen, setDropdownReplyOpen] = useState(null); //dropdown reply
+  const [popupOpen, setPopupOpen] = useState(false);  //popup xóa cmt
   const dropdownRef = useRef(null);
   const popupRef = useRef(null);
   // Đóng dropdown khi click ra ngoài
@@ -55,7 +57,7 @@ function VideoComment({ comment, onReply, onDeleteComment, onDeleteReply, likeCo
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleLikeComment = () => {
+  const handleLikeComment = () =>{
     likeComment()
   }
 

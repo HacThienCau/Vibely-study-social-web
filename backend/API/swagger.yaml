@@ -39,6 +39,10 @@ tags:
     description: Admin dashboard statistics and analytics
   - name: Admin User Management
     description: User management operations for admin
+  - name: Admin Document Management
+    description: Document management operations for admin
+  - name: Admin Inquiry Management
+    description: Inquiry management operations for admin
   - name: Admin Account
     description: Admin profile and information management
 paths:
@@ -1007,45 +1011,6 @@ paths:
                       $ref: '#/components/schemas/Document'
         500:
           description: Server error
-    
-    post:
-      tags: [Documents]
-      summary: Create new document
-      security:
-        - BearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - title
-                - pages
-                - level
-                - subject
-                - fileType
-                - fileUrl
-              properties:
-                title:
-                  type: string
-                pages:
-                  type: integer
-                level:
-                  type: string
-                subject:
-                  type: string
-                fileType:
-                  type: string
-                  enum: [pdf, docx]
-                fileUrl:
-                  type: string
-                  format: uri
-      responses:
-        201:
-          description: Document created successfully
-        400:
-          description: Invalid input data
 
   /documents/{id}:
     get:
@@ -1064,70 +1029,6 @@ paths:
           description: Document details retrieved successfully
         404:
           description: Document not found
-    
-    put:
-      tags: [Documents]
-      summary: Update document
-      security:
-        - BearerAuth: []
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - title
-                - pages
-                - level
-                - subject
-                - fileType
-                - fileUrl
-              properties:
-                title:
-                  type: string
-                pages:
-                  type: integer
-                level:
-                  type: string
-                subject:
-                  type: string
-                fileType:
-                  type: string
-                  enum: [pdf, docx]
-                fileUrl:
-                  type: string
-                  format: uri
-      responses:
-        200:
-          description: Document updated successfully
-        404:
-          description: Document not found
-        400:
-          description: Invalid input data
-
-    delete:
-      tags: [Documents]
-      summary: Delete document
-      security:
-        - BearerAuth: []
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: string
-      responses:
-        200:
-          description: Document deleted successfully
-        404:
-          description: Document not found
 
   /documents/levels:
     get:
@@ -1138,28 +1039,6 @@ paths:
       responses:
         200:
           description: List of levels retrieved successfully
-    
-    post:
-      tags: [Documents]
-      summary: Create new level
-      security:
-        - BearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - name
-              properties:
-                name:
-                  type: string
-      responses:
-        201:
-          description: Level created successfully
-        400:
-          description: Level already exists
 
   /documents/subjects/{levelId}:
     get:
@@ -1176,34 +1055,6 @@ paths:
       responses:
         200:
           description: List of subjects retrieved successfully
-
-  /documents/subjects:
-    post:
-      tags: [Documents]
-      summary: Create new subject
-      security:
-        - BearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - name
-                - levelId
-              properties:
-                name:
-                  type: string
-                levelId:
-                  type: string
-      responses:
-        201:
-          description: Subject created successfully
-        400:
-          description: Subject already exists
-        404:
-          description: Level not found
 
   /documents/save:
     post:
@@ -1607,104 +1458,6 @@ paths:
         500:
           description: Server error
 
-    get:
-      tags: [Inquiries]
-      summary: Get all inquiries
-      description: Retrieve list of inquiries with optional filters
-      security:
-        - BearerAuth: []
-      parameters:
-        - in: query
-          name: query
-          schema:
-            type: string
-          description: Search by content or user information
-        - in: query
-          name: status
-          schema:
-            type: string
-            enum: ["Chưa phản hồi", "Đã phản hồi"]
-          description: Filter by status
-      responses:
-        200:
-          description: Successfully retrieved inquiries
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "Successfully retrieved inquiries"
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Inquiry'
-        500:
-          description: Server error
-
-  /inquiry/{id}:
-    put:
-      tags: [Inquiries]
-      summary: Update inquiry
-      description: Update inquiry and send response email
-      security:
-        - BearerAuth: []
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - status
-                - response
-              properties:
-                status:
-                  type: string
-                  enum:
-                    - Đã phản hồi
-                  description: Inquiry status
-                response:
-                  type: string
-                  description: Response content
-      responses:
-        200:
-          description: Updated successfully and response email sent
-        400:
-          description: Missing required information
-        404:
-          description: Inquiry not found
-        500:
-          description: Server error
-
-    delete:
-      tags: [Inquiries]
-      summary: Delete inquiry
-      description: Remove an inquiry
-      security:
-        - BearerAuth: []
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: string
-      responses:
-        200:
-          description: Inquiry deleted successfully
-        404:
-          description: Inquiry not found
-        500:
-          description: Server error
-
-
   # Conversation Routes
   /conversation:
     post:
@@ -2065,6 +1818,326 @@ paths:
           description: User deleted successfully
         404:
           description: User not found
+        500:
+          description: Server error
+
+# Admin Document Management
+  /admin/documents:
+    get:
+      tags: [Admin Document Management]
+      summary: Get filtered documents
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: query
+          name: query
+          schema:
+            type: string
+          description: Filter by document title
+        - in: query
+          name: level
+          schema:
+            type: string
+          description: Filter by level ID
+        - in: query
+          name: subject
+          schema:
+            type: string
+          description: Filter by subject ID
+      responses:
+        200:
+          description: List of documents retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Lấy tài liệu thành công"
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Document'
+        500:
+          description: Server error
+    
+    post:
+      tags: [Admin Document Management]
+      summary: Create new document
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - title
+                - pages
+                - level
+                - subject
+                - fileType
+                - fileUrl
+              properties:
+                title:
+                  type: string
+                pages:
+                  type: integer
+                level:
+                  type: string
+                subject:
+                  type: string
+                fileType:
+                  type: string
+                  enum: [pdf, docx]
+                fileUrl:
+                  type: string
+                  format: uri
+      responses:
+        201:
+          description: Document created successfully
+        400:
+          description: Invalid input data
+          
+  /admin/documents/{id}:
+    put:
+      tags: [Admin Document Management]
+      summary: Update document
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - title
+                - pages
+                - level
+                - subject
+                - fileType
+                - fileUrl
+              properties:
+                title:
+                  type: string
+                pages:
+                  type: integer
+                level:
+                  type: string
+                subject:
+                  type: string
+                fileType:
+                  type: string
+                  enum: [pdf, docx]
+                fileUrl:
+                  type: string
+                  format: uri
+      responses:
+        200:
+          description: Document updated successfully
+        404:
+          description: Document not found
+        400:
+          description: Invalid input data
+
+    delete:
+      tags: [Admin Document Management]
+      summary: Delete document
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Document deleted successfully
+        404:
+          description: Document not found
+
+  /admin/documents/levels:
+    get:
+      tags: [Admin Document Management]
+      summary: Get all levels
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: List of levels retrieved successfully
+    
+    post:
+      tags: [Admin Document Management]
+      summary: Create new level
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+      responses:
+        201:
+          description: Level created successfully
+        400:
+          description: Level already exists
+
+  /admin/documents/subjects/{levelId}:
+    get:
+      tags: [Admin Document Management]
+      summary: Get subjects by level
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: levelId
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: List of subjects retrieved successfully
+
+  /admin/documents/subjects:
+    post:
+      tags: [Admin Document Management]
+      summary: Create new subject
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - levelId
+              properties:
+                name:
+                  type: string
+                levelId:
+                  type: string
+      responses:
+        201:
+          description: Subject created successfully
+        400:
+          description: Subject already exists
+        404:
+          description: Level not found
+
+# Admin Inquiry Management
+  /admin/inquiry:
+    get:
+      tags: [Admin Inquiry Management]
+      summary: Get all inquiries
+      description: Retrieve list of inquiries with optional filters
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: query
+          name: query
+          schema:
+            type: string
+          description: Search by content or user information
+        - in: query
+          name: status
+          schema:
+            type: string
+            enum: ["Chưa phản hồi", "Đã phản hồi"]
+          description: Filter by status
+      responses:
+        200:
+          description: Successfully retrieved inquiries
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Successfully retrieved inquiries"
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Inquiry'
+        500:
+          description: Server error
+
+  /admin/inquiry/{id}:
+    put:
+      tags: [Admin Inquiry Management]
+      summary: Update inquiry
+      description: Update inquiry and send response email
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - status
+                - response
+              properties:
+                status:
+                  type: string
+                  enum:
+                    - Đã phản hồi
+                  description: Inquiry status
+                response:
+                  type: string
+                  description: Response content
+      responses:
+        200:
+          description: Updated successfully and response email sent
+        400:
+          description: Missing required information
+        404:
+          description: Inquiry not found
+        500:
+          description: Server error
+
+    delete:
+      tags: [Admin Inquiry Management]
+      summary: Delete inquiry
+      description: Remove an inquiry
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Inquiry deleted successfully
+        404:
+          description: Inquiry not found
         500:
           description: Server error
 

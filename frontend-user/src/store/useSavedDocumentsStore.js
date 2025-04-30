@@ -18,16 +18,6 @@ export const useSavedDocumentsStore = create((set) => ({
         }
     },
 
-    // fetchSavedDocumentById: async (id) => {
-    //     set({loading:true})
-    //     try {
-    //         const response = await getSavedDocumentById(id);
-    //         set({savedDocuments: response.data.data , loading: false})
-    //     } catch (error) {
-    //         set({error, loading: false})
-    //     }
-    // },
-
     unsaveDocument: async (id) => {
         set({loading:true})
         try {

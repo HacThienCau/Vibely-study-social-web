@@ -1,11 +1,11 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
-import { useRouter, useParams } from 'next/navigation'
-import Sidebar from '../../../../components/sidebar/Sidebar'
 import { getQuizById, updateQuiz } from '@/service/quizAdmin.service';
+import { useParams, useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { FaChevronDown, FaChevronUp, FaPlus, FaTrash } from 'react-icons/fa';
+import Sidebar from '../../../../components/sidebar/Sidebar';
 
 const EditQuizPage = () => {
     const router = useRouter();
@@ -93,7 +93,7 @@ const EditQuizPage = () => {
 
             const response = await updateQuiz(quizId, quizData);
 
-            if (response && response.status === 200) {
+            if (response && response.status === 'success') {
                 toast.success('Cập nhật quiz thành công!');
                 router.push('/admin/quiz');
             } else {

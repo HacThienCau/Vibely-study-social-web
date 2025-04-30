@@ -17,25 +17,21 @@ const SearchBar = ({ onSearch, initialQuery = "", initialStatus = "" }) => {
         setStatus(initialStatus);
     }, [initialStatus]);
 
-    // Xử lý khi người dùng nhập hoặc xóa nội dung
     const handleChange = (e) => {
         const value = e.target.value;
         setQuery(value);
 
-        // Nếu xóa hết nội dung trong ô tìm kiếm, gửi query rỗng
         if (value.trim() === "") {
             onSearch("", status);
         }
     };
 
-    // Xử lý khi chọn trạng thái
     const handleStatusChange = (e) => {
         const newStatus = e.target.value;
         setStatus(newStatus);
         onSearch(query, newStatus);
     };
 
-    // Gọi tìm kiếm khi nhấn nút hoặc Enter
     const handleSearch = () => {
         onSearch(query, status);
     };

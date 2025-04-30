@@ -6,23 +6,21 @@ import PostCard from '../PostCard';
 import { usePostStore } from '@/store/usePostStore'
 
 function Page() {
-  const params = useParams();
-  const postId = params.id;   //postId
-  const [post, setPost] = useState(null)
-  const [loading, setLoading] = useState(false);
-  const { handleReactPost, handleCommentPost, handleSharePost, handleDeletePost } = usePostStore();
-  const fetchPost = async () => {
-    setLoading(true);
-    try {
-      const result = await getSinglePost(postId);
-      setPost(result);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
+    const params = useParams();
+    const postId = params.id;   //postId
+    const [post, setPost] = useState(null)
+    const [loading, setLoading] = useState(false);
+    const { handleReactPost, handleCommentPost, handleSharePost, handleDeletePost } = usePostStore();
+    const fetchPost = async () => {
+        setLoading(true);
+        try {
+          const result = await getSinglePost(postId);
+          setPost(result);
+        } catch (error) {
+        } finally {
+          setLoading(false);
+        }
+    };
   useEffect(() => {
     if (postId) {
       fetchPost();

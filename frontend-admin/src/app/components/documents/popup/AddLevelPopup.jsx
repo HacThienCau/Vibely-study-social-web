@@ -5,7 +5,6 @@ const AddLevelPopup = ({ addLevel, onClose }) => {
     const [levelName, setLevelName] = useState("");
     const [error, setError] = useState("");
 
-    // Khi nhập dữ liệu, lỗi sẽ biến mất
     const handleChange = (e) => {
         setLevelName(e.target.value);
         if (error) setError("");

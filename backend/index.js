@@ -25,6 +25,7 @@ const adminPostRoute = require('./routes/adminPostRoute')
 const adminUserRoute = require('./routes/adminUserRoute')
 const adminInformationRoute = require('./routes/adminInformationRoute');
 const adminInquiryRoute = require('./routes/adminInquiryRoute');
+const adminDocumentRoute = require('./routes/adminDocumentRoute');
 const adminQuizRoute = require('./routes/adminQuizRoute');
 const forgotPasswordRoute = require('./routes/forgotPassword');
 const quizRoute = require('./routes/quizRoute');
@@ -94,6 +95,7 @@ app.use('/admin', adminInformationRoute);
 app.use('/admin/posts', adminPostRoute);
 app.use('/admin/users', adminUserRoute);
 app.use('/admin/inquiry', adminInquiryRoute);
+app.use('/admin/documents', adminDocumentRoute);
 app.use('/admin/quiz', adminQuizRoute);
 app.use('/forgot-password', forgotPasswordRoute);
 app.use('/learning-trees', learningTreeRoute);
