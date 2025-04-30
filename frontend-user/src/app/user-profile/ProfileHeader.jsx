@@ -65,7 +65,6 @@ const ProfileHeader = ({
   const onSubmitProfile = async (data) => {
     try {
       setLoading(true);
-      console.log("Dữ liệu gửi lên API:", data);
 
       const formData = new FormData();
       formData.append("dateOfBirth", data.dateOfBirth);
@@ -94,7 +93,6 @@ const ProfileHeader = ({
         hometown: data.hometown,
       };
       const updatedBio = await createOrUpdateUserBio(id, bioData);
-      console.log("Dữ liệu Bio trả về:", updatedBio);
 
       // Cập nhật dữ liệu mới vào state
       setProfileData({ ...profileData, ...updateProfile, bio: updatedBio });
@@ -119,8 +117,6 @@ const ProfileHeader = ({
       if (coverPhotoFile) {
         formData.append("coverPicture", coverPhotoFile);
       }
-      console.log("📤 Payload gửi lên API:", formData.get("coverPicture"));
-
       const updateProfile = await updateUserCoverPhoto(id, formData);
       setProfileData({ ...profileData, coverPicture: updateProfile.coverPicture });
       setIsEditCoverModel(false);
