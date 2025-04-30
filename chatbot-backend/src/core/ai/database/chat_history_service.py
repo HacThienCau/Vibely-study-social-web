@@ -21,7 +21,13 @@ def write_to_next_empty_row(data, file_name="tools_log.csv"):
         writer.writerow(data)  # Append the row to the end of the file
 
 # Load YAML configuration file
-def load_config(config_file="../configs/api_keys.yaml"):
+def load_config(config_file=None):
+    if config_file is None:
+        # Sử dụng đường dẫn tương đối từ thư mục gốc của dự án
+        import os
+        base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
+        config_file = os.path.join(base_dir, "configs", "api_key.yaml")
+    
     with open(config_file, "r") as file:
         return yaml.safe_load(file)
 
@@ -34,6 +40,9 @@ chat_collection = db["chatbots"]
 user_chats_collection = db["userchatbots"]
 user_collection = db["users"]
 schedule_collection = db["schedules"]
+document_collection = db["documents"]
+learning_goal_collection = db["learning_goals"]
+achievement_collection = db["achievements"]
 
 def get_recent_chat_history(chat_id: str) -> List[dict]:
     """
@@ -107,16 +116,62 @@ def get_user_info(user_id: str) -> dict:
     Returns:
         dict: Thông tin người dùng dưới dạng JSON, chỉ bao gồm các trường có giá trị.
     """
-    user = user_collection.find_one({"email": "vonhatphuong.2k4@gmail.com"})
-    if not user:
+    if not user_id:
+        print("Warning: user_id is empty or None")
+        return {}
+        
+    try:
+        # Tìm user theo _id
+        user = user_collection.find_one({"_id": ObjectId(user_id)})
+        
+        # Nếu không tìm thấy theo _id, thử tìm theo email
+        if not user:
+            user = user_collection.find_one({"email": user_id})
+            
+        if not user:
+            print(f"Warning: User not found for user_id: {user_id}")
+            return {}
+
+        # Extract and format only fields with values
+        fields = ["username", "gender", "dateOfBirth", "email", "bio", "postsCount", "followerCount", "followingCount"]
+        formatted_user_info = {field: user[field] for field in fields if field in user and user[field]}
+        return formatted_user_info
+    except Exception as e:
+        print(f"Error fetching user info: {e}")
         return {}
 
-    # Extract and format only fields with values
-    fields = ["username", "gender", "dateOfBirth", "email", "bio", "postsCount", "followerCount", "followingCount"]
-    formatted_user_info = {field: user[field] for field in fields if field in user and user[field]}
-    return formatted_user_info
+def get_user_documents(user_id: str) -> List[dict]:
+    """
+    Lấy danh sách tài liệu của user.
+    """
+    try:
+        documents = list(document_collection.find({"user": user_id}))
+        return documents
+    except Exception as e:
+        print(f"Error fetching user documents: {e}")
+        return []
 
+def get_user_learning_goals(user_id: str) -> List[dict]:
+    """
+    Lấy mục tiêu học tập của user.
+    """
+    try:
+        goals = list(learning_goal_collection.find({"user": user_id}))
+        return goals
+    except Exception as e:
+        print(f"Error fetching learning goals: {e}")
+        return []
 
+def get_user_achievements(user_id: str) -> List[dict]:
+    """
+    Lấy thành tích của user.
+    """
+    try:
+        achievements = list(achievement_collection.find({"user": user_id}))
+        return achievements
+    except Exception as e:
+        print(f"Error fetching achievements: {e}")
+        return []
 
 def get_schedule(
     user_id: str, 
@@ -173,8 +228,8 @@ def get_schedule(
     filtered_schedule = []
     for event in events:
         # Lấy thời gian từ MongoDB (giả sử là UTC)
-        start_time_utc = event.get("StartTime")
-        end_time_utc = event.get("EndTime")
+        start_time_utc = event.get("startTime")
+        end_time_utc = event.get("endTime")
 
         # Gắn múi giờ UTC nếu thiếu
         if start_time_utc.tzinfo is None:
@@ -187,7 +242,7 @@ def get_schedule(
         end_time_local = end_time_utc.astimezone(tz_utc_plus_7)
 
         filtered_schedule.append({
-            "Chủ đề": event.get("Subject", ""),
+            "Chủ đề": event.get("subject", ""),
             "Thời gian bắt đầu (UTC+7)": start_time_local.strftime("%Y-%m-%d %H:%M:%S %Z"),  # Ghi rõ múi giờ
             "Thời gian kết thúc (UTC+7)": end_time_local.strftime("%Y-%m-%d %H:%M:%S %Z"),  # Ghi rõ múi giờ
         })

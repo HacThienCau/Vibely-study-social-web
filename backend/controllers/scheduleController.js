@@ -1,6 +1,6 @@
 const Schedule = require("../model/Schedule");
 const response = require("../utils/responseHandler");
-const mongoose = require('mongoose'); 
+const mongoose = require('mongoose');
 
 // Tạo lịch trình mới
 const createSchedule = async (req, res) => {
@@ -9,7 +9,7 @@ const createSchedule = async (req, res) => {
         const { subject, startTime, endTime, categoryColor } = req.body;
 
         if (!subject || !startTime || !endTime) {
-            return response(res, 400, "❌ Thiếu thông tin lịch trình");
+            return response(res, 400, "Thiếu thông tin lịch trình");
         }
 
         const newSchedule = new Schedule({
@@ -21,9 +21,9 @@ const createSchedule = async (req, res) => {
         });
 
         await newSchedule.save();
-        return response(res, 201, "✅ Lịch trình đã được tạo", newSchedule);
+        return response(res, 201, "Lịch trình đã được tạo", newSchedule);
     } catch (error) {
-        console.error("❌ Lỗi khi tạo lịch:", error);
+        console.error("Lỗi khi tạo lịch:", error);
         return response(res, 500, "Lỗi máy chủ", error.message);
     }
 };
@@ -45,7 +45,7 @@ const updateSchedule = async (req, res) => {
     try {
         const userId = req.user.userId;
         const { subject, startTime, endTime, categoryColor } = req.body;
-        const { scheduleId } = req.params; 
+        const { scheduleId } = req.params;
 
         if (!mongoose.Types.ObjectId.isValid(scheduleId)) {
             return response(res, 400, "ID lịch trình không hợp lệ");
@@ -117,15 +117,15 @@ const getScheduleById = async (req, res) => {
 // Lấy tất cả lịch trình của một người dùng cụ thể
 const getScheduleByIdUser = async (req, res) => {
     try {
-      const schedule = await Schedule.find({user:req.params.id})
-      if (!schedule) {
-        return res.status(404).json({ message: "Lịch trình không tồn tại" });
-      }
-      res.json(schedule);
+        const schedule = await Schedule.find({ user: req.params.id })
+        if (!schedule) {
+            return res.status(404).json({ message: "Lịch trình không tồn tại" });
+        }
+        res.json(schedule);
     } catch (error) {
-      res.status(500).json({ message: "Lỗi lấy lịch trình", error: error.message });
+        res.status(500).json({ message: "Lỗi lấy lịch trình", error: error.message });
     }
-  };
+};
 
 module.exports = {
     createSchedule,

@@ -21,12 +21,10 @@ const SearchBar = ({
         setQuery(initialQuery);
     }, [initialQuery]);
 
-    // Xử lý khi người dùng nhập hoặc xóa nội dung
     const handleChange = (e) => {
         const value = e.target.value;
         setQuery(value);
 
-        // Nếu xóa hết nội dung trong ô tìm kiếm, gửi query rỗng
         if (value.trim() === "") {
             onSearch("");
         }

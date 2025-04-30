@@ -28,15 +28,13 @@ const Dashboard = () => {
             const questions = await getTotalQuestions();
             const stats = await getDashboardStats(range);
 
-            console.log("Dashboard API Response:", stats);
-
             setTotalUsers(users);
             setTotalPosts(posts);
             setTotalDocuments(documents);
             setTotalQuestions(questions);
 
             if (!stats || !stats.usersStats || !stats.postsStats) {
-                console.error("API response missing required data:", stats);
+                console.error("Lỗi: ", stats);
                 return;
             }
 

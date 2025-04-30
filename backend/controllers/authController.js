@@ -19,6 +19,7 @@ const transporter = nodemailer.createTransport({
     }
 });
 
+// Đăng ký cho người dùng
 const registerUser = async (req, res) => {
     try {
         const { username, email, password, gender, dateOfBirth } = req.body;
@@ -60,6 +61,8 @@ const registerUser = async (req, res) => {
         return response(res, 500, 'Đăng ký thất bại', error.message);
     }
 }
+
+// Đăng nhập cho người dùng
 const loginUser = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -91,6 +94,8 @@ const loginUser = async (req, res) => {
         return response(res, 500, 'Đăng nhập thất bại', error.message);
     }
 }
+
+// Đăng xuất cho người dùng
 const logoutUser = async (req, res) => {
     try {
         res.cookie("auth_token", "", {
@@ -106,6 +111,7 @@ const logoutUser = async (req, res) => {
     }
 }
 
+// Xóa tài khoản người dùng
 const deleteAccount = async (req, res) => {
     try {
         const userId = req.user.userId;
@@ -115,8 +121,8 @@ const deleteAccount = async (req, res) => {
             $or: [
                 { user: userId },
                 { "comments.user": userId },
-                { "comments.replies.user": userId }, 
-                { "reactions.user._id": userId }, 
+                { "comments.replies.user": userId },
+                { "reactions.user._id": userId },
                 { "comments.reactions.user": userId }
             ]
         });
@@ -126,17 +132,16 @@ const deleteAccount = async (req, res) => {
                 await Post.findByIdAndDelete(post._id);
                 continue;
             }
-              
+
             // Xóa tất cả comments của user
-            console.log(post.comments.filter(comment => comment.user._id.toString() !== userId))
             post.comments = post.comments.filter(comment => comment.user._id.toString() !== userId);
             post.commentCount = post.comments.length;
-            
+
             // Xóa tất cả replies của user trong comments
             post.comments.forEach(comment => {
                 comment.replies = comment.replies.filter(reply => reply.user._id.toString() !== userId);
             });
-            
+
             // Xóa tất cả reactions của user trên bài viết
             post.reactions = post.reactions.filter(reaction => reaction.user._id.toString() !== userId);
             // Cập nhật lại reactionStats
@@ -156,11 +161,11 @@ const deleteAccount = async (req, res) => {
 
             await post.save();
         }
-        
+
         const stories = await Story.find({
             $or: [
-                { "user": userId }, 
-                { "reactions.user": userId }, 
+                { "user": userId },
+                { "reactions.user": userId },
             ]
         });
         for (const story of stories) {
@@ -173,11 +178,11 @@ const deleteAccount = async (req, res) => {
 
             // Cập nhật lại reactionStats
             story.reactionStats = {
-                "tym":  story.reactions.length,
+                "tym": story.reactions.length,
             }
             await story.save();
         }
-         // Xóa user khỏi danh sách follower của những người khác
+        // Xóa user khỏi danh sách follower của những người khác
         await User.updateMany(
             { followers: userId },
             { $pull: { followers: userId }, $inc: { followerCount: -1 } }
@@ -200,6 +205,7 @@ const deleteAccount = async (req, res) => {
     }
 }
 
+// Đổi mật khẩu cho người dùng
 const changePassword = async (req, res) => {
     try {
         const { oldPassword, newPassword } = req.body;

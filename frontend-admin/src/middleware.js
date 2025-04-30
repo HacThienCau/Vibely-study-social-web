@@ -31,5 +31,8 @@ export const config = {
     '/posts/:path*',
     '/reports/:path*',
     '/settings/:path*',
+    '/documents/:path*',
+    '/quiz/:path*',
+    '/account/:path*'
   ]
 } 
