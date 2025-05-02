@@ -46,7 +46,12 @@ const Messenger = () => {
 
             // Lắng nghe tin nhắn mới
             socket.current.on("getMessage", (data) => {
-                setMessages(prev => [...prev, data]); // Cập nhật messages trực tiếp
+                // Thêm ảnh đại diện vào tin nhắn mới
+                const newMessage = {
+                    ...data,
+                    profilePicture: data.profilePicture || "/images/user_default.jpg"
+                };
+                setMessages(prev => [...prev, newMessage]);
             });
 
             // Lắng nghe sự kiện đã đọc
@@ -163,7 +168,8 @@ const Messenger = () => {
                 senderId: user._id,
                 receiverId: currentChat.members.find(member => member !== user._id),
                 text: newMessage,
-                messageId: res.data._id // Gửi kèm ID tin nhắn
+                messageId: res.data._id,
+                profilePicture: user.profilePicture // Thêm ảnh đại diện
             });
         } catch (err) {
             console.error("❌ Lỗi khi gửi tin nhắn:", err);
