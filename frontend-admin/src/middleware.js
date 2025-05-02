@@ -29,7 +29,6 @@ export const config = {
     '/admin-login',
     '/users/:path*',
     '/posts/:path*',
-    '/reports/:path*',
     '/settings/:path*',
     '/documents/:path*',
     '/quiz/:path*',
