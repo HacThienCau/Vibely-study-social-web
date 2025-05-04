@@ -11,6 +11,8 @@ import { FaXTwitter } from "react-icons/fa6";
 import { FaFacebook, FaLinkedin } from "react-icons/fa";
 import { AiOutlineCopy, AiOutlineDelete } from "react-icons/ai";
 import { QRCodeCanvas } from "qrcode.react";
+import { deletePost, getAllUserPosts } from '@/service/post.service'
+import toast from 'react-hot-toast'
 
 import { formatedDate } from '@/lib/utils'
 import Image from 'next/image'
@@ -29,6 +31,7 @@ export const PostsContent = ({ post, onReact, onComment, onShare, onDelete }) =>
 
   const { user } = userStore()
   const [reaction, setReaction] = useState(null)
+  const [posts, setPosts] = useState([])
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [popupOpen, setPopupOpen] = useState(false);
@@ -55,6 +58,23 @@ export const PostsContent = ({ post, onReact, onComment, onShare, onDelete }) =>
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  // Hàm fetch lại danh sách bài viết
+  const fetchPosts = async () => {
+    try {
+      const result = await getAllUserPosts(post?.user?._id);
+      setPosts(result);
+    } catch (error) {
+      console.error("Lỗi khi tải danh sách bài viết:", error);
+    }
+  };
+
+  // Fetch lại danh sách bài viết sau khi xóa
+  useEffect(() => {
+    if (post?.user?._id) {
+      fetchPosts();
+    }
+  }, [post?.user?._id]);
 
   const handleUserProfile = () => {
     router.push(`/user-profile/${post?.user?._id}`)
@@ -121,8 +141,27 @@ export const PostsContent = ({ post, onReact, onComment, onShare, onDelete }) =>
     onReact(reaction);
     setShowReactionChooser(false); // Ẩn thanh reaction sau khi chọn
   };
-  const handleDeletePost = () => {
-    onDelete();
+  const handleDeletePost = async () => {
+    try {
+      await deletePost(post?._id);
+      await fetchPosts(); // Fetch lại danh sách bài viết sau khi xóa
+      if (typeof onDelete === 'function') {
+        onDelete(); // Chỉ gọi callback nếu nó tồn tại và là một function
+      }
+      toast.success("Xóa bài viết thành công.");
+    } catch (error) {
+      console.error("Lỗi khi xóa bài viết:", error);
+      if (error.response) {
+        // Lỗi từ server
+        toast.error(error.response.data?.message || "Có lỗi xảy ra khi xóa bài viết.");
+      } else if (error.request) {
+        // Không nhận được phản hồi từ server
+        toast.error("Không thể kết nối đến máy chủ. Vui lòng thử lại sau.");
+      } else {
+        // Lỗi khác
+        toast.error("Có lỗi xảy ra khi xóa bài viết. Vui lòng thử lại sau.");
+      }
+    }
   }
 
   return (

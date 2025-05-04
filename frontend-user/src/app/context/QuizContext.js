@@ -28,7 +28,6 @@ export function ContextProvider({ children }) {
                 const quizzes = await getAllQuizzes();
                 setAllQuizzes(quizzes || []);
             } catch (error) {
-                console.error("Lỗi khi lấy danh sách quiz:", error);
             } finally {
                 setLoading(false);
             }
