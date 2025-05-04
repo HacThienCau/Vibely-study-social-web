@@ -31,11 +31,7 @@ export default function AuthWrapper({ children }) {
 
             // Lắng nghe sự kiện getUsers để cập nhật danh sách online users
             socketRef.current.on("getUsers", (users) => {
-                console.log("Received online users:", users);
-                // Có thể lưu danh sách online users vào store nếu cần
             });
-
-            console.log("Socket connected for user:", userId);
         }
     };
 
@@ -45,7 +41,6 @@ export default function AuthWrapper({ children }) {
             socketRef.current.disconnect();
             socketRef.current = null;
             window.socket = null;
-            console.log("Socket disconnected");
         }
     };
 

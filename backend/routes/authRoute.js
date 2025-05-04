@@ -27,16 +27,55 @@ router.get('/google', passport.authenticate('google', {
 }))
 
 //Route Google callback 
-router.get('/google/callback', passport.authenticate('google', { failureRedirect: `${process.env.FRONTEND_URL}/user-login`, session: false }),
-    (req, res) => {
-        //Tạo access token và gửi về trình duyệt
-        const accessToken = generateToken(req?.user);
-        res.cookie("auth_token", accessToken, {
-            httpOnly: true,
-            sameSite: "none",
-            secure: true
-        })
-        res.redirect(`${process.env.FRONTEND_URL}`)
+router.get('/google/callback',
+    passport.authenticate('google', {
+        failureRedirect: `${process.env.FRONTEND_URL}/user-login`,
+        session: false
+    }),
+    async (req, res) => {
+        try {
+            if (!req.user) {
+                console.error('Google callback: No user data received');
+                return res.redirect(`${process.env.FRONTEND_URL}/user-login?error=no_user_data`);
+            }
+
+            // Log user data for debugging
+            console.log('Google callback user data:', {
+                id: req.user._id,
+                email: req.user.email,
+                username: req.user.username
+            });
+
+            // Ensure user object has all required fields
+            const userData = {
+                _id: req.user._id,
+                username: req.user.username,
+                email: req.user.email,
+                role: req.user.role || 'user'
+            };
+
+            // Generate token with proper user data
+            const accessToken = generateToken(userData);
+
+            if (!accessToken) {
+                console.error('Failed to generate token');
+                return res.redirect(`${process.env.FRONTEND_URL}/user-login?error=token_generation_failed`);
+            }
+
+            // Set cookie with proper options
+            res.cookie("auth_token", accessToken, {
+                httpOnly: true,
+                sameSite: "none",
+                secure: true,
+                maxAge: 90 * 24 * 60 * 60 * 1000 // 90 days
+            });
+
+            // Redirect to frontend
+            res.redirect(`${process.env.FRONTEND_URL}`);
+        } catch (error) {
+            console.error('Google callback error:', error);
+            res.redirect(`${process.env.FRONTEND_URL}/user-login?error=server_error`);
+        }
     }
-)
+);
 module.exports = router;

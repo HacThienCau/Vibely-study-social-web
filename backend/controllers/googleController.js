@@ -9,13 +9,17 @@ passport.use(new GoogleStrategy({
    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
    callbackURL: process.env.GOOGLE_CALLBACK_URL,
    passReqToCallback: true
-   //Cho phép truyền req vào callback function
 },
    async (req, accessToken, refreshToken, profile, done) => {
       const { emails, displayName, photos } = profile;
       try {
+         if (!emails || !emails[0]?.value) {
+            return done(new Error('Không thể lấy thông tin email từ Google'));
+         }
+
          //Kiểm tra người dùng đã tồn tại hay chưa
-         let user = await User.findOne({ email: emails[0].value })
+         let user = await User.findOne({ email: emails[0].value });
+
          if (user) {
             if (!user.profilePicture) {
                user.profilePicture = photos[0]?.value;
@@ -27,14 +31,28 @@ passport.use(new GoogleStrategy({
          //Nếu người dùng chưa tồn tại, tạo một user mới với thông tin từ Google
          user = await User.create({
             username: displayName,
-            email: emails[0]?.value,
-            profilePicture: photos[0]?.value
-         })
-         done(null, user)
+            email: emails[0].value,
+            profilePicture: photos[0]?.value,
+            role: 'user',
+            postsCount: 0,
+            followerCount: 0,
+            followingCount: 0,
+            bio: null,
+            coverPicture: null,
+            password: Math.random().toString(36).slice(-8),
+            gender: 'other',
+            dateOfBirth: new Date('2000-01-01')
+         });
+
+         if (!user) {
+            return done(new Error('Không thể tạo người dùng mới'));
+         }
+
+         return done(null, user);
       } catch (error) {
-         done(error)
+         console.error('Google OAuth Error:', error);
+         return done(error);
       }
    }
-
 ));
 module.exports = passport;

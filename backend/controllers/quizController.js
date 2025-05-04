@@ -27,7 +27,31 @@ const getQuizById = async (req, res) => {
     }
 };
 
+// Cập nhật quiz
+const updateQuiz = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const { updateQuizQuestions } = req.body;
+
+        const quiz = await Quiz.findById(id);
+        if (!quiz) {
+            return response(res, 404, "Quiz không tồn tại.");
+        }
+
+        // Cập nhật các câu hỏi
+        if (updateQuizQuestions) {
+            quiz.quizQuestions = updateQuizQuestions;
+        }
+
+        const updatedQuiz = await quiz.save();
+        return response(res, 200, "Cập nhật quiz thành công!", updatedQuiz);
+    } catch (error) {
+        return response(res, 500, "Lỗi server", error.message);
+    }
+};
+
 module.exports = {
     getQuizzes,
-    getQuizById
+    getQuizById,
+    updateQuiz
 };
