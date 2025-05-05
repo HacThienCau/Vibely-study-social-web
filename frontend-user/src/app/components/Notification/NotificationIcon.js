@@ -13,27 +13,19 @@ const NotificationIcon = () => {
     const mockNotifications = [
       {
         id: 1,
-        title: "Dương Lê đã thích bài viết của bạn",
-        message: "Bài viết: 'Học bài thôi, top 1 trường Chaewah💯'",
+        title: "Vibely",
+        message: "Chào mừng bạn đã đến với Vibely - mạng xã hội học tập giúp bạn tiến bộ từng ngày",
         image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSS0GoIVOyPuFDshrUt6KmgMQMn6RavA6IuuWob47x4GjoIHcgXmaUJbZw1NdY8-7pH4PM&usqp=CAU",
-        username: "Dương Lê",
+        username: "Vibely",
         isNew: true,
       },
       {
         id: 2,
-        title: "Yoo Jae Yi đã bình luận về ảnh của bạn",
-        message: "xỉu 7749 ngày",
-        image: "https://cellphones.com.vn/sforum/wp-content/uploads/2024/02/avatar-anh-meo-cute-1.jpg",
-        username: "Yoo Jae Yi",
+        title: "Vibely",
+        message: "Xem có gì mới, học tập cùng bạn bè trên Vibely",
+        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSS0GoIVOyPuFDshrUt6KmgMQMn6RavA6IuuWob47x4GjoIHcgXmaUJbZw1NdY8-7pH4PM&usqp=CAU",
+        username: "Vibely",
         isNew: true,
-      },
-      {
-        id: 3,
-        title: "Bạn có một lời mời kết bạn từ Le Nguyen",
-        message: "Xem trang cá nhân của họ ngay",
-        image: "https://img.tripi.vn/cdn-cgi/image/width=700,height=700/https://gcs.tripi.vn/public-tripi/tripi-feed/img/482760XsW/anh-mo-ta.png",
-        username: "Le Nguyen",
-        isNew: false,
       },
     ];
     setNotifications(mockNotifications);

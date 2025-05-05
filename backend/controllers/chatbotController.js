@@ -1,5 +1,20 @@
 const Chatbot = require('../model/Chatbot');
 const UserChatbot = require('../model/UserChatbot');
+const axios = require('axios');
+const OpenAI = require('openai');
+require('dotenv').config();
+const UserBio = require('../model/UserBio');
+const LearningGoal = require('../model/LearningGoal');
+const { LearningTree } = require('../model/LearningTree');
+const { Achievement } = require('../model/Achievement');
+const Schedule = require('../model/Schedule');
+const Post = require('../model/Post');
+const Story = require('../model/Story');
+
+// Cấu hình OpenAI
+const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+});
 
 // Tạo hội thoại mới
 const createChat = async (req, res) => {
@@ -132,6 +147,7 @@ const putQuestion = async (req, res) => {
         res.status(500).send("Lỗi khi gửi câu hỏi");
     }
 }
+
 // Thêm hàm xử lý streaming response
 const streamChatbotResponse = async (req, res) => {
     const userId = req.user.userId;
@@ -191,10 +207,165 @@ const streamChatbotResponse = async (req, res) => {
     }
 };
 
+// Xóa lịch sử chat của người dùng
+const deleteChatHistory = async (req, res) => {
+    try {
+        const userId = req.user.userId;
+        await Chatbot.deleteMany({ user: userId });
+        res.json({ message: 'Xóa lịch sử chat thành công' });
+    } catch (error) {
+        res.status(500).json({
+            message: 'Có lỗi xảy ra khi xóa lịch sử chat',
+            error: error.message
+        });
+    }
+};
+
+// Lấy lịch sử chat của người dùng
+const getChatHistory = async (req, res) => {
+    try {
+        const userId = req.user.userId;
+        const chatHistory = await Chatbot.find({ user: userId })
+            .sort({ createdAt: 1 })
+            .limit(10);
+
+        const formattedHistory = chatHistory.map(chat => ({
+            history: chat.history.map(msg => ({
+                role: msg.role,
+                parts: msg.parts
+            }))
+        }));
+
+        res.json({
+            history: formattedHistory,
+            message: 'Lấy lịch sử chat thành công'
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: 'Có lỗi xảy ra khi lấy lịch sử chat',
+            error: error.message
+        });
+    }
+};
+
+// Xử lý tin nhắn từ người dùng
+const handleMessage = async (req, res) => {
+    try {
+        const { message } = req.body;
+        const userId = req.user.userId;
+
+        if (!message || message.trim() === '') {
+            return res.status(400).json({ message: 'Tin nhắn không được để trống' });
+        }
+
+        // Lấy thông tin người dùng để cá nhân hóa
+        const [userBio, learningGoals, learningTree, achievements, schedules, posts, stories] = await Promise.all([
+            UserBio.findOne({ user: userId }),
+            LearningGoal.find({ user_id: userId }),
+            LearningTree.findOne({ user_id: userId }),
+            Achievement.find({ user_id: userId }),
+            Schedule.find({ user: userId }),
+            Post.find({ user: userId }).limit(5),
+            Story.find({ user: userId }).limit(5)
+        ]);
+
+        // Tạo context cho chatbot
+        const userContext = `
+        Thông tin người dùng:
+        - Bio: ${userBio?.bioText || 'Chưa có'}
+        - Nơi sống: ${userBio?.liveIn || 'Chưa có'}
+        - Nơi làm việc: ${userBio?.workplace || 'Chưa có'}
+        - Học vấn: ${userBio?.education || 'Chưa có'}
+        
+        Mục tiêu học tập:
+        ${learningGoals.map(goal => `- ${goal.title} (${goal.is_completed ? 'Đã hoàn thành' : 'Chưa hoàn thành'})`).join('\n')}
+        
+        Cây học tập:
+        - Loại cây: ${learningTree?.tree_type || 'Chưa có'}
+        - Giai đoạn: ${learningTree?.growth_stage || 0}
+        - Số mục tiêu đã hoàn thành: ${learningTree?.completed_goals_count || 0}
+        
+        Thành tựu:
+        ${achievements.map(achievement => `- ${achievement.type}: ${achievement.goals_completed} mục tiêu`).join('\n')}
+        
+        Lịch học:
+        ${schedules.map(schedule => `- ${schedule.subject}: ${new Date(schedule.startTime).toLocaleString()} - ${new Date(schedule.endTime).toLocaleString()}`).join('\n')}
+        
+        Bài viết gần đây:
+        ${posts.map(post => `- ${post.content?.substring(0, 50)}...`).join('\n')}
+        
+        Story gần đây:
+        ${stories.map(story => `- ${story.mediaType}: ${story.mediaUrl}`).join('\n')}
+        `;
+
+        // Tạo prompt cho chatbot với context
+        const prompt = `Bạn là một trợ lý học tập thông minh của Vibely. 
+        Dựa vào thông tin người dùng sau đây, hãy đưa ra câu trả lời phù hợp và cá nhân hóa:
+        
+        ${userContext}
+        
+        Người dùng: ${message}
+        Trợ lý:`;
+
+
+        // Gọi API của OpenAI
+        const completion = await openai.chat.completions.create({
+            model: "gpt-4o",
+            messages: [
+                {
+                    role: "system",
+                    content: `Bạn là một trợ lý học tập thông minh của Vibely. 
+                    Dựa vào thông tin người dùng sau đây, hãy đưa ra câu trả lời phù hợp và cá nhân hóa:
+                    ${userContext}`
+                },
+                {
+                    role: "user",
+                    content: message
+                }
+            ],
+            max_tokens: 500,
+            temperature: 0.7,
+        });
+
+
+        const response = completion.choices[0].message.content;
+
+        const newChat = new Chatbot({
+            user: userId,
+            history: [
+                {
+                    role: 'user',
+                    parts: [{ text: message }]
+                },
+                {
+                    role: 'model',
+                    parts: [{ text: response }]
+                }
+            ]
+        });
+
+        await newChat.save();
+
+        res.json({
+            message: response,
+            timestamp: new Date()
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            message: 'Có lỗi xảy ra khi xử lý tin nhắn',
+            error: error.message
+        });
+    }
+};
+
 module.exports = {
     createChat,
     getChats,
     getChatItem,
     putQuestion,
-    streamChatbotResponse
+    streamChatbotResponse,
+    handleMessage,
+    getChatHistory,
+    deleteChatHistory
 };
