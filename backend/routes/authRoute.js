@@ -35,18 +35,11 @@ router.get('/google/callback',
     async (req, res) => {
         try {
             if (!req.user) {
-                console.error('Google callback: No user data received');
+                console.error('Lỗi khi gọi Google callback: Không có dữ liệu người dùng');
                 return res.redirect(`${process.env.FRONTEND_URL}/user-login?error=no_user_data`);
             }
 
-            // Log user data for debugging
-            console.log('Google callback user data:', {
-                id: req.user._id,
-                email: req.user.email,
-                username: req.user.username
-            });
-
-            // Ensure user object has all required fields
+            //Đảm bảo đối tượng người dùng có tất cả các trường bắt buộc
             const userData = {
                 _id: req.user._id,
                 username: req.user.username,
@@ -54,26 +47,26 @@ router.get('/google/callback',
                 role: req.user.role || 'user'
             };
 
-            // Generate token with proper user data
+            //Tạo token với dữ liệu người dùng phù hợp
             const accessToken = generateToken(userData);
 
             if (!accessToken) {
-                console.error('Failed to generate token');
+                console.error('Lỗi khi tạo token');
                 return res.redirect(`${process.env.FRONTEND_URL}/user-login?error=token_generation_failed`);
             }
 
-            // Set cookie with proper options
+            //Tạo cookie với các tùy chọn phù hợp
             res.cookie("auth_token", accessToken, {
                 httpOnly: true,
                 sameSite: "none",
                 secure: true,
-                maxAge: 90 * 24 * 60 * 60 * 1000 // 90 days
+                maxAge: 90 * 24 * 60 * 60 * 1000
             });
 
-            // Redirect to frontend
+            //Chuyển hướng đến frontend
             res.redirect(`${process.env.FRONTEND_URL}`);
         } catch (error) {
-            console.error('Google callback error:', error);
+            console.error('Lỗi khi gọi Google callback:', error);
             res.redirect(`${process.env.FRONTEND_URL}/user-login?error=server_error`);
         }
     }
