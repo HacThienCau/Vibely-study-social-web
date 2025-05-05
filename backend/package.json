@@ -34,7 +34,9 @@
     "socket.io": "^4.8.1",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
-    "yamljs": "^0.3.0"
+    "yamljs": "^0.3.0",
+    "openai": "^4.0.0",
+    "axios": "^1.6.0"
   },
   "devDependencies": {
     "cross-env": "^7.0.3",

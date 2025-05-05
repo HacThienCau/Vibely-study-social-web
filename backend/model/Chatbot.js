@@ -1,29 +1,34 @@
 const mongoose = require('mongoose');
 
-//Schema lưu lại lịch sử hội thoại giữa người dùng và chatbot
-const ChatbotSchema = new mongoose.Schema({
-    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-    history: [
-        {
-            role: {
-                type: String,
-                enum: ['user', 'model'],
-                required: true,
-            },
-            parts: [
-                {
-                    text: {
-                        type: String,
-                        required: true,
-                    }
-                }
-            ],
-            img: {
-                type: String,
-                required: false,
-            }
+const chatHistorySchema = new mongoose.Schema({
+    role: {
+        type: String,
+        required: true,
+        enum: ['user', 'model']
+    },
+    parts: [{
+        text: {
+            type: String,
+            required: true
         }
-    ]
-}, { timestamps: true });
+    }]
+});
 
-module.exports = mongoose.model('Chatbot', ChatbotSchema);
+const chatbotSchema = new mongoose.Schema({
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
+    history: [chatHistorySchema],
+    createdAt: {
+        type: Date,
+        default: Date.now
+    },
+    updatedAt: {
+        type: Date,
+        default: Date.now
+    }
+});
+
+module.exports = mongoose.model('Chatbot', chatbotSchema);

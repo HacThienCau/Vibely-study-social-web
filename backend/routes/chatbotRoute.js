@@ -1,18 +1,33 @@
 const express = require('express');
 const router = express.Router();
+const chatbotController = require('../controllers/chatbotController');
 const authMiddleware = require('../middleware/authMiddleware');
-const { createChat, getChats, getChatItem, putQuestion, streamChatbotResponse } = require('../controllers/chatbotController');
 
-// Route tạo chat mới
-router.post('/', authMiddleware, createChat);
+// Tất cả các route đều yêu cầu xác thực
+router.use(authMiddleware);
 
-// Route lấy danh sách các chat
-router.get('/', authMiddleware, getChats);
+// Route để xử lý tin nhắn
+router.post('/handleMessage', chatbotController.handleMessage);
 
-// Route lấy thông tin chi tiết của một chat
-router.get('/:chatId', authMiddleware, getChatItem);
+// Route để lấy lịch sử chat
+router.get('/history', chatbotController.getChatHistory);
 
-// Route lấy câu trả lời từ chatbot
-router.put('/:chatId', authMiddleware, putQuestion);
+// Route để xóa lịch sử chat
+router.delete('/history', chatbotController.deleteChatHistory);
+
+// Route để tạo cuộc hội thoại mới
+router.post('/', chatbotController.createChat);
+
+// Route để lấy danh sách cuộc hội thoại
+router.get('/', chatbotController.getChats);
+
+// Route để lấy chi tiết một cuộc hội thoại
+router.get('/:chatId', chatbotController.getChatItem);
+
+// Route để thêm câu hỏi vào cuộc hội thoại
+router.put('/:chatId', chatbotController.putQuestion);
+
+// Route để xử lý streaming response
+router.post('/stream', chatbotController.streamChatbotResponse);
 
 module.exports = router;
