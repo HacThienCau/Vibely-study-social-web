@@ -8,6 +8,8 @@ const response = require('../utils/responseHandler');
 const bcrypt = require('bcryptjs');
 const Post = require("../model/Post");
 const Story = require("../model/Story");
+const Inquiry = require("../model/Inquiry");
+
 const nodemailer = require('nodemailer');
 
 // Tạo transporter để gửi email
@@ -194,6 +196,8 @@ const deleteAccount = async (req, res) => {
             { $pull: { followings: userId }, $inc: { followingCount: -1 } }
         );
 
+        await Inquiry.deleteMany({ userId: userId });
+
         const deletedUser = await User.findByIdAndDelete(userId);
         if (!deletedUser) {
             return response(res, 404, "Người dùng không tồn tại");
@@ -253,101 +257,101 @@ const changePassword = async (req, res) => {
 // Hàm gửi OTP
 const sendOTPEmail = async (email, otp) => {
     const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to: email,
-      subject: 'Xác thực email đăng ký Vibely',
-      html: `
+        from: process.env.EMAIL_USER,
+        to: email,
+        subject: 'Xác thực email đăng ký Vibely',
+        html: `
         <h1>Xác thực email đăng ký Vibely</h1>
         <p>Mã OTP của bạn là: <strong>${otp}</strong></p>
         <p>Mã này sẽ hết hạn sau 5 phút.</p>
       `
     };
-  
+
     await transporter.sendMail(mailOptions);
-  };
-  
- // Tạo và gửi OTP
+};
+
+// Tạo và gửi OTP
 const sendOTP = async (req, res) => {
     try {
-      const { email } = req.body;
-  
-      // Kiểm tra email đã tồn tại chưa
-    //   const existingUser = await User.findOne({ email });
-    //   if (existingUser) {
-    //     return res.status(400).json({
-    //       status: 'error',
-    //       message: 'Email đã tồn tại'
-    //     });
-    //   }
-  
-      // Tạo mã OTP ngẫu nhiên
-      const otp = Math.floor(100000 + Math.random() * 900000).toString();
-  
-      // Lưu OTP vào database
-      await OTP.create({
-        email,
-        otp,
-        expiresAt: new Date(Date.now() + 5 * 60 * 1000) // Hết hạn sau 5 phút
-      });
-  
-      // Gửi OTP qua email
-      await sendOTPEmail(email, otp);
-  
-      res.status(200).json({
-        status: 'success',
-        message: 'OTP đã được gửi đến email của bạn'
-      });
+        const { email } = req.body;
+
+        // Kiểm tra email đã tồn tại chưa
+        //   const existingUser = await User.findOne({ email });
+        //   if (existingUser) {
+        //     return res.status(400).json({
+        //       status: 'error',
+        //       message: 'Email đã tồn tại'
+        //     });
+        //   }
+
+        // Tạo mã OTP ngẫu nhiên
+        const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+        // Lưu OTP vào database
+        await OTP.create({
+            email,
+            otp,
+            expiresAt: new Date(Date.now() + 5 * 60 * 1000) // Hết hạn sau 5 phút
+        });
+
+        // Gửi OTP qua email
+        await sendOTPEmail(email, otp);
+
+        res.status(200).json({
+            status: 'success',
+            message: 'OTP đã được gửi đến email của bạn'
+        });
     } catch (error) {
         console.error('sendOTP ERROR:', error.message);
-    //   console.error(error);
-      res.status(500).json({
-        status: 'error',
-        message: 'Có lỗi xảy ra, vui lòng thử lại'
-      });
-    }
-  };
-  
-  // Xác thực OTP
-  const verifyOTP = async (req, res) => {
-    try {
-      const { email, otp } = req.body;
-  
-      // Tìm OTP trong database
-      const otpRecord = await OTP.findOne({
-        email,
-        otp,
-        expiresAt: { $gt: new Date() }
-      });
-  
-      if (!otpRecord) {
-        return res.status(400).json({
-          status: 'error',
-          message: 'Mã OTP không hợp lệ hoặc đã hết hạn'
+        //   console.error(error);
+        res.status(500).json({
+            status: 'error',
+            message: 'Có lỗi xảy ra, vui lòng thử lại'
         });
-      }
-  
-      // Xóa OTP đã sử dụng
-      await OTP.deleteOne({ _id: otpRecord._id });
-  
-      // Cập nhật trạng thái xác thực email của user
-    //   await User.updateOne(
-    //     { email },
-    //     { $set: { isEmailVerified: true } }
-    //   );
-  
-      res.status(200).json({
-        status: 'success',
-        message: 'Xác thực email thành công'
-      });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({
-        status: 'error',
-        message: 'Có lỗi xảy ra, vui lòng thử lại'
-      });
     }
-  };
-  
+};
+
+// Xác thực OTP
+const verifyOTP = async (req, res) => {
+    try {
+        const { email, otp } = req.body;
+
+        // Tìm OTP trong database
+        const otpRecord = await OTP.findOne({
+            email,
+            otp,
+            expiresAt: { $gt: new Date() }
+        });
+
+        if (!otpRecord) {
+            return res.status(400).json({
+                status: 'error',
+                message: 'Mã OTP không hợp lệ hoặc đã hết hạn'
+            });
+        }
+
+        // Xóa OTP đã sử dụng
+        await OTP.deleteOne({ _id: otpRecord._id });
+
+        // Cập nhật trạng thái xác thực email của user
+        //   await User.updateOne(
+        //     { email },
+        //     { $set: { isEmailVerified: true } }
+        //   );
+
+        res.status(200).json({
+            status: 'success',
+            message: 'Xác thực email thành công'
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            status: 'error',
+            message: 'Có lỗi xảy ra, vui lòng thử lại'
+        });
+    }
+};
+
 
 module.exports = { registerUser, loginUser, logoutUser, deleteAccount, changePassword, verifyOTP, sendOTP };
 
