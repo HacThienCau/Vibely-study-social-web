@@ -269,16 +269,22 @@ const GoalTreePage = () => {
     const handleToggleGoal = async (id) => {
         try {
             if (!token) {
+                toast.error("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");
                 router.push('/user-login');
                 return;
             }
 
-            const response = await axios.patch(`${API_URL}/learning-goals/${id}/toggle`, {}, {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
+            const response = await axios.patch(
+                `${API_URL}/learning-goals/${id}/toggle`,
+                {},
+                {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    withCredentials: true
                 }
-            });
+            );
 
             if (response.status === 200) {
                 const { goal, tree: updatedTree, newAchievements } = response.data;
@@ -286,12 +292,12 @@ const GoalTreePage = () => {
                 // Update goals list
                 setGoals(goals.map(g => g._id === goal._id ? goal : g));
 
-                // Update tree if it exists
+                // Cập nhật cây
                 if (updatedTree) {
                     setTree(updatedTree);
                 }
 
-                // Show achievement popup if there are new achievements
+                // Hiển thị popup thành tích nếu có thành tích mới
                 if (newAchievements && newAchievements.length > 0) {
                     setNewAchievements(newAchievements);
                     setIsAchievementPopupOpen(true);
@@ -301,29 +307,46 @@ const GoalTreePage = () => {
             console.error('Error toggling goal:', error);
             if (error.response) {
                 console.error('Error response:', error.response.data);
+                if (error.response.status === 401) {
+                    toast.error("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");
+                    router.push('/user-login');
+                } else {
+                    toast.error(error.response.data.message || "Có lỗi xảy ra khi cập nhật mục tiêu");
+                }
+            } else if (error.message === 'Network Error') {
+                toast.error("Không thể kết nối đến server. Vui lòng kiểm tra kết nối internet.");
+            } else {
+                toast.error("Có lỗi xảy ra khi cập nhật mục tiêu");
             }
-            // Show error message to user
-            alert('Có lỗi xảy ra khi cập nhật mục tiêu. Vui lòng thử lại.');
         }
     };
 
     const handleDeleteGoal = async (id) => {
         try {
-            const goal = goals.find(g => g._id === id);
-            if (!goal.is_completed) {
-                // Nếu mục tiêu chưa hoàn thành thì xóa khỏi database
-                if (!token) {
-                    router.push('/user-login');
-                    return;
-                }
+            if (!token) {
+                toast.error("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");
+                router.push('/user-login');
+                return;
+            }
 
-                await axios.delete(`${API_URL}/learning-goals/${id}`, {
+            const goal = goals.find(g => g._id === id);
+            if (!goal) {
+                toast.error("Không tìm thấy mục tiêu này");
+                return;
+            }
+
+            if (!goal.is_completed) {
+
+                const response = await axios.delete(`${API_URL}/learning-goals/${id}`, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
                 });
-                setGoals(goals.filter(goal => goal._id !== id));
-                toast.success("Đã xóa mục tiêu");
+
+                if (response.status === 200) {
+                    setGoals(goals.filter(goal => goal._id !== id));
+                    toast.success("Đã xóa mục tiêu");
+                }
             } else {
                 // Nếu mục tiêu đã hoàn thành thì ẩn đi
                 try {
@@ -341,11 +364,31 @@ const GoalTreePage = () => {
                     setGoals(goals.map(g => g._id === id ? response.data : g));
                 } catch (error) {
                     console.error('Error toggling goal visibility:', error);
+                    if (error.response) {
+                        console.error('Error response:', error.response.data);
+                    }
                     toast.error("Có lỗi xảy ra khi ẩn mục tiêu");
                 }
             }
         } catch (error) {
-            toast.error("Có lỗi xảy ra");
+            console.error('Lỗi xóa mục tiêu:', error);
+            if (error.response) {
+                console.error('Lỗi response:', error.response.data);
+                if (error.response.status === 404) {
+                    toast.error("Mục tiêu không tồn tại hoặc đã bị xóa");
+                } else if (error.response.status === 403) {
+                    toast.error("Bạn không có quyền xóa mục tiêu này");
+                } else if (error.response.status === 401) {
+                    toast.error("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");
+                    router.push('/user-login');
+                } else {
+                    toast.error(error.response.data.message || "Có lỗi xảy ra khi xóa mục tiêu");
+                }
+            } else if (error.message === 'Network Error') {
+                toast.error("Không thể kết nối đến server. Vui lòng kiểm tra kết nối internet.");
+            } else {
+                toast.error("Có lỗi xảy ra khi xóa mục tiêu");
+            }
         }
     };
 
@@ -357,9 +400,9 @@ const GoalTreePage = () => {
     }
 
     const completedGoalsCount = goals.filter(goal => goal.is_completed).length;
-    const progressPercentage = (tree?.growth_stage || 0) * 20; // Each stage is 20% (5 stages total)
+    const progressPercentage = (tree?.growth_stage || 0) * 20; //Mỗi cấp độ là 20% (5 cấp độ tổng cộng)
 
-    // Get the stage name and icon based on growth stage
+    // Lấy tên và icon của cấp độ dựa trên cấp độ tăng trưởng
     const getGrowthStageInfo = (stage) => {
         switch (stage) {
             case 0: return { name: "Tân Binh", icon: "🌱" };
@@ -485,24 +528,24 @@ const GoalTreePage = () => {
                     </div>
                 </div>
 
-                {/* Right Panel - Tree Display */}
+                {/* Right Panel - Hiển thị cây */}
                 <div className="flex-1 relative overflow-visible">
                     <div
                         className="absolute inset-0 bg-cover bg-center"
                         style={{ backgroundImage: "url('/study-plant/background-plant-tree.gif')" }}
                     />
 
-                    {/* Sun */}
+                    {/* Mặt trời */}
                     <div className="absolute top-4 right-4">
                         <img src="/study-plant/sun.gif" alt="Sun" className="w-28 h-28" />
                     </div>
 
-                    {/* Watering Can */}
+                    {/* Bình tưới */}
                     <div className="absolute bottom-24 left-8">
                         <img src="/study-plant/watering-can.png" alt="Watering Can" className="w-36 h-30" />
                     </div>
 
-                    {/* Tree based on type and growth stage */}
+                    {/* Cây dựa trên loại và cấp độ tăng trưởng */}
                     <div className="absolute inset-x-0 bottom-[80px] flex justify-center items-end overflow-visible">
                         {tree && tree.growth_stage > 0 ? (
                             <div className="relative flex flex-col items-center overflow-visible">
@@ -529,7 +572,7 @@ const GoalTreePage = () => {
                         )}
                     </div>
 
-                    {/* Falling Seed Animation - Only show when tree is at stage 0 */}
+                    {/* Hiệu ứng rơi hạt giống - Chỉ hiển thị khi cây ở cấp độ 0 */}
                     <AnimatePresence>
                         {tree?.growth_stage === 0 && (
                             <motion.div
@@ -549,7 +592,7 @@ const GoalTreePage = () => {
                                     alt="Seed"
                                     className="w-10 h-10"
                                 />
-                                {/* Star Sparkles */}
+                                {/* Hiệu ứng sao sáng */}
                                 <motion.div
                                     initial={{ scale: 0, opacity: 0 }}
                                     animate={{
@@ -618,7 +661,7 @@ const GoalTreePage = () => {
                         )}
                     </AnimatePresence>
 
-                    {/* Floating Clouds */}
+                    {/* Các đám mây nổi */}
                     <Cloud delay={0} position="top-10 left-10" />
                     <Cloud delay={2} position="top-20 right-20" />
                     <Cloud delay={4} position="top-5 left-1/3" />

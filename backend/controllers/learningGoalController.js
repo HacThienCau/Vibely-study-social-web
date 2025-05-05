@@ -53,10 +53,33 @@ const updateGoal = async (req, res) => {
 // Xóa mục tiêu
 const deleteGoal = async (req, res) => {
     try {
+        console.log('Delete request details:', {
+            goalId: req.params.id,
+            userId: req.user.user_id,
+            token: req.headers.authorization
+        });
+
+        // Kiểm tra xem mục tiêu có tồn tại không
+        const existingGoal = await LearningGoal.findOne({
+            _id: req.params.id
+        });
+        console.log('Existing goal:', existingGoal);
+
+        if (!existingGoal) {
+            return res.status(404).json({ message: 'Mục tiêu không tồn tại' });
+        }
+
+        // Kiểm tra quyền sở hữu
+        if (existingGoal.user_id.toString() !== req.user.user_id) {
+            return res.status(403).json({ message: 'Không có quyền xóa mục tiêu này' });
+        }
+
         const goal = await LearningGoal.findOneAndDelete({
             _id: req.params.id,
             user_id: req.user.user_id
         });
+
+        console.log('Delete result:', goal);
 
         if (!goal) {
             return res.status(404).json({ message: 'Mục tiêu không tồn tại' });
@@ -64,6 +87,7 @@ const deleteGoal = async (req, res) => {
 
         res.json({ message: 'Đã xóa mục tiêu' });
     } catch (error) {
+        console.error('Error in deleteGoal:', error);
         res.status(500).json({ message: error.message });
     }
 };

@@ -60,7 +60,8 @@ const corsOptions = {
             "https://vibely-study-social-web-user.vercel.app",
             "https://vibely-study-social-web-admin.vercel.app",
             "https://vibelyadmin.netlify.app",
-            "https://vibelyuser.netlify.app"
+            "https://vibelyuser.netlify.app",
+            "https://vibely-study-social-web-user.vercel.app"
         ];
         if (!origin || allowedOrigins.includes(origin)) {
             callback(null, true);
@@ -70,7 +71,7 @@ const corsOptions = {
     },
     credentials: true,
     optionsSuccessStatus: 200,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
 };
 
@@ -216,3 +217,4 @@ module.exports = (async () => {
     return app;
 })();
 */
+
