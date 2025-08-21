@@ -20,6 +20,8 @@
 * **Academic Year:** Semester 2 (2024 - 2025)  
 * **Instructor:** MSc. Võ Tấn Khoa
 
+Link repo gốc: https://github.com/vonhatphuongahihi/Vibely-study-social-web
+
 Vibely Educational Social Web
 ============
 
